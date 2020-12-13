@@ -11,6 +11,7 @@ public class Token
     boolean isBankrupt;
     int currentLocation;
     ScrollCard[] scrollCards;
+    int testProp;
 
     public Token( String name )
     {
