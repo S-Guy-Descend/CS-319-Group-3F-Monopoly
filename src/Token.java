@@ -10,7 +10,7 @@ public class Token
     boolean isInDungeon;
     boolean isBankrupt;
     int currentLocation;
-    ScrollCard[] scrollCards;
+    //ScrollCard[] scrollCards;
 
     public Token( String name )
     {
@@ -88,18 +88,19 @@ public class Token
 
     public void prepareTradeOffer( Token receiver )
     {
-        Square[] placesToGive;
-        Square[] placesToTake;
+        //Square[] placesToGive;
+        //Square[] placesToTake;
         int moneyToGive;
         int moneyToTake;
 
-        makeTradeOffer( placesToGive, placesToTake, moneyToGive, moneyToTake );
+        //makeTradeOffer( placesToGive, placesToTake, moneyToGive, moneyToTake );
     }
 
+    /*
     public void makeTradeOffer( Square[] placesToGive, Square[] placesToTake, int moneyToGive, int moneyToTake)
     {
 
-    }
+    }*/
 
 
 
