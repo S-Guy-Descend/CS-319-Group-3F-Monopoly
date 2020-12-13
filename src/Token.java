@@ -52,7 +52,7 @@ public class Token
 
     public void endTurn()
     {
-
+        Game.instance.advanceTurn();
     }
 
     public void drawScroll()
