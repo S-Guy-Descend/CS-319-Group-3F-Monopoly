@@ -6,6 +6,6 @@ public class Board {
     public Board() {
         map = new Square[40];
         scrollDeck = new ScrollCard[5];
-        fotuneDeck = new FortuneCard[5];
+        fortuneDeck = new FortuneCard[5];
     }
 }
