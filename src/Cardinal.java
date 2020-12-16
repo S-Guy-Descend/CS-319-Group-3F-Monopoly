@@ -5,9 +5,9 @@ public class Cardinal extends Token
         super( name );
     }
 
-    public void purchaseLand()
+    public boolean purchaseLand()
     {
-
+        return true;
     }
 
 }

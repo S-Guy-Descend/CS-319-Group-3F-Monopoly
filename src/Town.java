@@ -15,6 +15,7 @@ public class Town extends Square {
     int ownerId;
     int price;
     int rent;
+    int innPrice;
 
     //constructor
     public Town(String name, String color, int mortgagePrice, int price, int rent) {
@@ -25,22 +26,19 @@ public class Town extends Square {
         this.price = price;
         this.rent = rent;
         this.ownerId = -1;
+        innPrice = 1000;
     }
 
     //methods
     public void calculateRent() {
-        rent = (int) ((Math.pow(RENT_MULTIPLIER_PER_INN, numberOfInns)) + (Math.pow(RENT_MULTIPLIER_PER_MANSION, numberOfMansions)));
+        rent = (int) ((Math.pow(RENT_MULTIPLIER_PER_INN, numberOfInns)) * rent);
         if(belongsToCardinal)
             rent *= RENT_MULTIPLIER_BY_CARDINAL;
     }
 
-    public void changeOwner(int newOwnerId, boolean isNewOwnerCardinal) {
+    public void changeOwner(int newOwnerId) {
         if(isPurchased == false) {
             isPurchased = true;
-        }
-        if(isNewOwnerCardinal) {
-            belongsToCardinal = true;
-            calculateRent();
         }
         ownerId = newOwnerId;
     }

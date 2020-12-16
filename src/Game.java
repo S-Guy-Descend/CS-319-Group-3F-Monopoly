@@ -5,14 +5,28 @@ public class Game {
     public static Game instance = new Game();
     public ArrayList<Token> tokens;
     public Board board;
+    int playerCount = 0;
+    int whoseTurn = 0;
 
-    private Game() {
+    Game() {
         tokens = new ArrayList<Token>();
         board = new Board();
+        addPlayers(4);
     }
 
-    public void advanceTurn() {
+    public void addPlayers(int playerCount) {
+        this.playerCount += playerCount;
+        for(int i = 0; i < playerCount; i++) {
+            Token player = new Token("Player"+i);
+            player.ID = i;
+            tokens.add(player);
+        }
+    }
 
+    public int advanceTurn() {
+        int turnCounter = whoseTurn % playerCount;
+        whoseTurn++;
+        return turnCounter;
     }
 
     public void initializeGame() {

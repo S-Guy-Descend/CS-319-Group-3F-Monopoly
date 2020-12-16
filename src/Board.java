@@ -4,9 +4,28 @@ public class Board {
     public FortuneCard[] fortuneDeck;
 
     public Board() {
-        scrollDeck = new ScrollCard[5];
-        fortuneDeck = new FortuneCard[5];
         initializeBoard();
+        initializeScrollDeck();
+        initializeFortuneDeck();
+    }
+
+    void initializeFortuneDeck() {
+        fortuneDeck = new FortuneCard[5];
+        fortuneDeck[0] = new FortuneCard(0);
+        fortuneDeck[1] = new FortuneCard(1);
+        fortuneDeck[2] = new FortuneCard(2);
+        fortuneDeck[3] = new FortuneCard(3);
+        fortuneDeck[4] = new FortuneCard(4);
+
+    }
+
+    void initializeScrollDeck() {
+        scrollDeck = new ScrollCard[5];
+        scrollDeck[0] = new ScrollCard(0);
+        scrollDeck[1] = new ScrollCard(1);
+        scrollDeck[2] = new ScrollCard(2);
+        scrollDeck[3] = new ScrollCard(3);
+        scrollDeck[4] = new ScrollCard(4);
     }
 
     void initializeBoard() {
@@ -15,7 +34,7 @@ public class Board {
         map[1] = new Town("Crudeberg","brown",3000,6000,600);
         map[2] = new FortuneSquare("Fortune");
         map[3] = new Town("Belchwood","brown",3000,6000,600);
-        map[4] = new taxSquare("King's Tax", 20000);
+        //map[4] = new taxSquare("King's Tax", 20000);
         map[5] = new Transport("Southern Stables");
         map[6] = new Town("Rustmound", "blue", 5000, 10000, 800);
         map[7] = new ScrollSquare("Scroll");
@@ -49,7 +68,7 @@ public class Board {
         map[35] = new Transport("Eastern Docks");
         map[36] = new ScrollSquare("Scroll");
         map[37] = new Town("Grizaloth", "purple", 17500, 35000, 3500);
-        map[38] = new taxSquare("Queen's Tax", 10000);
+        //map[38] = new taxSquare("Queen's Tax", 10000);
         map[39] = new Town("Zephros", "purple", 20000, 40000, 4000);
     }
 }

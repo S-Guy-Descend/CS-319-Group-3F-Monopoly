@@ -1,8 +1,9 @@
 public class Smith extends Square {
-    final int PRICE = 15000;
+
     final int MORTGAGE_PRICE = 7500;
     final int UN_MORTGAGE_PRICE = 10000;
 
+    final int price = 15000;
     boolean isPurchased;
     int ownerId;
     int rent;
@@ -23,7 +24,7 @@ public class Smith extends Square {
         }
     }
 
-    public void changeOwner(int newOwnerId, boolean isNewOwnerCardinal) {
+    public void changeOwner(int newOwnerId) {
         if(isPurchased == false) {
             isPurchased = true;
         }

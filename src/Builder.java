@@ -5,8 +5,8 @@ public class Builder extends Token
         super( name );
     }
 
-    public void build()
+    public boolean build()
     {
-
+        return false;
     }
 }
