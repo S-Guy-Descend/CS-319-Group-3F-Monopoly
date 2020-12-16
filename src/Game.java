@@ -4,7 +4,7 @@ public class Game {
     // instance is a Singleton of the game class
     public static Game instance = new Game();
     private ArrayList<Token> tokens;
-    private Board board;
+    public Board board;
 
     private Game() {
         tokens = new ArrayList<Token>();
