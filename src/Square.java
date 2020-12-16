@@ -16,6 +16,6 @@ public class Square {
     }
 
     void removeTokenFromSquare(int residentId) {
-        tokensOnTop.remove(Integer.valueOf(2));
+        tokensOnTop.remove(Integer.valueOf(residentId));
     }
 }
