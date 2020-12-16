@@ -10,6 +10,8 @@ public class Token
     boolean isInDungeon;
     boolean isBankrupt;
     int currentLocation;
+    int ownedSmithCount;
+
     //ScrollCard[] scrollCards;
 
     public Token( String name )
@@ -20,6 +22,7 @@ public class Token
         isBankrupt = false;
         isInDungeon = false;
         currentLocation = 1;
+        ownedSmithCount = 0;
     }
 
     public void rollDice()
@@ -42,7 +45,9 @@ public class Token
 
     public void purchaseLand()
     {
-
+        if(Game.instance.board.map[currentLocation] instanceof Smith) {
+            ownedSmithCount++;
+        }
     }
 
     public void build()
