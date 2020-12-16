@@ -15,7 +15,7 @@ public class Board {
         map[1] = new Town("Crudeberg","brown",3000,6000,600);
         map[2] = new FortuneSquare("Fortune");
         map[3] = new Town("Belchwood","brown",3000,6000,600);
-        //map[4]=vergi levhası
+        map[4] = new taxSquare("King's Tax", 20000);
         map[5] = new Transport("Southern Stables");
         map[6] = new Town("Rustmound", "blue", 5000, 10000, 800);
         map[7] = new ScrollSquare("Scroll");
@@ -49,7 +49,7 @@ public class Board {
         map[35] = new Transport("Eastern Docks");
         map[36] = new ScrollSquare("Scroll");
         map[37] = new Town("Grizaloth", "purple", 17500, 35000, 3500);
-        //map[38]=vergi levhası
+        map[38] = new taxSquare("Queen's Tax", 10000);
         map[39] = new Town("Zephros", "purple", 20000, 40000, 4000);
     }
 }
