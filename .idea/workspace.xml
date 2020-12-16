@@ -3,6 +3,25 @@
   <component name="ChangeListManager">
     <list default="true" id="03c25cf0-65d8-4206-a584-fcc934e9a856" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Board.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Board.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/FortuneCard.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/FortuneCard.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Game.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Game.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$6.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$7.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$8.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$9.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$ClientSideConnection.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$ClientSideConnection.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ScrollCard.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ScrollCard.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Square.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Square.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Token.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Token.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Town.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Town.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Board.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +50,28 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$/IdeaProjects/MultiplayerTest" />
   </component>
+  <component name="RunManager" selected="Application.Player">
+    <configuration name="Player" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Player" />
+      <module name="CS-319-Group-3F-Monopoly" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Server" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Server" />
+      <module name="CS-319-Group-3F-Monopoly" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Player" />
+        <item itemvalue="Application.Server" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -44,6 +85,14 @@
       <workItem from="1607867595802" duration="913000" />
       <workItem from="1607869837229" duration="170000" />
       <workItem from="1607873277795" duration="35000" />
+      <workItem from="1608125845605" duration="933000" />
+      <workItem from="1608127643211" duration="610000" />
+      <workItem from="1608128744964" duration="1000" />
+      <workItem from="1608128767980" duration="21000" />
+      <workItem from="1608131094847" duration="681000" />
+      <workItem from="1608135553203" duration="87000" />
+      <workItem from="1608135690642" duration="1043000" />
+      <workItem from="1608136977992" duration="1328000" />
     </task>
     <servers />
   </component>
