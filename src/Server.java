@@ -72,18 +72,34 @@ public class Server {
 
                 while(true) {
                     if(isTurn) {
-                        boolean endedTurn = dataIn.readBoolean();
-                        if(endedTurn) {
-                            System.out.println("Player " + playerID + " ended Turn");
-                            isTurn = false;
-                            int nextPlayer;
-                            if(playerID < maxPlayers) {
-                                nextPlayer = playerID + 1;
-                            } else {
-                                nextPlayer = 1;
-                            }
-                            connections.get(nextPlayer - 1).isTurn = true;
-                            connections.get(nextPlayer - 1).dataOut.writeBoolean(true);
+                        int operation = dataIn.readInt();
+                        switch(operation) {
+                            case 0:
+                                break;
+                            case 1:
+                                break;
+                            case 2:
+                                break;
+                            case 3:
+                                break;
+                            case 4:
+                                break;
+                            case 5:
+                                break;
+                            case 6:
+                                break;
+                            case 7:
+                                System.out.println("Player " + playerID + " ended Turn");
+                                isTurn = false;
+                                int nextPlayer;
+                                if(playerID < maxPlayers) {
+                                    nextPlayer = playerID + 1;
+                                } else {
+                                    nextPlayer = 1;
+                                }
+                                connections.get(nextPlayer - 1).isTurn = true;
+                                connections.get(nextPlayer - 1).dataOut.writeBoolean(true);
+                                break;
                         }
                     }
                 }
