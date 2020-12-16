@@ -6,7 +6,7 @@ public class Game {
     public ArrayList<Token> tokens;
     public Board board;
     int playerCount = 0;
-    int whoseTurn = 0;
+    int turnCounter = 0;
 
     Game() {
         tokens = new ArrayList<Token>();
@@ -24,9 +24,9 @@ public class Game {
     }
 
     public int advanceTurn() {
-        int turnCounter = whoseTurn % playerCount;
-        whoseTurn++;
-        return turnCounter;
+        int playerIdToPlay = turnCounter % playerCount;
+        turnCounter++;
+        return playerIdToPlay;
     }
 
     public void initializeGame() {
