@@ -15,7 +15,7 @@ public class Board {
         map[1] = new Town("Pyungmo","brown",3000,6000,600);
         map[2] = new FortuneSquare("Fortune Square");
         map[3] = new Town("Pyungmo2","brown",3000,6000,600);
-        //map[4]=vergi levhası
+        map[4] = new taxSquare("King's Tax", 20000);
         map[5] = new Transport("King's Cross");
         map[6] = new Town("Joan", "blue", 5000, 10000, 800);
         map[7] = new Town("Joan2", "blue", 5000, 10000, 800);
@@ -49,7 +49,7 @@ public class Board {
         map[35] = new Transport("Atakan's anime convention");
         map[36] = new ScrollSquare("Scroll Square");
         map[37] = new Town("Uyanış Zindanı1", "purple", 17500, 35000, 3500);
-        //map[38]=vergi levhası
+        map[38] = new taxSquare("Queen's Tax", 10000);
         map[39] = new Town("Uyanış Zindanı2", "purple", 20000, 40000, 4000);
     }
 }
