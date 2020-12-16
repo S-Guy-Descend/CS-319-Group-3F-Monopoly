@@ -8,6 +8,14 @@ public class Square {
     //constructor
     public Square(String name, ArrayList<Integer> tokensOnTop) {
         this.name = name;
-        this.tokensOnTop = tokensOnTop;
+        this.tokensOnTop = new ArrayList<Integer>();
+    }
+
+    void addTokenOnSquare(int residentId) {
+        tokensOnTop.add(residentId);
+    }
+
+    void removeTokenFromSquare(int residentId) {
+        tokensOnTop.remove(Integer.valueOf(2));
     }
 }
