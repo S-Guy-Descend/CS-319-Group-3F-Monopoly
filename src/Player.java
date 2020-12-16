@@ -71,7 +71,6 @@ public class Player extends JFrame{
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         };
@@ -90,7 +89,6 @@ public class Player extends JFrame{
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         };
@@ -109,7 +107,6 @@ public class Player extends JFrame{
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         };
@@ -128,7 +125,6 @@ public class Player extends JFrame{
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         };
@@ -147,7 +143,6 @@ public class Player extends JFrame{
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         };
@@ -167,7 +162,6 @@ public class Player extends JFrame{
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         };
@@ -187,7 +181,6 @@ public class Player extends JFrame{
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         };
@@ -213,7 +206,6 @@ public class Player extends JFrame{
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         };
@@ -270,7 +262,7 @@ public class Player extends JFrame{
                 playerID = dataIn.readInt();
                 setTitle("Player " + playerID);
                 isTurn = dataIn.readBoolean();
-                System.out.println("Connected to server as player #" + playerID);
+                System.out.println("Connected to server as player " + playerID);
             } catch(IOException e) {
                 e.printStackTrace();
             }
