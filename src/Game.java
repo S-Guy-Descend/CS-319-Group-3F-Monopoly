@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Game {
     // instance is a Singleton of the game class
     public static Game instance = new Game();
-    private ArrayList<Token> tokens;
+    public ArrayList<Token> tokens;
     public Board board;
 
     private Game() {
