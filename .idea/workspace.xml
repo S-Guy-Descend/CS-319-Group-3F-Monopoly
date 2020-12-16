@@ -31,6 +31,43 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$USER_HOME$/IdeaProjects/MultiplayerTest" />
   </component>
+  <component name="RunManager" selected="Application.Player">
+    <configuration name="Player" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Player" />
+      <module name="CS-319-Group-3F-Monopoly" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Server" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Server" />
+      <module name="CS-319-Group-3F-Monopoly" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.Player" />
+      <item itemvalue="Application.Server" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Player" />
+        <item itemvalue="Application.Server" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -44,6 +81,7 @@
       <workItem from="1607867595802" duration="913000" />
       <workItem from="1607869837229" duration="170000" />
       <workItem from="1607873277795" duration="35000" />
+      <workItem from="1608136629845" duration="28000" />
     </task>
     <servers />
   </component>
