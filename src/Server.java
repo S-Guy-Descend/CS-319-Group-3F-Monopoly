@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Server {
-
     private ServerSocket ss;
     private int numPlayers;
     private int maxPlayers;
@@ -14,7 +13,6 @@ public class Server {
 
     public Server(int maxPlayers) {
         this.maxPlayers = maxPlayers;
-        System.out.println("Server");
         numPlayers = 0;
         try {
             ss = new ServerSocket(12345);
@@ -31,8 +29,12 @@ public class Server {
                 numPlayers++;
                 System.out.println("Player # " + numPlayers + " has connected");
                 ServerSideConnection ssc = new ServerSideConnection(s, numPlayers);
+                if(numPlayers == 1) {
+                    ssc.isTurn = true;
+                } else {
+                    ssc.isTurn = false;
+                }
                 connections.add(ssc);
-
                 Thread t = new Thread(ssc);
                 t.start();
             }
@@ -47,6 +49,7 @@ public class Server {
         private DataInputStream dataIn;
         private DataOutputStream dataOut;
         private int playerID;
+        volatile boolean isTurn;
 
         public ServerSideConnection(Socket s, int id) {
             socket = s;
@@ -64,11 +67,25 @@ public class Server {
         public void run() {
             try {
                 dataOut.writeInt(playerID);
+                dataOut.writeBoolean(isTurn);
                 dataOut.flush();
 
-
                 while(true) {
-
+                    if(isTurn) {
+                        boolean endedTurn = dataIn.readBoolean();
+                        if(endedTurn) {
+                            System.out.println("Player " + playerID + " ended Turn");
+                            isTurn = false;
+                            int nextPlayer;
+                            if(playerID < maxPlayers) {
+                                nextPlayer = playerID + 1;
+                            } else {
+                                nextPlayer = 1;
+                            }
+                            connections.get(nextPlayer - 1).isTurn = true;
+                            connections.get(nextPlayer - 1).dataOut.writeBoolean(true);
+                        }
+                    }
                 }
             } catch(IOException e) {
                 e.printStackTrace();
