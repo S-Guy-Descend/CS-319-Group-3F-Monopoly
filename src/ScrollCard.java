@@ -1,9 +1,21 @@
-public class ScrollCard {
-    int effectId;
-    String cardText;
-    String cardName;
+import java.util.ArrayList;
 
-    public void performEffect() {
-        
+public class Square {
+    //variables
+    protected String name;
+    ArrayList<Integer> tokensOnTop;
+
+    //constructor
+    public Square(String name, ArrayList<Integer> tokensOnTop) {
+        this.name = name;
+        this.tokensOnTop = new ArrayList<Integer>();
+    }
+
+    void addTokenOnSquare(int residentId) {
+        tokensOnTop.add(residentId);
+    }
+
+    void removeTokenFromSquare(int residentId) {
+        tokensOnTop.remove(Integer.valueOf(residentId));
     }
 }
