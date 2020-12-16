@@ -6,7 +6,7 @@ public class Square {
     ArrayList<Integer> tokensOnTop;
 
     //constructor
-    public Square(String name, ArrayList<Integer> tokensOnTop) {
+    public Square(String name) {
         this.name = name;
         this.tokensOnTop = new ArrayList<Integer>();
     }
