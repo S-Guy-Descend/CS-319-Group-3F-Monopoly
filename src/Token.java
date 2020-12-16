@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Token
 {
     String name;
@@ -5,24 +7,26 @@ public class Token
     int money;
     int color;
     int diceRollOutcome;
+    int dungeonCountdown;
     int[] ownedLands;
     int turnsPlayed;
     boolean isInDungeon;
     boolean isBankrupt;
     int currentLocation;
     int ownedSmithCount;
-
-    //ScrollCard[] scrollCards;
+    ArrayList<ScrollCard> scrollCards;
 
     public Token( String name )
     {
         this.name = name;
+        scrollCards = new ArrayList<ScrollCard>();
         money = 1500;
         turnsPlayed = 0;
         isBankrupt = false;
         isInDungeon = false;
-        currentLocation = 1;
         ownedSmithCount = 0;
+        currentLocation = 0;
+        dungeonCountdown = 0;
     }
 
     public void rollDice()
@@ -41,6 +45,13 @@ public class Token
     public void move()
     {
         currentLocation = currentLocation + diceRollOutcome;
+    }
+
+    public void forceMove( int newPlace )
+    {
+        currentLocation = newPlace;
+        diceRollOutcome = 0;
+        this.move();
     }
 
     public void purchaseLand()
@@ -62,12 +73,20 @@ public class Token
 
     public void drawScroll()
     {
+        int effectID = (int)Math.random() * Game.instance.board.scrollDeck.length;
+        scrollCards.add( Game.instance.board.scrollDeck[effectID] );
+    }
 
+    public void useScroll( int scrollIndex, Token effectVictim )
+    {
+        scrollCards.get( scrollIndex ).performEffect( this, effectVictim );
+        scrollCards.remove( scrollIndex );
     }
 
     public void drawFortuneCard()
     {
-
+        int effectID = (int)Math.random() * Game.instance.board.fortuneDeck.length;
+        Game.instance.board.fortuneDeck[effectID].performEffect( this );
     }
 
     public void payMoney( Token receiver, int amount )
