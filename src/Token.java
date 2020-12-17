@@ -71,27 +71,19 @@ public class Token
             }
         }
         else if(Game.instance.board.map[this.currentLocation] instanceof Transport) {
-            System.out.println("Entered move function Transport tab");
             Transport currentSquare = (Transport) Game.instance.board.map[this.currentLocation];
             if(currentSquare.isPurchased && currentSquare.ownerId != ID) {
-                System.out.println("Entered2");
-                System.out.println(currentSquare.ownerId);
-                Token owner = Game.instance.tokens.get(currentSquare.ownerId);
-                System.out.println("Owner: " + owner.name);
-                payMoney(owner, currentSquare.rent);
+                payMoney(Game.instance.tokens.get(currentSquare.ownerId), currentSquare.rent);
             }
         }
         else if(Game.instance.board.map[this.currentLocation] instanceof TaxSquare) {
-            TaxSquare currentSquare = (TaxSquare) Game.instance.board.map[this.currentLocation];
-            payTax(currentSquare.taxAmount);
+            payTax(((TaxSquare) Game.instance.board.map[this.currentLocation]).taxAmount);
         }
         else if(Game.instance.board.map[this.currentLocation] instanceof GoToDungeon){
-            GoToDungeon currentSquare = (GoToDungeon) Game.instance.board.map[this.currentLocation];
-            currentSquare.sendTokenToDungeon(this);
+            ((GoToDungeon) Game.instance.board.map[this.currentLocation]).sendTokenToDungeon(this);
         }
         else if(Game.instance.board.map[this.currentLocation] instanceof Feast){
-            Feast currentSquare = (Feast) Game.instance.board.map[this.currentLocation];
-            currentSquare.buffTokenClass(this);
+            ((Feast) Game.instance.board.map[this.currentLocation]).buffTokenClass(this);
         }
     }
     // If you face a problem in the future its probably because of this method. For emergencies pls call BKB.
