@@ -17,7 +17,7 @@ public class Game {
     public void addPlayers(int playerCount) {
         this.playerCount += playerCount;
         for(int i = 0; i < playerCount; i++) {
-            Token player = new Token("Player"+i);
+            Wizard player = new Wizard("Player"+i);
             player.ID = i;
             tokens.add(player);
         }

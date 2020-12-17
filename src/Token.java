@@ -95,8 +95,16 @@ public class Token
         }
     }
     // If you face a problem in the future its probably because of this method. For emergencies pls call BKB.
-    public void forceMove(int newPlace, boolean dontPassGO)
+    public void forceMove(int newPlace, boolean passGO)
     {
+        if(newPlace < currentLocation && passGO) {
+            ((StartingSquare) Game.instance.board.map[0]).giveLeapMoney(this);
+        }
+
+        currentLocation = newPlace;
+        diceRollOutcome = 0;
+        this.move();
+        /*
         newPlace = (newPlace+40) % 40;
 
         if(dontPassGO) {
@@ -106,6 +114,7 @@ public class Token
             diceRollOutcome = 40 - currentLocation + newPlace;
         }
         this.move();
+         */
     }
 
     public boolean purchaseLand()

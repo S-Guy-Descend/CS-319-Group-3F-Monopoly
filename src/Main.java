@@ -13,8 +13,8 @@ public class Main {
         while(running){
             System.out.println("--------------------------------------------------");
             turnCounter = Game.instance.advanceTurn();
-            Token player = Game.instance.tokens.get(turnCounter);
-            player.currentLocation = 17;
+            Wizard player = (Wizard) Game.instance.tokens.get(turnCounter);
+            player.rollDice();
             System.out.println("Player" + turnCounter + " moved: " + player.diceRollOutcome + " squares.");
             player.move();
             System.out.println("Player" + turnCounter + "'s current location: " + player.currentLocation);
