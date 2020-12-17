@@ -14,10 +14,13 @@ public class Wizard extends Token
     // asdfsadfsdafsadfsadf
     public void move()
     {
-        currentLocation = currentLocation + diceRollOutcome;
+
+        System.out.println("Wizard's move method entered");
+        System.out.println("DiceRollOutcome in Wizard move method: " + diceRollOutcome);
 
         // Restore mana
         currentMana = currentMana + ( diceRollOutcome * manaGainMultiplier );
+        System.out.println("currentMana in Wizard move method: " + currentMana);
 
         // Draw card for each fulled mana bar
         if ( currentMana >= maxMana )
@@ -30,5 +33,6 @@ public class Wizard extends Token
                 this.drawScroll();
             }
         }
+        super.move();
     }
 }

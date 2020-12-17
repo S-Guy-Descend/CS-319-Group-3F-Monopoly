@@ -10,21 +10,21 @@ public class Token
     int dungeonCountdown;
     int[] ownedLands;
     int turnsPlayed;
-    boolean isInDungeon;
     boolean isBankrupt;
     int currentLocation;
     int ownedSmithCount;
+    int ownedTransportCount;
     ArrayList<ScrollCard> scrollCards;
 
     public Token( String name )
     {
         this.name = name;
         scrollCards = new ArrayList<ScrollCard>();
-        money = 1500;
+        money = 150000;
         turnsPlayed = 0;
         isBankrupt = false;
-        isInDungeon = false;
         ownedSmithCount = 0;
+        ownedTransportCount = 0;
         currentLocation = 0;
         dungeonCountdown = 0;
     }
@@ -44,37 +44,152 @@ public class Token
 
     public void move()
     {
-        currentLocation = currentLocation + diceRollOutcome;
-    }
+        if(currentLocation + diceRollOutcome >= 40) {
+            money += 20000;
+        }
 
-    public void forceMove( int newPlace )
+        currentLocation = (currentLocation + diceRollOutcome) % 40;
+
+        if(Game.instance.board.map[this.currentLocation] instanceof ScrollSquare) {
+            drawScroll();
+            return;
+        }
+        else if(Game.instance.board.map[this.currentLocation] instanceof FortuneSquare) {
+            drawFortuneCard();
+            return;
+        }
+        else if(Game.instance.board.map[this.currentLocation] instanceof Town) {
+            Town currentSquare = (Town) Game.instance.board.map[this.currentLocation];
+            if(currentSquare.isPurchased && currentSquare.ownerId != ID) {
+                payMoney(Game.instance.tokens.get(Integer.valueOf(currentSquare.ownerId)), currentSquare.rent);
+            }
+        }
+        else if(Game.instance.board.map[this.currentLocation] instanceof Smith) {
+            Smith currentSquare = (Smith) Game.instance.board.map[this.currentLocation];
+            if(currentSquare.isPurchased && currentSquare.ownerId != ID) {
+                payMoney(Game.instance.tokens.get(currentSquare.ownerId), currentSquare.rent);
+            }
+        }
+        else if(Game.instance.board.map[this.currentLocation] instanceof Transport) {
+            System.out.println("Entered move function Transport tab");
+            Transport currentSquare = (Transport) Game.instance.board.map[this.currentLocation];
+            if(currentSquare.isPurchased && currentSquare.ownerId != ID) {
+                System.out.println("Entered2");
+                System.out.println(currentSquare.ownerId);
+                Token owner = Game.instance.tokens.get(currentSquare.ownerId);
+                System.out.println("Owner: " + owner.name);
+                payMoney(owner, currentSquare.rent);
+            }
+        }
+        else if(Game.instance.board.map[this.currentLocation] instanceof TaxSquare) {
+            TaxSquare currentSquare = (TaxSquare) Game.instance.board.map[this.currentLocation];
+            payTax(currentSquare.taxAmount);
+        }
+        else if(Game.instance.board.map[this.currentLocation] instanceof GoToDungeon){
+            GoToDungeon currentSquare = (GoToDungeon) Game.instance.board.map[this.currentLocation];
+            currentSquare.sendTokenToDungeon(this);
+        }
+        else if(Game.instance.board.map[this.currentLocation] instanceof Feast){
+            Feast currentSquare = (Feast) Game.instance.board.map[this.currentLocation];
+            currentSquare.buffTokenClass(this);
+        }
+    }
+    // If you face a problem in the future its probably because of this method. For emergencies pls call BKB.
+    public void forceMove(int newPlace, boolean passGO)
     {
+        if(newPlace < currentLocation && passGO) {
+            ((StartingSquare) Game.instance.board.map[0]).giveLeapMoney(this);
+        }
+
         currentLocation = newPlace;
         diceRollOutcome = 0;
         this.move();
-    }
+        /*
+        newPlace = (newPlace+40) % 40;
 
-    public void purchaseLand()
-    {
-        if(Game.instance.board.map[currentLocation] instanceof Smith) {
-            ownedSmithCount++;
+        if(dontPassGO) {
+            diceRollOutcome = newPlace - currentLocation;
         }
+        else {
+            diceRollOutcome = 40 - currentLocation + newPlace;
+        }
+        this.move();
+         */
     }
 
-    public void build()
+    public boolean purchaseLand()
     {
+        if(Game.instance.board.map[this.currentLocation] instanceof Town) {
+            Town currentTown = (Town) Game.instance.board.map[this.currentLocation];
+            if(currentTown.isPurchased) {
+                return false;
+            }
+            if(money < currentTown.price) {
+                return false;
+            }
+            money -= currentTown.price;
+            currentTown.changeOwner(ID);
+            return true;
+        }
+        else if(Game.instance.board.map[this.currentLocation] instanceof Smith) {
+            Smith currentSmith = (Smith) Game.instance.board.map[this.currentLocation];
+            if(currentSmith.isPurchased) {
+                return false;
+            }
+            if(money < currentSmith.price) {
+                return false;
+            }
+            money -= currentSmith.price;
+            currentSmith.changeOwner(ID);
+            ownedSmithCount++;
+            return true;
+        }
+        else if(Game.instance.board.map[this.currentLocation] instanceof Transport) {
+            Transport currentTransport = (Transport) Game.instance.board.map[this.currentLocation];
+            if(currentTransport.isPurchased) {
+                return false;
+            }
+            if(money < currentTransport.price) {
+                return false;
+            }
+            money -= currentTransport.price;
+            currentTransport.changeOwner(ID);
+            this.ownedTransportCount += 1;
+            currentTransport.calculateRent();
+            return true;
+        }
+        return false;
+    }
 
+    public boolean build()
+    {
+        if(Game.instance.board.map[this.currentLocation] instanceof Town) {
+            Town currentTown = (Town) Game.instance.board.map[this.currentLocation];
+            if(currentTown.ownerId != ID){
+                return false;
+            }
+            if(money < currentTown.innPrice) {
+                return false;
+            }
+            money -= currentTown.innPrice;
+            currentTown.numberOfInns += 1;
+            currentTown.calculateRent();
+            return true;
+        }
+        return false;
     }
 
     public void endTurn()
     {
+        turnsPlayed++;
         Game.instance.advanceTurn();
     }
 
     public void drawScroll()
     {
-        int effectID = (int)Math.random() * Game.instance.board.scrollDeck.length;
+        int effectID = (int) (Math.random() * Game.instance.board.scrollDeck.length);
         scrollCards.add( Game.instance.board.scrollDeck[effectID] );
+        System.out.println("Scroll " + Game.instance.board.scrollDeck[effectID].cardName + " is drawn");
     }
 
     public void useScroll( int scrollIndex, Token effectVictim )
@@ -85,8 +200,9 @@ public class Token
 
     public void drawFortuneCard()
     {
-        int effectID = (int)Math.random() * Game.instance.board.fortuneDeck.length;
+        int effectID = (int) (Math.random() * Game.instance.board.fortuneDeck.length);
         Game.instance.board.fortuneDeck[effectID].performEffect( this );
+        System.out.println("FortuneCard " + Game.instance.board.fortuneDeck[effectID].cardName + " is drawn");
     }
 
     public void payMoney( Token receiver, int amount )

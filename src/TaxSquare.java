@@ -1,8 +1,8 @@
-public class taxSquare extends Square{
+public class TaxSquare extends Square{
 
     int taxAmount;
 
-    public taxSquare(String name, int taxAmount) {
+    public TaxSquare(String name, int taxAmount) {
         super(name);
         this.taxAmount = taxAmount;
     }
