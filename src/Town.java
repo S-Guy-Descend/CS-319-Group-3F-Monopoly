@@ -11,7 +11,8 @@ public class Town extends Square {
     boolean isPurchased = false;
     int mortgagePrice;
     int numberOfInns = 0;
-    int numberOfMansions = 0;
+    int numberOfMansions = 0;   //Should we get rid of this?
+                                // Maybe we can just show it as a mansion in the game once there are 5 inns?
     int ownerId;
     int price;
     int rent;
