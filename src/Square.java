@@ -1,9 +1,15 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Square {
+public class Square implements Serializable {
     //variables
     protected String name;
     ArrayList<Integer> tokensOnTop;
+
+    //default constructor (Necessary for TradeRequest Serialization)
+    public Square() {
+
+    }
 
     //constructor
     public Square(String name) {
