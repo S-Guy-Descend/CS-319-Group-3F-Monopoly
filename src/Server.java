@@ -1,9 +1,10 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.UnknownHostException;
 
 public class Server {
     private ServerSocket ss;
@@ -44,10 +45,10 @@ public class Server {
         }
     }
 
-    private class ServerSideConnection implements Runnable {
+    private class ServerSideConnection implements Runnable{
         private Socket socket;
-        private DataInputStream dataIn;
-        private DataOutputStream dataOut;
+        private ObjectInputStream dataIn;
+        private ObjectOutputStream dataOut;
         private int playerID;
         volatile boolean isTurn;
 
@@ -55,8 +56,9 @@ public class Server {
             socket = s;
             playerID = id;
             try {
-                dataIn = new DataInputStream(socket.getInputStream());
-                dataOut = new DataOutputStream(socket.getOutputStream());
+                dataIn = new ObjectInputStream(socket.getInputStream());
+                dataOut = new ObjectOutputStream(socket.getOutputStream());
+                dataOut.flush();
             } catch(IOException e) {
                 e.printStackTrace();
             }
@@ -83,6 +85,15 @@ public class Server {
                             case 3:
                                 break;
                             case 4:
+                                try {
+                                    try {
+                                        TradeRequest tradeRequest = (TradeRequest) dataIn.readObject();
+                                    } catch(IOException e2) {
+                                        e2.printStackTrace();
+                                    }
+                                } catch( ClassNotFoundException e1) {
+                                    e1.printStackTrace();
+                                }
                                 break;
                             case 5:
                                 break;
@@ -109,7 +120,7 @@ public class Server {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException{
         Server server = new Server(4);
         server.acceptConnections();
     }

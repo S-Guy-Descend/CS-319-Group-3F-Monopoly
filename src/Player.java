@@ -2,10 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Player extends JFrame{
     private ClientSideConnection csc;
@@ -140,6 +141,16 @@ public class Player extends JFrame{
                     try {
                         System.out.println("Player " + playerID + " sent trade");
                         csc.dataOut.writeInt(4);
+
+                        //Construct the trade request
+                        ArrayList<Square> placesToGive = new ArrayList<Square>();
+                        placesToGive.add(Game.instance.board.map[1]);
+                        ArrayList<Square> placesToTake = new ArrayList<Square>();
+                        placesToTake.add(Game.instance.board.map[3]);
+                        int moneyToGive = 100;
+                        int moneyToTake = 300;
+                        TradeRequest tradeRequest = new TradeRequest(placesToGive, placesToTake, moneyToGive, moneyToTake);
+                        csc.dataOut.writeObject(tradeRequest);
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
@@ -251,14 +262,15 @@ public class Player extends JFrame{
     //Client connection
     private class ClientSideConnection {
         private Socket socket;
-        private DataInputStream dataIn;
-        private DataOutputStream dataOut;
+        private ObjectInputStream dataIn;
+        private ObjectOutputStream dataOut;
 
         private ClientSideConnection() {
             try {
                 socket = new Socket("localhost", 12345);
-                dataIn = new DataInputStream(socket.getInputStream());
-                dataOut = new DataOutputStream(socket.getOutputStream());
+                dataOut = new ObjectOutputStream(socket.getOutputStream());
+                dataOut.flush();
+                dataIn = new ObjectInputStream(socket.getInputStream());
                 playerID = dataIn.readInt();
                 setTitle("Player " + playerID);
                 isTurn = dataIn.readBoolean();
