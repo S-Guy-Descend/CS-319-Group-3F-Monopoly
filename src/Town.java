@@ -34,13 +34,9 @@ public class Town extends Square {
             rent *= RENT_MULTIPLIER_BY_CARDINAL;
     }
 
-    public void changeOwner(int newOwnerId, boolean isNewOwnerCardinal) {
+    public void changeOwner(int newOwnerId) {
         if(isPurchased == false) {
             isPurchased = true;
-        }
-        if(isNewOwnerCardinal) {
-            belongsToCardinal = true;
-            calculateRent();
         }
         ownerId = newOwnerId;
     }

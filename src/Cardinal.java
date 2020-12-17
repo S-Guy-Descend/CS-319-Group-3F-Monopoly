@@ -7,7 +7,11 @@ public class Cardinal extends Token
 
     public void purchaseLand()
     {
-
+        super.purchaseLand();
+        Square landBought = Game.instance.board.map[currentLocation];
+        if ( landBought instanceof Town ) {
+            ((Town) landBought).belongsToCardinal = true;
+        }
     }
 
 }
