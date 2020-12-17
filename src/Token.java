@@ -1,5 +1,3 @@
-import com.sun.tools.javadoc.Start;
-
 import java.util.ArrayList;
 
 public class Token
@@ -12,7 +10,6 @@ public class Token
     int dungeonCountdown;
     int[] ownedLands;
     int turnsPlayed;
-    boolean isInDungeon;
     boolean isBankrupt;
     int currentLocation;
     int ownedSmithCount;
@@ -23,10 +20,9 @@ public class Token
     {
         this.name = name;
         scrollCards = new ArrayList<ScrollCard>();
-        money = 1500;
+        money = 150000;
         turnsPlayed = 0;
         isBankrupt = false;
-        isInDungeon = false;
         ownedSmithCount = 0;
         ownedTransportCount = 0;
         currentLocation = 0;
@@ -48,7 +44,12 @@ public class Token
 
     public void move()
     {
-        currentLocation = currentLocation + diceRollOutcome;
+        if(currentLocation + diceRollOutcome >= 40) {
+            money += 20000;
+        }
+
+        currentLocation = (currentLocation + diceRollOutcome) % 40;
+
         if(Game.instance.board.map[this.currentLocation] instanceof ScrollSquare) {
             drawScroll();
             return;
@@ -80,8 +81,8 @@ public class Token
                 payMoney(owner, currentSquare.rent);
             }
         }
-        else if(Game.instance.board.map[this.currentLocation] instanceof taxSquare) {
-            taxSquare currentSquare = (taxSquare) Game.instance.board.map[this.currentLocation];
+        else if(Game.instance.board.map[this.currentLocation] instanceof TaxSquare) {
+            TaxSquare currentSquare = (TaxSquare) Game.instance.board.map[this.currentLocation];
             payTax(currentSquare.taxAmount);
         }
         else if(Game.instance.board.map[this.currentLocation] instanceof GoToDungeon){
@@ -92,17 +93,18 @@ public class Token
             Feast currentSquare = (Feast) Game.instance.board.map[this.currentLocation];
             currentSquare.buffTokenClass(this);
         }
-        else if(Game.instance.board.map[this.currentLocation] instanceof StartingSquare){
-            StartingSquare currentSquare = (StartingSquare) Game.instance.board.map[this.currentLocation];
-            currentSquare.giveLeapMoney(this);
-        }
     }
-    // maybe we can combine this method's logic with move method so that we wouldn't have to duplicate code from move to here
-    public void forceMove( int newPlace )
+    // If you face a problem in the future its probably because of this method. For emergencies pls call BKB.
+    public void forceMove(int newPlace, boolean dontPassGO)
     {
-        currentLocation = newPlace;
-        //why do we need following two lines?
-        diceRollOutcome = 0;
+        newPlace = (newPlace+40) % 40;
+
+        if(dontPassGO) {
+            diceRollOutcome = newPlace - currentLocation;
+        }
+        else {
+            diceRollOutcome = 40 - currentLocation + newPlace;
+        }
         this.move();
     }
 
@@ -111,6 +113,9 @@ public class Token
         if(Game.instance.board.map[this.currentLocation] instanceof Town) {
             Town currentTown = (Town) Game.instance.board.map[this.currentLocation];
             if(currentTown.isPurchased) {
+                return false;
+            }
+            if(money < currentTown.price) {
                 return false;
             }
             money -= currentTown.price;
@@ -122,23 +127,25 @@ public class Token
             if(currentSmith.isPurchased) {
                 return false;
             }
+            if(money < currentSmith.price) {
+                return false;
+            }
             money -= currentSmith.price;
             currentSmith.changeOwner(ID);
             ownedSmithCount++;
             return true;
         }
         else if(Game.instance.board.map[this.currentLocation] instanceof Transport) {
-            System.out.println("Entered purchaseLand Transport tab");
             Transport currentTransport = (Transport) Game.instance.board.map[this.currentLocation];
             if(currentTransport.isPurchased) {
                 return false;
             }
+            if(money < currentTransport.price) {
+                return false;
+            }
             money -= currentTransport.price;
             currentTransport.changeOwner(ID);
-            System.out.println("Update transport owner, new owner: " + currentTransport.ownerId);
-            System.out.println(this.name);
             this.ownedTransportCount += 1;
-            System.out.println("Owned transport count: " + this.ownedTransportCount);
             currentTransport.calculateRent();
             return true;
         }
@@ -150,6 +157,9 @@ public class Token
         if(Game.instance.board.map[this.currentLocation] instanceof Town) {
             Town currentTown = (Town) Game.instance.board.map[this.currentLocation];
             if(currentTown.ownerId != ID){
+                return false;
+            }
+            if(money < currentTown.innPrice) {
                 return false;
             }
             money -= currentTown.innPrice;
@@ -168,7 +178,7 @@ public class Token
 
     public void drawScroll()
     {
-        int effectID = (int)Math.random() * Game.instance.board.scrollDeck.length;
+        int effectID = (int) (Math.random() * Game.instance.board.scrollDeck.length);
         scrollCards.add( Game.instance.board.scrollDeck[effectID] );
         System.out.println("Scroll " + Game.instance.board.scrollDeck[effectID].cardName + " is drawn");
     }
@@ -181,14 +191,13 @@ public class Token
 
     public void drawFortuneCard()
     {
-        int effectID = (int)Math.random() * Game.instance.board.fortuneDeck.length;
+        int effectID = (int) (Math.random() * Game.instance.board.fortuneDeck.length);
         Game.instance.board.fortuneDeck[effectID].performEffect( this );
         System.out.println("FortuneCard " + Game.instance.board.fortuneDeck[effectID].cardName + " is drawn");
     }
 
     public void payMoney( Token receiver, int amount )
     {
-        System.out.println("Pay :" + amount );
         money = money - amount;
         receiver.receiveMoney( amount );
     }

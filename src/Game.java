@@ -8,7 +8,7 @@ public class Game {
     int playerCount = 0;
     int turnCounter = 0;
 
-    Game() {
+    private Game() {
         tokens = new ArrayList<Token>();
         board = new Board();
         addPlayers(4);
@@ -26,6 +26,12 @@ public class Game {
     public int advanceTurn() {
         int playerIdToPlay = turnCounter % playerCount;
         turnCounter++;
+        if(tokens.get(playerIdToPlay).dungeonCountdown > 0) {
+            tokens.get(playerIdToPlay).dungeonCountdown -= 1;
+            tokens.get(playerIdToPlay).diceRollOutcome = 0;
+            System.out.println("This player is in dungeon, Remaining turns in dungeon: " + tokens.get(playerIdToPlay).dungeonCountdown);
+            advanceTurn();
+        }
         return playerIdToPlay;
     }
 

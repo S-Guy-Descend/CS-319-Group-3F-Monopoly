@@ -18,7 +18,7 @@ public class Town extends Square {
     int innPrice;
 
     //constructor
-    public Town(String name, String color, int mortgagePrice, int price, int rent) {
+    public Town(String name, String color, int mortgagePrice, int price, int rent, int innPrice) {
         super(name);
         this.color = color;
         this.mortgagePrice = mortgagePrice;
@@ -26,7 +26,7 @@ public class Town extends Square {
         this.price = price;
         this.rent = rent;
         this.ownerId = -1;
-        innPrice = 1000;
+        this.innPrice = innPrice;
     }
 
     //methods

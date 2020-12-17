@@ -4,8 +4,8 @@ public class GoToDungeon extends Square{
     }
 
     void sendTokenToDungeon(Token player){
-        player.isInDungeon = true;
         player.dungeonCountdown = 3;
-        player.forceMove(10);
+        player.forceMove(10, true);
+        System.out.println("Player"+ player.ID + " is sent to dungeon");
     }
 }

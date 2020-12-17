@@ -62,16 +62,16 @@ public class FortuneCard
         switch (effectID)
         {
             case 0:
-                effectOwner.forceMove( 0 );
+                effectOwner.forceMove( 0 , false);
                 break;
             case 1:
-                effectOwner.forceMove( effectOwner.currentLocation - 3 );
+                effectOwner.forceMove( (effectOwner.currentLocation - 3), true);
                 break;
             case 2:
                 effectOwner.money = effectOwner.money + 300;
                 break;
             case 3:
-                effectOwner.forceMove( 30 );
+                effectOwner.forceMove( 30, true);
                 break;
             case 4:
                 effectOwner.money = effectOwner.money - 100;
