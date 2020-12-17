@@ -14,10 +14,10 @@ public class Builder extends Token
             if(currentTown.ownerId != ID){
                 return false;
             }
-            if(money < currentTown.innPrice * BUILDER_CLASS_DISCOUNT) {
+            if(money < (int) (currentTown.innPrice * BUILDER_CLASS_DISCOUNT)) {
                 return false;
             }
-            money -= (int) currentTown.innPrice * BUILDER_CLASS_DISCOUNT;
+            money -= (int) (currentTown.innPrice * BUILDER_CLASS_DISCOUNT);
             currentTown.numberOfInns += 1;
             currentTown.calculateRent();
             return true;
