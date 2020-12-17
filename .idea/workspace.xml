@@ -2,7 +2,29 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="03c25cf0-65d8-4206-a584-fcc934e9a856" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/guiTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CS-319-Group-3F-Monopoly.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CS-319-Group-3F-Monopoly.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Board.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Board.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/FortuneCard.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/FortuneCard.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Game.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Game.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$6.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$7.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$8.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$9.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$ClientSideConnection.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player$ClientSideConnection.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ScrollCard.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ScrollCard.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Square.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Square.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Token.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Token.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Town.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Town.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Player.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,11 +49,26 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/IdeaProjects/MultiplayerTest" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../../Program Files/JetBrains/openjfx-15.0.1_windows-x64_bin-sdk/javafx-sdk-15.0.1/lib" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
   </component>
-  <component name="RunManager" selected="Application.Player">
+  <component name="RunManager" selected="Application.guiTest">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Player" type="Application" factoryName="Application" singleton="false" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Player" />
       <module name="CS-319-Group-3F-Monopoly" />
@@ -46,13 +83,9 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
+    <configuration name="guiTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="guiTest" />
+      <module name="CS-319-Group-3F-Monopoly" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -60,9 +93,11 @@
     <list>
       <item itemvalue="Application.Player" />
       <item itemvalue="Application.Server" />
+      <item itemvalue="Application.guiTest" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.guiTest" />
         <item itemvalue="Application.Player" />
         <item itemvalue="Application.Server" />
       </list>
@@ -87,5 +122,17 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
