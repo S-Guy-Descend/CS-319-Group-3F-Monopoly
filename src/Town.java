@@ -5,11 +5,13 @@ public class Town extends Square {
     final double RENT_MULTIPLIER_PER_INN = 1.1;
     final double RENT_MULTIPLIER_PER_MANSION = 1.7;
     final double RENT_MULTIPLIER_BY_CARDINAL = 1.2;
+    final double MORTGAGE_REDEMPTION_MULTIPLIER = 1.5;
 
     boolean belongsToCardinal = false;
     ColorGroup colorGroup;
     boolean isPurchased = false;
     int mortgagePrice;
+    boolean isMortgaged;
     int numberOfInns = 0;
     int numberOfMansions = 0;   //Should we get rid of this?
                                 // Maybe we can just show it as a mansion in the game once there are 5 inns?
@@ -19,15 +21,15 @@ public class Town extends Square {
     int innPrice;
 
     //constructor
-    public Town(String name, ColorGroup colorGroup, int mortgagePrice, int price, int rent, int innPrice) {
+    public Town(String name, ColorGroup colorGroup, int mortgagePrice, int price, int rent, int innPrice, boolean isMortgaged) {
         super(name);
         this.colorGroup = colorGroup;
         this.mortgagePrice = mortgagePrice;
-        this.ownerId = ownerId;
         this.price = price;
         this.rent = rent;
         this.ownerId = -1;
         this.innPrice = innPrice;
+        this.isMortgaged = isMortgaged;
     }
 
     //methods
@@ -43,4 +45,17 @@ public class Town extends Square {
         }
         ownerId = newOwnerId;
     }
+
+    public void setAsMortgaged() {
+        isMortgaged = true;
+    }
+
+    public void removeMortgage() {
+        isMortgaged = false;
+    }
+
+    public boolean isMortgaged() {
+        return isMortgaged;
+    }
+
 }

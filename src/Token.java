@@ -60,19 +60,19 @@ public class Token
         }
         else if(Game.instance.board.map[this.currentLocation] instanceof Town) {
             Town currentSquare = (Town) Game.instance.board.map[this.currentLocation];
-            if(currentSquare.isPurchased && currentSquare.ownerId != ID) {
+            if(currentSquare.isPurchased && currentSquare.ownerId != ID && !currentSquare.isMortgaged()) {
                 payMoney(Game.instance.tokens.get(Integer.valueOf(currentSquare.ownerId)), currentSquare.rent);
             }
         }
         else if(Game.instance.board.map[this.currentLocation] instanceof Smith) {
             Smith currentSquare = (Smith) Game.instance.board.map[this.currentLocation];
-            if(currentSquare.isPurchased && currentSquare.ownerId != ID) {
+            if(currentSquare.isPurchased && currentSquare.ownerId != ID && !currentSquare.isMortgaged()) {
                 payMoney(Game.instance.tokens.get(currentSquare.ownerId), currentSquare.rent);
             }
         }
         else if(Game.instance.board.map[this.currentLocation] instanceof Transport) {
             Transport currentSquare = (Transport) Game.instance.board.map[this.currentLocation];
-            if(currentSquare.isPurchased && currentSquare.ownerId != ID) {
+            if(currentSquare.isPurchased && currentSquare.ownerId != ID && !currentSquare.isMortgaged()) {
                 payMoney(Game.instance.tokens.get(currentSquare.ownerId), currentSquare.rent);
             }
         }
@@ -169,6 +169,87 @@ public class Token
             money -= currentTown.innPrice;
             currentTown.numberOfInns += 1;
             currentTown.calculateRent();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean mortgageLand() {
+        if(Game.instance.board.map[this.currentLocation] instanceof Town) {
+            Town currentTown = (Town) Game.instance.board.map[this.currentLocation];
+            if(currentTown.ownerId != this.ID || currentTown.isMortgaged()) {
+                System.out.println("You cant mortgage this land");
+                return false;
+            }
+
+            money += currentTown.mortgagePrice;
+            currentTown.setAsMortgaged();
+            System.out.println("Land is mortgaged");
+            return true;
+        }
+        else if(Game.instance.board.map[this.currentLocation] instanceof Smith) {
+            Smith currentSmith = (Smith) Game.instance.board.map[this.currentLocation];
+            if(currentSmith.ownerId != this.ID || currentSmith.isMortgaged()) {
+                System.out.println("You cant mortgage this land");
+                return false;
+            }
+
+            money += currentSmith.mortgagePrice;
+            currentSmith.setAsMortgaged();
+            System.out.println("Land is mortgaged");
+            return true;
+        }
+        else if(Game.instance.board.map[this.currentLocation] instanceof Transport) {
+            Transport currentTransport = (Transport) Game.instance.board.map[this.currentLocation];
+            if(currentTransport.ownerId != this.ID || currentTransport.isMortgaged()) {
+                System.out.println("You cant mortgage this land");
+                return false;
+            }
+
+            money += currentTransport.mortgagePrice;
+            currentTransport.setAsMortgaged();
+            System.out.println("Land is mortgaged");
+
+            return true;
+        }
+        return false;
+    }
+
+    public boolean redeemMortgage() {
+        if(Game.instance.board.map[this.currentLocation] instanceof Town) {
+            Town currentTown = (Town) Game.instance.board.map[this.currentLocation];
+            if(currentTown.ownerId != this.ID || !currentTown.isMortgaged()) {
+                System.out.println("You cant UNMORTGAGE this land");
+                return false;
+            }
+
+            money -= (int) (currentTown.mortgagePrice * currentTown.MORTGAGE_REDEMPTION_MULTIPLIER);
+            currentTown.removeMortgage();
+            System.out.println("Land is UNMORTGAGED");
+            return true;
+        }
+        else if(Game.instance.board.map[this.currentLocation] instanceof Smith) {
+            Smith currentSmith = (Smith) Game.instance.board.map[this.currentLocation];
+            if(currentSmith.ownerId != this.ID || !currentSmith.isMortgaged()) {
+                System.out.println("You cant UNMORTGAGE this land");
+                return false;
+            }
+
+            money -= (int) (currentSmith.mortgagePrice * currentSmith.MORTGAGE_REDEMPTION_MULTIPLIER);
+            currentSmith.removeMortgage();
+            System.out.println("Land is UNMORTGAGED");
+            return true;
+        }
+        else if(Game.instance.board.map[this.currentLocation] instanceof Transport) {
+            Transport currentTransport = (Transport) Game.instance.board.map[this.currentLocation];
+            if(currentTransport.ownerId != this.ID || !currentTransport.isMortgaged()) {
+                System.out.println("You cant UNMORTGAGE this land");
+                return false;
+            }
+
+            money -= (int) (currentTransport.mortgagePrice * currentTransport.MORTGAGE_REDEMPTION_MULTIPLIER);
+            currentTransport.removeMortgage();
+            System.out.println("Land is UNMORTGAGED");
             return true;
         }
         return false;
