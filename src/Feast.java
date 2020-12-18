@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Feast extends Square{
     public Feast(String name) {
         super(name);
@@ -8,7 +10,7 @@ public class Feast extends Square{
             ((Traveler) player).feastCounter = 4;
         }
         else if (player instanceof Noble) {
-            player.money += 30000;
+            player.receiveMoney( 30000 );
         }
         else if (player instanceof Knight) {
             ((Knight) player).feastEvasion = true;
@@ -21,24 +23,31 @@ public class Feast extends Square{
             ((Wizard) player).manaGainMultiplier *= 1.15;
         }
         else if (player instanceof FortuneTeller) {
-            boolean scrollToSteal = false;
+            ArrayList<Token> scrollOwners = new ArrayList<Token>();
             for (int i = 0; i < Game.instance.tokens.size(); i++) {
+                if ( Game.instance.tokens.get(i) == player )
+                {
+                    continue;
+                }
                 if (!Game.instance.tokens.get(i).scrollCards.isEmpty()) {
-                    scrollToSteal = true; //Çalınacak scroll'u olan biri bulunduğu an çık
-                    break;
+                    scrollOwners.add( Game.instance.tokens.get(i) );
                 }
             }
-            if (!scrollToSteal) {
-                return;     //Çalınacak scroll yoksa metoddan çık
+            if (scrollOwners.size() == 0) {
+                // Draw a scroll card if there is nobody to steal from.
+                player.drawScroll();
+                return;
             }
             else{
-                int victimId;
-                do {        //bu player olmayan ve scroll'u olan biri bulana kadar random player seç
-                    victimId = (int) (Math.random() * Game.instance.tokens.size());
-                } while ((victimId == player.ID) || Game.instance.tokens.get(victimId).scrollCards.isEmpty());
-                player.scrollCards.add(Game.instance.tokens.get(victimId).scrollCards.get(0));
-                Game.instance.tokens.get(victimId).scrollCards.remove(0);
-                //Hep ilk scroll'unu çaldırdım isterseniz onu da random yaparız
+                int randomPlayerIndex;
+                int randomCardIndex;
+                // Choosing the index of the victim
+                randomPlayerIndex = (int)( Math.random() * scrollOwners.size() );
+                // Choosing the card the victim is going to lose
+                randomCardIndex = (int)( Math.random() * scrollOwners.get(randomPlayerIndex).scrollCards.size());
+                // Stealing the card
+                player.scrollCards.add(scrollOwners.get(randomPlayerIndex).scrollCards.get(randomCardIndex));
+                scrollOwners.get(randomPlayerIndex).scrollCards.remove(randomCardIndex);
             }
         }
         else if (player instanceof Thief) {
@@ -51,10 +60,16 @@ public class Feast extends Square{
             }
         }
         else if (player instanceof Builder) {
-            //ownedLands nasıl kullanıcaz bilmediğim için şimdilik boş bıraktım
+            int totalInns = 0;
+            for ( int i = 0; i < ((Builder)player).residenceIDs.size(); i ++ )
+            {
+                totalInns += ((Town)Game.instance.board.map[((Builder)player).residenceIDs.get(i)]).numberOfInns;
+            }
+            player.receiveMoney( totalInns * ((Builder) player).BUILDER_FEAST_MULTIPLIER );
         }
         else if (player instanceof Cardinal) {
-            //ownedLands nasıl kullanıcaz bilmediğim için şimdilik boş bıraktım
+            int homeToGo = (int)( Math.random() * ((Cardinal) player).residenceIDs.size() );
+            player.forceMove( homeToGo, true );
         }
     }
 }

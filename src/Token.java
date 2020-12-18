@@ -8,7 +8,6 @@ public class Token
     int color;
     int diceRollOutcome;
     int dungeonCountdown;
-    int[] ownedLands;
     int turnsPlayed;
     boolean isBankrupt;
     int currentLocation;
