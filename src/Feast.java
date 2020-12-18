@@ -39,7 +39,7 @@ public class Feast extends Square{
                 return;
             }
             else{
-                int randomIndex;
+                int randomPlayerIndex;
                 int randomCardIndex;
                 // Choosing the index of the victim
                 randomIndex = (int)( Math.random() * scrollOwners.size() );
