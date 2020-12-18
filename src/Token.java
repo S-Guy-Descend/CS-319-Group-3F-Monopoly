@@ -157,12 +157,15 @@ public class Token
     {
         if(Game.instance.board.map[this.currentLocation] instanceof Town) {
             Town currentTown = (Town) Game.instance.board.map[this.currentLocation];
-            if(currentTown.ownerId != ID){
-                return false;
-            }
             if(money < currentTown.innPrice) {
+                System.out.println("You don't have enough money to build");
                 return false;
             }
+            if(!this.isColorGroupOwner(currentTown)){
+                System.out.println("You don't own all of the color group. Can't Build");
+                return false;
+            }
+
             money -= currentTown.innPrice;
             currentTown.numberOfInns += 1;
             currentTown.calculateRent();
@@ -175,6 +178,18 @@ public class Token
     {
         turnsPlayed++;
         Game.instance.advanceTurn();
+    }
+
+    public boolean isColorGroupOwner (Town town) {
+        ColorGroup colorGroup = town.colorGroup;
+        ArrayList<Town> townsOfColorGroup = colorGroup.getAllTownsOfColorGroup();
+
+        for (int i = 0; i < townsOfColorGroup.size(); i++) {
+            if (townsOfColorGroup.get(i).ownerId != this.ID) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void drawScroll()
