@@ -14,7 +14,7 @@ public class Main {
             System.out.println("--------------------------------------------------");
             turnCounter = Game.instance.advanceTurn();
             Wizard player = (Wizard) Game.instance.tokens.get(turnCounter);
-            player.rollDice();
+            player.currentLocation = 1;
             System.out.println("Player" + turnCounter + " moved: " + player.diceRollOutcome + " squares.");
             player.move();
             System.out.println("Player" + turnCounter + "'s current location: " + player.currentLocation);
@@ -25,6 +25,10 @@ public class Main {
                 System.out.println("This square is not purchasable");
             }
             //player.build();
+            System.out.println(player.money);
+            player.mortgageLand();
+            System.out.println(player.money);
+            player.redeemMortgage();
             System.out.println(player.money);
             scanner.nextLine();
         }
