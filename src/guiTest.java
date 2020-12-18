@@ -122,7 +122,6 @@ public class guiTest extends Application implements EventHandler<ActionEvent>{
         //join game layout ayarları
         VBox joinGameLayout = new VBox( 20);
         joinGameLayout.getChildren().addAll( enterGameId, gameIDTxtField, joinGameButton, joinGameBack);
-        joinGameLayout.setAlignment(Pos.CENTER);
         joinGame = new Scene( joinGameLayout, 500, 500);
 
 
