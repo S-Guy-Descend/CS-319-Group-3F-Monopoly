@@ -23,7 +23,6 @@ public class Feast extends Square{
             ((Wizard) player).manaGainMultiplier *= 1.15;
         }
         else if (player instanceof FortuneTeller) {
-            boolean scrollToSteal = false;
             ArrayList<Token> scrollOwners = new ArrayList<Token>();
             for (int i = 0; i < Game.instance.tokens.size(); i++) {
                 if ( Game.instance.tokens.get(i) == player )
@@ -32,24 +31,23 @@ public class Feast extends Square{
                 }
                 if (!Game.instance.tokens.get(i).scrollCards.isEmpty()) {
                     scrollOwners.add( Game.instance.tokens.get(i) );
-                    scrollToSteal = true;
                 }
             }
-            if (!scrollToSteal) {
-                return;     //Çalınacak scroll yoksa metoddan çık
+            if (scrollOwners.size() == 0) {
+                // Draw a scroll card if there is nobody to steal from.
+                player.drawScroll();
+                return;
             }
             else{
-                int victimId;
                 int randomIndex;
                 int randomCardIndex;
+                // Choosing the index of the victim
                 randomIndex = (int)( Math.random() * scrollOwners.size() );
-                // Choosing the victim randomly and getting it's ID
-                victimId = scrollOwners.get( randomIndex ).ID;
                 // Choosing the card the victim is going to lose
-                randomCardIndex = (int)( Math.random() * Game.instance.tokens.get(victimId).scrollCards.size());
+                randomCardIndex = (int)( Math.random() * scrollOwners.get(randomIndex).scrollCards.size());
                 // Stealing the card
-                player.scrollCards.add(Game.instance.tokens.get(victimId).scrollCards.get(randomCardIndex));
-                Game.instance.tokens.get(victimId).scrollCards.remove(randomCardIndex);
+                player.scrollCards.add(scrollOwners.get(randomIndex).scrollCards.get(randomCardIndex));
+                scrollOwners.get(randomIndex).scrollCards.remove(randomCardIndex);
             }
         }
         else if (player instanceof Thief) {
