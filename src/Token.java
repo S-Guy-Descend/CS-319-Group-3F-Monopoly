@@ -173,9 +173,9 @@ public class Token
         return false;
     }
 
-    public boolean mortgageLand() {
-        if(Game.instance.board.map[this.currentLocation] instanceof Town) {
-            Town currentTown = (Town) Game.instance.board.map[this.currentLocation];
+    public boolean mortgageLand( int locationToMortgage ) {
+        if(Game.instance.board.map[locationToMortgage] instanceof Town) {
+            Town currentTown = (Town) Game.instance.board.map[locationToMortgage];
             if(currentTown.ownerId != this.ID || currentTown.isMortgaged()) {
                 System.out.println("You cant mortgage this land");
                 return false;
@@ -186,8 +186,8 @@ public class Token
             System.out.println("Land is mortgaged");
             return true;
         }
-        else if(Game.instance.board.map[this.currentLocation] instanceof Smith) {
-            Smith currentSmith = (Smith) Game.instance.board.map[this.currentLocation];
+        else if(Game.instance.board.map[locationToMortgage] instanceof Smith) {
+            Smith currentSmith = (Smith) Game.instance.board.map[locationToMortgage];
             if(currentSmith.ownerId != this.ID || currentSmith.isMortgaged()) {
                 System.out.println("You cant mortgage this land");
                 return false;
@@ -198,8 +198,8 @@ public class Token
             System.out.println("Land is mortgaged");
             return true;
         }
-        else if(Game.instance.board.map[this.currentLocation] instanceof Transport) {
-            Transport currentTransport = (Transport) Game.instance.board.map[this.currentLocation];
+        else if(Game.instance.board.map[locationToMortgage] instanceof Transport) {
+            Transport currentTransport = (Transport) Game.instance.board.map[locationToMortgage];
             if(currentTransport.ownerId != this.ID || currentTransport.isMortgaged()) {
                 System.out.println("You cant mortgage this land");
                 return false;
@@ -214,9 +214,9 @@ public class Token
         return false;
     }
 
-    public boolean redeemMortgage() {
-        if(Game.instance.board.map[this.currentLocation] instanceof Town) {
-            Town currentTown = (Town) Game.instance.board.map[this.currentLocation];
+    public boolean redeemMortgage( int locationToMortgage ) {
+        if(Game.instance.board.map[locationToMortgage] instanceof Town) {
+            Town currentTown = (Town) Game.instance.board.map[locationToMortgage];
             if(currentTown.ownerId != this.ID || !currentTown.isMortgaged()) {
                 System.out.println("You cant UNMORTGAGE this land");
                 return false;
@@ -227,8 +227,8 @@ public class Token
             System.out.println("Land is UNMORTGAGED");
             return true;
         }
-        else if(Game.instance.board.map[this.currentLocation] instanceof Smith) {
-            Smith currentSmith = (Smith) Game.instance.board.map[this.currentLocation];
+        else if(Game.instance.board.map[locationToMortgage] instanceof Smith) {
+            Smith currentSmith = (Smith) Game.instance.board.map[locationToMortgage];
             if(currentSmith.ownerId != this.ID || !currentSmith.isMortgaged()) {
                 System.out.println("You cant UNMORTGAGE this land");
                 return false;
@@ -239,8 +239,8 @@ public class Token
             System.out.println("Land is UNMORTGAGED");
             return true;
         }
-        else if(Game.instance.board.map[this.currentLocation] instanceof Transport) {
-            Transport currentTransport = (Transport) Game.instance.board.map[this.currentLocation];
+        else if(Game.instance.board.map[locationToMortgage] instanceof Transport) {
+            Transport currentTransport = (Transport) Game.instance.board.map[locationToMortgage];
             if(currentTransport.ownerId != this.ID || !currentTransport.isMortgaged()) {
                 System.out.println("You cant UNMORTGAGE this land");
                 return false;
