@@ -7,7 +7,7 @@ public class Town extends Square {
     final double RENT_MULTIPLIER_BY_CARDINAL = 1.2;
 
     boolean belongsToCardinal = false;
-    String color;
+    ColorGroup colorGroup;
     boolean isPurchased = false;
     int mortgagePrice;
     int numberOfInns = 0;
@@ -19,9 +19,9 @@ public class Town extends Square {
     int innPrice;
 
     //constructor
-    public Town(String name, String color, int mortgagePrice, int price, int rent, int innPrice) {
+    public Town(String name, ColorGroup colorGroup, int mortgagePrice, int price, int rent, int innPrice) {
         super(name);
-        this.color = color;
+        this.colorGroup = colorGroup;
         this.mortgagePrice = mortgagePrice;
         this.ownerId = ownerId;
         this.price = price;
