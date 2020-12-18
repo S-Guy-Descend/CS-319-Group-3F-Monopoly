@@ -42,12 +42,12 @@ public class Feast extends Square{
                 int randomPlayerIndex;
                 int randomCardIndex;
                 // Choosing the index of the victim
-                randomIndex = (int)( Math.random() * scrollOwners.size() );
+                randomPlayerIndex = (int)( Math.random() * scrollOwners.size() );
                 // Choosing the card the victim is going to lose
-                randomCardIndex = (int)( Math.random() * scrollOwners.get(randomIndex).scrollCards.size());
+                randomCardIndex = (int)( Math.random() * scrollOwners.get(randomPlayerIndex).scrollCards.size());
                 // Stealing the card
-                player.scrollCards.add(scrollOwners.get(randomIndex).scrollCards.get(randomCardIndex));
-                scrollOwners.get(randomIndex).scrollCards.remove(randomCardIndex);
+                player.scrollCards.add(scrollOwners.get(randomPlayerIndex).scrollCards.get(randomCardIndex));
+                scrollOwners.get(randomPlayerIndex).scrollCards.remove(randomCardIndex);
             }
         }
         else if (player instanceof Thief) {
