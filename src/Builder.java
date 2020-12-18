@@ -28,4 +28,20 @@ public class Builder extends Token
         }
         return false;
     }
+
+    public boolean mortgageLand( int locationToMortgage )
+    {
+        boolean isSuccessful = super.mortgageLand( locationToMortgage );
+        residenceIDs.remove( locationToMortgage );
+
+        return isSuccessful;
+    }
+
+    public boolean redeemMortgage( int locationToMortgage )
+    {
+        boolean isSuccessful = super.redeemMortgage( locationToMortgage );
+        residenceIDs.add( locationToMortgage );
+
+        return isSuccessful;
+    }
 }

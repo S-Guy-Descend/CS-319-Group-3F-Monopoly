@@ -24,11 +24,11 @@ public class Main {
             else {
                 System.out.println("This square is not purchasable");
             }
-            //player.build();
+            player.build();
             System.out.println(player.money);
-            player.mortgageLand();
+            player.mortgageLand( player.currentLocation );
             System.out.println(player.money);
-            player.redeemMortgage();
+            player.redeemMortgage( player.currentLocation );
             System.out.println(player.money);
             scanner.nextLine();
         }

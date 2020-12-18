@@ -51,8 +51,10 @@ public class Feast extends Square{
             }
         }
         else if (player instanceof Thief) {
-            for (int i = 0; i < Game.instance.tokens.size(); i++) {
-                if (Game.instance.tokens.get(i) == player) {    //Kendinden çalmasın diye
+            for (int i = 0; i < Game.instance.tokens.size(); i++)
+            {
+                if (Game.instance.tokens.get(i) == player)
+                {
                     continue;
                 }
                 Token victim = Game.instance.tokens.get(i);
