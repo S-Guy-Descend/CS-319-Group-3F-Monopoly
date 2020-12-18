@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class Server {
     volatile boolean gameExists;
     volatile int serverGameID;
     volatile boolean gameStarted;
+    volatile ArrayList<String> classes = new ArrayList<String>();
 
     public Server(int maxPlayers) {
         this.maxPlayers = maxPlayers;
@@ -35,7 +37,6 @@ public class Server {
                 boolean wantsToBeHost = ssc.dataIn.readBoolean();
                 try {
                     if (numPlayers != 0) {
-                        System.out.println("TEST1111111");
                         int clientGameID = 0;
                         if (!wantsToBeHost) {
                             String clientGameIDString = ssc.dataIn.readUTF();
@@ -61,6 +62,21 @@ public class Server {
                                             ssc.dataOut.writeBoolean(ssc.isTurn);
                                             ssc.dataOut.flush();
                                             connections.add(ssc);
+                                            classes.add("Player " + ssc.playerID + " - Traveler (One-in-Two)");
+                                            System.out.println(classes.size());
+                                            for(int i = 0; i < connections.size(); i++) {
+                                                if(i != 0) {
+                                                    connections.get(i).dataOut.writeInt(3);
+                                                    connections.get(i).dataOut.flush();
+                                                }
+                                                connections.get(i).dataOut.writeObject(classes);
+                                                connections.get(i).dataOut.flush();
+                                                connections.get(i).dataOut.reset();
+                                                if(i != 0) {
+                                                    connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                                }
+                                                connections.get(i).dataOut.flush();
+                                            }
                                             Thread t = new Thread(ssc);
                                             t.start();
                                         } else {
@@ -84,10 +100,10 @@ public class Server {
                             s.close();
                         }
                     } else {
-                        System.out.println("TEST22222222");
                         if (wantsToBeHost) {
                             ssc.dataOut.writeBoolean(true);
                             ssc.dataOut.flush();
+                            maxPlayers = ssc.dataIn.readInt();
                             numPlayers++;
                             System.out.println("Player # " + numPlayers + " has connected");
                             ssc.playerID = numPlayers;
@@ -104,6 +120,12 @@ public class Server {
                             gameExists = true;
                             serverGameID = gameID;
                             connections.add(ssc);
+                            classes.add("Player " + ssc.playerID + " - Traveler (One-in-Two)");
+                            for(int i = 0; i < connections.size(); i++) {
+                                connections.get(i).dataOut.writeObject(classes);
+                                connections.get(i).dataOut.flush();
+                                connections.get(i).dataOut.reset();
+                            }
                             Thread t = new Thread(ssc);
                             t.start();
                         } else {
@@ -121,7 +143,7 @@ public class Server {
         }
     }
 
-    private class ServerSideConnection implements Runnable {
+    class ServerSideConnection implements Runnable, Serializable {
         private Socket socket;
         private ObjectInputStream dataIn;
         private ObjectOutputStream dataOut;
@@ -152,6 +174,7 @@ public class Server {
                             if (numPlayers == maxPlayers) {
                                 gameStarted = true;
                                 dataOut.writeInt(3);
+                                dataOut.flush();
                                 dataOut.writeBoolean(true);
                                 dataOut.flush();
                                 for (int i = 1; i < maxPlayers; i++) {
@@ -160,7 +183,7 @@ public class Server {
                                 }
                                 break;
                             } else {
-                                dataOut.writeBoolean(false);
+                                dataOut.writeInt(2);
                                 dataOut.flush();
                                 System.out.println("NOT ENOUGH PLAYERS!");
                             }
@@ -171,21 +194,373 @@ public class Server {
                                 connections.get(i).dataOut.writeInt(2);
                                 connections.get(i).dataOut.flush();
                                 connections.get(i).socket.close();
-                                connections.remove(i);
                             }
-                            connections.remove(0);
+                            connections.clear();
+                            classes.clear();
                             gameExists = false;
                             numPlayers = 0;
+                        } else {
+                            //HOST CHANGED CLASS
+                            switch(hostCommand) {
+                                case 2:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Traveler (One-in-Two)");
+                                    for(int i = 0; i < connections.size(); i++) {
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 3:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Traveler (Three-in-Five)");
+                                    for(int i = 0; i < connections.size(); i++) {
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 4:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Noble");
+                                    for(int i = 0; i < connections.size(); i++) {
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 5:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Knight");
+                                    for(int i = 0; i < connections.size(); i++) {
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 6:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Treasure Hunter");
+                                    for(int i = 0; i < connections.size(); i++) {
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 7:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Wizard");
+                                    for(int i = 0; i < connections.size(); i++) {
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 8:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Fortune Teller");
+                                    for(int i = 0; i < connections.size(); i++) {
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 9:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Thief");
+                                    for(int i = 0; i < connections.size(); i++) {
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 10:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Builder");
+                                    for(int i = 0; i < connections.size(); i++) {
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 11:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Cardinal");
+                                    for(int i = 0; i < connections.size(); i++) {
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if(i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                            }
                         }
                     }
                 } else {
-                    int command = dataIn.readInt();
-                    if (command == 1) {
-                        dataOut.writeInt(1);
-                        dataOut.flush();
-                        socket.close();
-                        connections.remove(playerID - 1);
-                        numPlayers--;
+                    while (true) {
+                        int command = dataIn.readInt();
+                        if(command == 0) {
+                            break;
+                        }
+                        if(command == 1) {
+                            dataOut.writeInt(1);
+                            dataOut.flush();
+                            socket.close();
+                            connections.remove(playerID - 1);
+                            classes.remove(playerID - 1);
+                            for (int i = 0; i < connections.size(); i++) {
+                                connections.get(i).playerID = i + 1;
+                                classes.set(i, classes.get(i).substring(0, 7) + connections.get(i).playerID + classes.get(i).substring(8));
+                            }
+                            numPlayers--;
+                            for (int i = 0; i < connections.size(); i++) {
+                                if (i != 0) {
+                                    connections.get(i).dataOut.writeInt(3);
+                                    connections.get(i).dataOut.flush();
+                                }
+                                connections.get(i).dataOut.writeObject(classes);
+                                connections.get(i).dataOut.flush();
+                                connections.get(i).dataOut.reset();
+                                if (i != 0) {
+                                    connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                }
+                                connections.get(i).dataOut.flush();
+                            }
+                            break;
+                        } else {
+                            // NON-HOST CHANGED CLASS
+                            switch (command) {
+                                case 2:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Traveler (One-in-Two)");
+                                    for (int i = 0; i < connections.size(); i++) {
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 3:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Traveler (Three-in-Five)");
+                                    for (int i = 0; i < connections.size(); i++) {
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 4:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Noble");
+                                    for (int i = 0; i < connections.size(); i++) {
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 5:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Knight");
+                                    for (int i = 0; i < connections.size(); i++) {
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 6:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Treasure Hunter");
+                                    for (int i = 0; i < connections.size(); i++) {
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 7:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Wizard");
+                                    for (int i = 0; i < connections.size(); i++) {
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 8:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Fortune Teller");
+                                    for (int i = 0; i < connections.size(); i++) {
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 9:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Thief");
+                                    for (int i = 0; i < connections.size(); i++) {
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 10:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Builder");
+                                    for (int i = 0; i < connections.size(); i++) {
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                                case 11:
+                                    classes.set(playerID - 1, "Player " + playerID + " - Cardinal");
+                                    for (int i = 0; i < connections.size(); i++) {
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(3);
+                                            connections.get(i).dataOut.flush();
+                                        }
+                                        connections.get(i).dataOut.writeObject(classes);
+                                        connections.get(i).dataOut.flush();
+                                        connections.get(i).dataOut.reset();
+                                        if (i != 0) {
+                                            connections.get(i).dataOut.writeInt(connections.get(i).playerID);
+                                        }
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    break;
+                            }
+                        }
                     }
                 }
 
@@ -200,10 +575,10 @@ public class Server {
                                 System.out.println("Player " + playerID + " built");
                                 break;
                             case 2:
-                                System.out.println("Player " + playerID + " built");
+                                System.out.println("Player " + playerID + " used scroll");
                                 break;
                             case 3:
-                                System.out.println("Player " + playerID + " used scroll");
+                                System.out.println("Player " + playerID + " bought property");
                                 break;
                             case 4:
                                 System.out.println("Player " + playerID + " sent trade request");

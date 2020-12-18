@@ -1,6 +1,8 @@
 import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -8,10 +10,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import sun.awt.windows.ThemeReader;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -21,21 +22,31 @@ public class Player extends Application implements EventHandler<ActionEvent> {
     private Player.ClientSideConnection csc;
     private int playerID;
     private boolean isTurn;
+    volatile ArrayList<String> classes;
+    volatile boolean gameStarted;
+    private int playerCount = 0;
+    volatile boolean done = false;
 
     // ana pencere
     Stage window;
 
     // farklı sayfalar için farklı sceneler
-    Scene mainMenu, hostGame, joinGame, classSelect, howToPlay, soundSettings, credits, inGame;
+    Scene mainMenu, hostScreen, joinGame, classSelect, howToPlay, soundSettings, credits, inGame;
 
     // main menü bileşenleri
     Label gameName;
-    Button hostGameButton;
+    Button hostButton;
     Button joinGameButton;
     Button tutorialButton;
     Button settingsButton;
     Button exitButton;
     Button creditsButton;
+
+    // hostScreen components
+    Label enterPlayerCount;
+    Button hostGameButton;
+    Button hostBackButton;
+    ComboBox dropdown;
 
     // join game bileşenleri
     Label enterGameId;
@@ -47,7 +58,18 @@ public class Player extends Application implements EventHandler<ActionEvent> {
     ListView playerList;
     Button leaveLobby;
     Label gameID;
+    Label selectClass;
     Button startGame;
+    Button traveler1;
+    Button traveler2;
+    Button noble;
+    Button knight;
+    Button treasureHunter;
+    Button wizard;
+    Button fortuneTeller;
+    Button thief;
+    Button builder;
+    Button cardinal;
 
     // oyuncu seçenekleri ekranı bileşenleri
     Button rollDice;
@@ -84,41 +106,12 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         gameName = new Label();
         gameName.setText("Scrolls of Estatia");
 
-        hostGameButton = new Button();
-        hostGameButton.setText("Host Game");
-        hostGameButton.setOnAction(e -> {
-            connectToServer(true, "");
-            boolean response = false;
-            try {
-                response = csc.dataIn.readBoolean();
-            } catch(IOException ex) {
-                ex.printStackTrace();
-            }
-            if(response) {
-                csc.continueConnection();
-                csc.isHost = true;
-                try {
-                    csc.gameID = csc.dataIn.readInt();
-                    gameID.setText("Game ID: " + csc.gameID);
-                } catch( IOException ex) {
-                    ex.printStackTrace();
-                }
-                startGame.setVisible(true);
-                window.setScene(classSelect);
-            } else {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Unable to host game!");
-                alert.setHeaderText(null);
-                alert.setContentText("You can't host a game!");
-                try {
-                    csc.dataOut.flush();
-                } catch(IOException ex) {
-                    ex.printStackTrace();
-                }
-                alert.showAndWait();
-            }
-
+        hostButton = new Button();
+        hostButton.setText("Host Game");
+        hostButton.setOnAction(e -> {
+            window.setScene(hostScreen);
         });
+
 
         joinGameButton = new Button();
         joinGameButton.setText("Join Game");
@@ -144,7 +137,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
 
         // Main menu layout
         VBox mainMenuLayout = new VBox(10);
-        mainMenuLayout.getChildren().addAll(gameName, hostGameButton, joinGameButton, tutorialButton, settingsButton, creditsButton, exitButton);
+        mainMenuLayout.getChildren().addAll(gameName, hostButton, joinGameButton, tutorialButton, settingsButton, creditsButton, exitButton);
         mainMenuLayout.setAlignment(Pos.CENTER);
         mainMenu = new Scene(mainMenuLayout, 500, 500);
 
@@ -152,9 +145,121 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         window.setScene(mainMenu);
         window.show();
 
+        // hostScreen
+        enterPlayerCount = new Label();
+        enterPlayerCount.setText("Please select the number of players:");
+
+        hostGameButton = new Button();
+        hostGameButton.setText("Host Game");
+        hostGameButton.setOnAction(e -> {
+            if( 2 <= playerCount && playerCount <=8) {
+                connectToServer(true, "");
+                boolean response = false;
+                try {
+                    response = csc.dataIn.readBoolean();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                if (response) {
+                    try {
+                        csc.dataOut.writeInt(playerCount);
+                        csc.dataOut.flush();
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
+                    csc.continueConnection();
+                    csc.isHost = true;
+                    try {
+                        csc.gameID = csc.dataIn.readInt();
+                        gameID.setText("Game ID: " + csc.gameID);
+                        classes = (ArrayList<String>) (csc.dataIn.readObject());
+                        playerList.getItems().setAll(classes);
+                        playerList.getItems().set(playerID - 1, playerList.getItems().get(playerID - 1) + " [YOU]");
+                    } catch (IOException | ClassNotFoundException ex) {
+                        ex.printStackTrace();
+                    }
+                    startGame.setVisible(true);
+                    Thread t2 = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // HERE
+                            while(!gameStarted) {
+                                try {
+                                    try {
+                                        classes = (ArrayList<String>) (csc.dataIn.readObject());
+                                        Platform.runLater(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                playerList.getItems().setAll(classes);
+                                                playerList.getItems().set(playerID - 1, playerList.getItems().get(playerID - 1) + " [YOU]");
+                                                return;
+                                            }
+                                        });
+                                    } catch (OptionalDataException opEx) {
+                                        System.out.println(opEx.length);
+                                    }
+                                } catch (IOException exception) {
+                                    exception.printStackTrace();
+                                } catch (ClassNotFoundException classNotFoundException) {
+                                    classNotFoundException.printStackTrace();
+                                }
+                            }
+                            return;
+                        }
+                    });
+                    t2.start();
+                    window.setScene(classSelect);
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Unable to host game!");
+                    alert.setHeaderText(null);
+                    alert.setContentText("You can't host a game!");
+                    try {
+                        csc.dataOut.flush();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    alert.showAndWait();
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Unable to host game!");
+                alert.setHeaderText(null);
+                alert.setContentText("Please enter a valid player count!");
+                alert.showAndWait();
+            }
+        });
+
+        hostBackButton = new Button();
+        hostBackButton.setText("Back");
+        hostBackButton.setOnAction(e -> {
+            window.setScene(mainMenu);
+        });
+
+        ObservableList<String> options =
+                FXCollections.observableArrayList(
+                        "2 Players",
+                        "3 Players",
+                        "4 Players",
+                        "5 Players",
+                        "6 Players",
+                        "7 Players",
+                        "8 Players"
+                );
+        dropdown = new ComboBox(options);
+        dropdown.setOnAction(e -> {
+            playerCount = Character.getNumericValue(dropdown.getValue().toString().charAt(0));
+        });
+
+        // hostScreen layout
+        VBox hostScreenLayout = new VBox(20);
+        hostScreenLayout.getChildren().addAll(enterPlayerCount, dropdown, hostGameButton, hostBackButton);
+        hostScreenLayout.setAlignment(Pos.CENTER);
+        hostScreen = new Scene(hostScreenLayout, 500, 500);
+
         // join game ekranı
         enterGameId = new Label();
-        enterGameId.setText("Enter the Game ID");
+        enterGameId.setText("Please enter the Game ID:");
 
         gameIDTxtField = new TextField();
 
@@ -195,7 +300,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                     case 2:
                         joinSuccessful.set(true);
                         csc.continueConnection();
-                        window.setScene(inGame);
+                        window.setScene(classSelect);
                         break;
                     case 3:
                         joinSuccessful.set(false);
@@ -230,44 +335,77 @@ public class Player extends Application implements EventHandler<ActionEvent> {
             if(joinSuccessful.get()) {
                 startGame.setVisible(false);
                 gameID.setText("Game ID: " + String.valueOf(gameIDTxtField.getText()));
+                try {
+                    try {
+                        int update = csc.dataIn.readInt();
+                        classes = (ArrayList<String>) (csc.dataIn.readObject());
+                        playerList.getItems().setAll(classes);
+                        playerID = csc.dataIn.readInt();
+                        playerList.getItems().set(playerID - 1, playerList.getItems().get(playerID - 1) + " [YOU]");
+                    } catch( OptionalDataException ex) {
+                        System.out.println(ex.length);
+                    }
+                } catch (IOException | ClassNotFoundException exception) {
+                    exception.printStackTrace();
+                }
                 window.setScene(classSelect);
                 Thread t = new Thread(new Runnable() {
                     public void run() {
                         try {
-                            System.out.println("TEST1");
-                            int hostCommand = csc.dataIn.readInt();
-                            System.out.println("TEST2");
-                            System.out.println("HOST COMMAND IS " + hostCommand);
-                            if(hostCommand == 0) {
-                                startReceivingTurns();
-                                Platform.runLater(new Runnable() {
-                                    @Override public void run() {
-                                        window.setScene(inGame);
-                                        return;
-                                    }
-                                });
-                                return;
-                            } else if(hostCommand == 1){
-                                return;
-                            } else if(hostCommand == 2) {
-                                Platform.runLater(new Runnable() {
-                                    @Override public void run() {
-                                        window.setScene(mainMenu);
-                                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                                        alert.setTitle("Lobby disbanded!");
-                                        alert.setHeaderText(null);
-                                        alert.setContentText("Host left the lobby!");
-                                        try {
-                                            csc.dataOut.flush();
-                                        } catch(IOException ex) {
-                                            ex.printStackTrace();
+                            // HERE
+                            while(!gameStarted) {
+                                int hostCommand = csc.dataIn.readInt();
+                                System.out.println("HOST COMMAND IS " + hostCommand);
+                                if(hostCommand == 0) {
+                                    csc.dataOut.writeInt(0);
+                                    startReceivingTurns();
+                                    Platform.runLater(new Runnable() {
+                                        @Override public void run() {
+                                            window.setScene(inGame);
+                                            gameStarted = true;
+                                            return;
                                         }
-                                        alert.showAndWait();
-                                        return;
+                                    });
+                                    return;
+                                } else if(hostCommand == 1){
+                                    return;
+                                } else if(hostCommand == 2) {
+                                    Platform.runLater(new Runnable() {
+                                        @Override public void run() {
+                                            window.setScene(mainMenu);
+                                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                            alert.setTitle("Lobby disbanded!");
+                                            alert.setHeaderText(null);
+                                            alert.setContentText("Host left the lobby!");
+                                            try {
+                                                csc.dataOut.flush();
+                                            } catch(IOException ex) {
+                                                ex.printStackTrace();
+                                            }
+                                            alert.showAndWait();
+                                            return;
+                                        }
+                                    });
+                                    return;
+                                } else if(hostCommand == 3) {
+                                    try {
+                                        classes = (ArrayList<String>) (csc.dataIn.readObject());
+                                        playerID = csc.dataIn.readInt();
+                                        Platform.runLater(new Runnable() {
+                                            @Override public void run() {
+                                                playerList.getItems().setAll(classes);
+                                                playerList.getItems().set(playerID - 1, playerList.getItems().get(playerID - 1) + " [YOU]");
+                                                return;
+                                            }
+                                        });
+                                    } catch (IOException exception) {
+                                        exception.printStackTrace();
+                                    } catch (ClassNotFoundException classNotFoundException) {
+                                        classNotFoundException.printStackTrace();
                                     }
-                                });
-                                return;
+                                }
                             }
+                            return;
                         } catch(IOException ex) {
                             ex.printStackTrace();
                         }
@@ -305,6 +443,129 @@ public class Player extends Application implements EventHandler<ActionEvent> {
             window.setScene(mainMenu);
         });
 
+        selectClass = new Label();
+        selectClass.setText("Please select a class");
+
+        traveler1 = new Button();
+        traveler1.setText("Traveler (One-in-Two)");
+        traveler1.setOnAction(e -> {
+            try
+            {
+                csc.dataOut.writeInt(2);
+                csc.dataOut.flush();
+            } catch(IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        traveler2 = new Button();
+        traveler2.setText("Traveler (Three-in-Five)");
+        traveler2.setOnAction(e -> {
+            try
+            {
+                csc.dataOut.writeInt(3);
+                csc.dataOut.flush();
+            } catch(IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        noble = new Button();
+        noble.setText("Noble");
+        noble.setOnAction(e -> {
+            try
+            {
+                csc.dataOut.writeInt(4);
+                csc.dataOut.flush();
+            } catch(IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        knight = new Button();
+        knight.setText("Knight");
+        knight.setOnAction(e -> {
+            try
+            {
+                csc.dataOut.writeInt(5);
+                csc.dataOut.flush();
+            } catch(IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        treasureHunter = new Button();
+        treasureHunter.setText("Treasure Hunter");
+        treasureHunter.setOnAction(e -> {
+            try
+            {
+                csc.dataOut.writeInt(6);
+                csc.dataOut.flush();
+            } catch(IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        wizard = new Button();
+        wizard.setText("Wizard");
+        wizard.setOnAction(e -> {
+            try
+            {
+                csc.dataOut.writeInt(7);
+                csc.dataOut.flush();
+            } catch(IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        fortuneTeller = new Button();
+        fortuneTeller.setText("Fortune Teller");
+        fortuneTeller.setOnAction(e -> {
+            try
+            {
+                csc.dataOut.writeInt(8);
+                csc.dataOut.flush();
+            } catch(IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        thief = new Button();
+        thief.setText("Thief");
+        thief.setOnAction(e -> {
+            try
+            {
+                csc.dataOut.writeInt(9);
+                csc.dataOut.flush();
+            } catch(IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        builder = new Button();
+        builder.setText("Builder");
+        builder.setOnAction(e -> {
+            try
+            {
+                csc.dataOut.writeInt(10);
+                csc.dataOut.flush();
+            } catch(IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        cardinal = new Button();
+        cardinal.setText("Cardinal");
+        cardinal.setOnAction(e -> {
+            try
+            {
+                csc.dataOut.writeInt(11);
+                csc.dataOut.flush();
+            } catch(IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+
         startGame = new Button();
         startGame.setText("Start Game");
         startGame.setOnAction(e -> {
@@ -320,6 +581,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         while(true) {
                             int startConfirmed = csc.dataIn.readInt();
                             if (startConfirmed == 3) {
+                                gameStarted = true;
                                 startReceivingTurns();
                                 Platform.runLater(new Runnable() {
                                     @Override public void run() {
@@ -336,8 +598,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                                         alert.setHeaderText(null);
                                         alert.setContentText("Not enough players!");
                                         alert.showAndWait();
+                                        return;
                                     }
                                 });
+                                return;
                             }
                         }
                     } catch(IOException ex) {
@@ -352,7 +616,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
 
         // classSelect Layout
         VBox classSelectLayout = new VBox(20);
-        classSelectLayout.getChildren().addAll(playerList, leaveLobby, gameID, startGame);
+        classSelectLayout.getChildren().addAll(playerList, leaveLobby, gameID, startGame, selectClass, traveler1, traveler2, noble, knight, treasureHunter, wizard, fortuneTeller, thief, builder, cardinal);
         classSelect = new Scene(classSelectLayout, 500, 500);
 
 
@@ -393,27 +657,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         // layout ayarları
         VBox inGameLayout = new VBox(20);
         inGameLayout.getChildren().addAll(rollDice, build, useScroll, buyProperty, sendTrade, acceptTrade, declineTrade, endTurn);
-        // içerik scenenin içine koyuluyor, constructor dimensionları alıyor
         inGame = new Scene(inGameLayout, 500, 500);
-        /*
-        StackPane layout = new StackPane();
-        layout.getChildren().add( rollDice);
-        layout.getChildren().add( build);
-        layout.getChildren().add( useScroll);
-        layout.getChildren().add( buyProperty);
-        layout.getChildren().add( sendTrade);
-        layout.getChildren().add( acceptTrade);
-        layout.getChildren().add( declineTrade);
-        layout.getChildren().add( endTurn);
-
-         */
-
-        // Main Menü
-
-
-        //primaryStage.setScene( inGame);
-        // kullanıcıya göstermek için
-        //primaryStage.show();
     }
 
     // kullanıcı butona tıklayınca bu çağırılıyor
