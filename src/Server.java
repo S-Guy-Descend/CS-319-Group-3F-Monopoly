@@ -77,14 +77,19 @@ public class Server {
                         int operation = dataIn.readInt();
                         switch(operation) {
                             case 0:
+                                System.out.println("Player " + playerID + " rolled dice");
                                 break;
                             case 1:
+                                System.out.println("Player " + playerID + " built");
                                 break;
                             case 2:
+                                System.out.println("Player " + playerID + " built");
                                 break;
                             case 3:
+                                System.out.println("Player " + playerID + " used scroll");
                                 break;
                             case 4:
+                                System.out.println("Player " + playerID + " sent trade request");
                                 try {
                                     try {
                                         TradeRequest tradeRequest = (TradeRequest) dataIn.readObject();
@@ -96,8 +101,10 @@ public class Server {
                                 }
                                 break;
                             case 5:
+                                System.out.println("Player " + playerID + " accepted trade request");
                                 break;
                             case 6:
+                                System.out.println("Player " + playerID + " rejected trade request");
                                 break;
                             case 7:
                                 System.out.println("Player " + playerID + " ended Turn");
@@ -110,6 +117,7 @@ public class Server {
                                 }
                                 connections.get(nextPlayer - 1).isTurn = true;
                                 connections.get(nextPlayer - 1).dataOut.writeBoolean(true);
+                                connections.get(nextPlayer - 1).dataOut.flush();
                                 break;
                         }
                     }

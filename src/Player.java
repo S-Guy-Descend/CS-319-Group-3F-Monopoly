@@ -69,6 +69,7 @@ public class Player extends JFrame{
                     try {
                         System.out.println("Player " + playerID + " rolled dice");
                         csc.dataOut.writeInt(0);
+                        csc.dataOut.flush();
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
@@ -87,6 +88,7 @@ public class Player extends JFrame{
                     try {
                         System.out.println("Player " + playerID + " built");
                         csc.dataOut.writeInt(1);
+                        csc.dataOut.flush();
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
@@ -105,6 +107,7 @@ public class Player extends JFrame{
                     try {
                         System.out.println("Player " + playerID + " used scroll");
                         csc.dataOut.writeInt(2);
+                        csc.dataOut.flush();
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
@@ -123,6 +126,7 @@ public class Player extends JFrame{
                     try {
                         System.out.println("Player " + playerID + " bought property");
                         csc.dataOut.writeInt(3);
+                        csc.dataOut.flush();
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
@@ -141,6 +145,7 @@ public class Player extends JFrame{
                     try {
                         System.out.println("Player " + playerID + " sent trade");
                         csc.dataOut.writeInt(4);
+                        csc.dataOut.flush();
 
                         //Construct the trade request
                         ArrayList<Square> placesToGive = new ArrayList<Square>();
@@ -150,7 +155,9 @@ public class Player extends JFrame{
                         int moneyToGive = 100;
                         int moneyToTake = 300;
                         TradeRequest tradeRequest = new TradeRequest(placesToGive, placesToTake, moneyToGive, moneyToTake);
+
                         csc.dataOut.writeObject(tradeRequest);
+                        csc.dataOut.flush();
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
@@ -170,6 +177,7 @@ public class Player extends JFrame{
                     try {
                         System.out.println("Player " + playerID + " accepted trade");
                         csc.dataOut.writeInt(5);
+                        csc.dataOut.flush();
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
@@ -189,6 +197,7 @@ public class Player extends JFrame{
                     try {
                         System.out.println("Player " + playerID + " declined trade");
                         csc.dataOut.writeInt(6);
+                        csc.dataOut.flush();
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
@@ -214,6 +223,7 @@ public class Player extends JFrame{
                     try {
                         System.out.println("Player " + playerID + " ended Turn");
                         csc.dataOut.writeInt(7);
+                        csc.dataOut.flush();
                     } catch(IOException e) {
                         e.printStackTrace();
                     }
