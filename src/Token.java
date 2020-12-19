@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Token
+public class Token implements Serializable
 {
     String name;
     int ID;

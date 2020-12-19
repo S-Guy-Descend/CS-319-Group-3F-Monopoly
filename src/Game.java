@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Game {
+public class Game implements Serializable {
     // instance is a Singleton of the game class
     public static Game instance = new Game();
     public ArrayList<Token> tokens;

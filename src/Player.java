@@ -187,15 +187,19 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                             while(!gameStarted) {
                                 try {
                                     try {
-                                        classes = (ArrayList<String>) (csc.dataIn.readObject());
-                                        Platform.runLater(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                playerList.getItems().setAll(classes);
-                                                playerList.getItems().set(playerID - 1, playerList.getItems().get(playerID - 1) + " [YOU]");
-                                                return;
-                                            }
-                                        });
+                                        try {
+                                            classes = (ArrayList<String>) (csc.dataIn.readObject());
+                                            Platform.runLater(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    playerList.getItems().setAll(classes);
+                                                    playerList.getItems().set(playerID - 1, playerList.getItems().get(playerID - 1) + " [YOU]");
+                                                    return;
+                                                }
+                                            });
+                                        } catch (UTFDataFormatException UTFex) {
+                                            System.out.println("UTF");
+                                        }
                                     } catch (OptionalDataException opEx) {
                                         System.out.println(opEx.length);
                                     }
@@ -357,7 +361,6 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                                 System.out.println("HOST COMMAND IS " + hostCommand);
                                 if(hostCommand == 0) {
                                     csc.dataOut.writeInt(0);
-                                    //currentGameState = (Game) (csc.dataIn.readObject());
                                     startReceivingTurns();
                                     Platform.runLater(new Runnable() {
                                         @Override public void run() {
@@ -580,7 +583,6 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                             int startConfirmed = csc.dataIn.readInt();
                             if (startConfirmed == 3) {
                                 gameStarted = true;
-                                //currentGameState = (Game) (csc.dataIn.readObject());
                                 startReceivingTurns();
                                 Platform.runLater(new Runnable() {
                                     @Override public void run() {
@@ -825,9 +827,20 @@ public class Player extends Application implements EventHandler<ActionEvent> {
     public void startReceivingTurns() {
         Thread t = new Thread(new Runnable() {
             public void run() {
+                try {
+                    System.out.println("READING CURRENT GAME STATE");
+                    currentGameState = (Game) (csc.dataIn.readObject());
+                    System.out.println("READ CURRENT GAME STATE");
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
                 while (true) {
                     try {
+                        System.out.println("BEFORE READING TRUE");
                         isTurn = csc.dataIn.readBoolean();
+                        System.out.println("AFTER READING TRUE");
                         System.out.println("Player " + playerID + " started Turn");
                         rollDice.setDisable(!isTurn);
                         build.setDisable(true);

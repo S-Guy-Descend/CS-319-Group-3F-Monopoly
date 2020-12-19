@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.math.*;
 
-public class Town extends Square {
+public class Town extends Square implements Serializable {
     //variables
     final double RENT_MULTIPLIER_PER_INN = 1.1;
     final double RENT_MULTIPLIER_PER_MANSION = 1.7;

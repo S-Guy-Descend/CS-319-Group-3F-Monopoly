@@ -183,12 +183,11 @@ public class Server {
                                     for(int j = 0; j < classes.size(); j++) {
                                         String playerClass = classes.get(j).substring(11);
                                         Game.instance.addPlayer(playerID, playerClass);
-                                    } /*
-                                    for(int j = 0; j < connections.size(); j++) {
-                                        connections.get(i).dataOut.writeObject(Game.instance);
-                                        connections.get(i).dataOut.flush();
-                                    } */
+                                    }
+                                    connections.get(0).dataOut.writeObject(Game.instance);
+                                    System.out.println("BEFORE WRITING TRUE");
                                     dataOut.writeBoolean(true);
+                                    System.out.println("AFTER WRITING TRUE");
                                     dataOut.flush();
                                     Game.instance.turnCounter = Game.instance.advanceTurn();
                                 }
