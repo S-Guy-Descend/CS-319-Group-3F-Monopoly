@@ -1,16 +1,20 @@
 public class Smith extends Square {
 
-    final int MORTGAGE_PRICE = 7500;
-    final int UN_MORTGAGE_PRICE = 10000;
+    final double MORTGAGE_REDEMPTION_MULTIPLIER = 1.5;
 
     final int price = 15000;
+    final int mortgagePrice = 7500;
+
     boolean isPurchased;
+    boolean isMortgaged;
     int ownerId;
     int rent;
 
     public Smith(String name) {
         super(name);
         this.ownerId = -1;
+        this.isMortgaged = false;
+        this.isPurchased = false;
     }
 
     public void calculateRent(int rolledDiceAmount) {
@@ -31,4 +35,15 @@ public class Smith extends Square {
         ownerId = newOwnerId;
     }
 
+    public void setAsMortgaged() {
+        isMortgaged = true;
+    }
+
+    public void removeMortgage() {
+        isMortgaged = false;
+    }
+
+    public boolean isMortgaged() {
+        return isMortgaged;
+    }
 }
