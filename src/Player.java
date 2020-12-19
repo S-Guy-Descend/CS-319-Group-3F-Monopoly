@@ -357,7 +357,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                                 System.out.println("HOST COMMAND IS " + hostCommand);
                                 if(hostCommand == 0) {
                                     csc.dataOut.writeInt(0);
-                                    currentGameState = (Game) (csc.dataIn.readObject());
+                                    //currentGameState = (Game) (csc.dataIn.readObject());
                                     startReceivingTurns();
                                     Platform.runLater(new Runnable() {
                                         @Override public void run() {
@@ -404,7 +404,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                                 }
                             }
                             return;
-                        } catch(IOException | ClassNotFoundException ex) {
+                        } catch(IOException ex) {
                             ex.printStackTrace();
                         }
                     }
@@ -580,7 +580,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                             int startConfirmed = csc.dataIn.readInt();
                             if (startConfirmed == 3) {
                                 gameStarted = true;
-                                currentGameState = (Game) (csc.dataIn.readObject());
+                                //currentGameState = (Game) (csc.dataIn.readObject());
                                 startReceivingTurns();
                                 Platform.runLater(new Runnable() {
                                     @Override public void run() {
@@ -603,7 +603,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                                 return;
                             }
                         }
-                    } catch(IOException | ClassNotFoundException ex) {
+                    } catch(IOException ex) {
                         ex.printStackTrace();
                     }
                 }

@@ -183,11 +183,11 @@ public class Server {
                                     for(int j = 0; j < classes.size(); j++) {
                                         String playerClass = classes.get(j).substring(11);
                                         Game.instance.addPlayer(playerID, playerClass);
-                                    }
+                                    } /*
                                     for(int j = 0; j < connections.size(); j++) {
                                         connections.get(i).dataOut.writeObject(Game.instance);
                                         connections.get(i).dataOut.flush();
-                                    }
+                                    } */
                                     dataOut.writeBoolean(true);
                                     dataOut.flush();
                                     Game.instance.turnCounter = Game.instance.advanceTurn();
@@ -420,10 +420,11 @@ public class Server {
                                 // SEND CURRENT GAME INFO TO ALL PLAYERS
                                 break;
                         }
+                        /*
                         for(int i = 0; i < connections.size(); i++) {
                             connections.get(i).dataOut.writeObject(Game.instance);
                             connections.get(i).dataOut.flush();
-                        }
+                        } */
                     }
                 }
             } catch (IOException e) {
