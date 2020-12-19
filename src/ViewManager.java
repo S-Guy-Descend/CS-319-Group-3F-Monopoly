@@ -24,7 +24,10 @@ public class ViewManager {
     private AnchorPane mainPane;
     private Scene mainScene;
     private Stage mainStage;
+
     private Subscene creditsSubScene;
+    private Subscene settingsSubScene;
+    private Subscene tutorialSubScene;
 
     public ViewManager() {
         mainPane = new AnchorPane();
@@ -37,8 +40,13 @@ public class ViewManager {
         createSubScenes();
     }
     public void createSubScenes(){
-        creditsSubScene = new Subscene();
+        settingsSubScene = new Subscene(250,500,-550,230);
+        creditsSubScene = new Subscene(250,500,-550,485);
+        tutorialSubScene = new Subscene(500,500,1300,230);
+
         mainPane.getChildren().add(creditsSubScene);
+        mainPane.getChildren().add(settingsSubScene);
+        mainPane.getChildren().add(tutorialSubScene);
     }
 
     public Stage getMainStage() {
@@ -66,6 +74,13 @@ public class ViewManager {
         tutorialButton.setLayoutX(startingXCoordinate);
         tutorialButton.setLayoutY(startingYCoordinate + 2*marginY);
 
+        tutorialButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                tutorialSubScene.rightFloatSubScene();
+            }
+        });
+
         mainPane.getChildren().add(tutorialButton);
     }
 
@@ -73,6 +88,13 @@ public class ViewManager {
         StyledButton settingsButton = new StyledButton("Settings");
         settingsButton.setLayoutX(startingXCoordinate);
         settingsButton.setLayoutY(startingYCoordinate + 3*marginY);
+
+        settingsButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                settingsSubScene.leftFloatSubScene();
+            }
+        });
 
         mainPane.getChildren().add(settingsButton);
     }
@@ -85,7 +107,7 @@ public class ViewManager {
         creditsButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                creditsSubScene.floatSubScene();
+                creditsSubScene.leftFloatSubScene();
             }
         });
 
