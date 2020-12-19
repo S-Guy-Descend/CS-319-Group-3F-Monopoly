@@ -14,6 +14,7 @@ public class Token
     int ownedSmithCount;
     int ownedTransportCount;
     ArrayList<ScrollCard> scrollCards;
+    TradeRequest currentPendingTradeRequest;
 
     public Token( String name )
     {
@@ -303,6 +304,7 @@ public class Token
         money = money - amount;
     }
 
+    // TO-DO WRITE THIS METHOD
     public void respondToTradeOffer( boolean response )
     {
 

@@ -175,11 +175,22 @@ public class Server {
                                 gameStarted = true;
                                 dataOut.writeInt(3);
                                 dataOut.flush();
-                                dataOut.writeBoolean(true);
-                                dataOut.flush();
                                 for (int i = 1; i < maxPlayers; i++) {
                                     connections.get(i).dataOut.writeInt(0);
                                     connections.get(i).dataOut.flush();
+
+                                    //START OF GAME
+                                    for(int j = 0; j < classes.size(); j++) {
+                                        String playerClass = classes.get(j).substring(11);
+                                        Game.instance.addPlayer(playerID, playerClass);
+                                    }
+                                    for(int j = 0; j < connections.size(); j++) {
+                                        connections.get(i).dataOut.writeObject(Game.instance);
+                                        connections.get(i).dataOut.flush();
+                                    }
+                                    dataOut.writeBoolean(true);
+                                    dataOut.flush();
+                                    Game.instance.turnCounter = Game.instance.advanceTurn();
                                 }
                                 break;
                             } else {
@@ -337,33 +348,59 @@ public class Server {
                         switch (operation) {
                             case 0:
                                 System.out.println("Player " + playerID + " rolled dice");
+                                Game.instance.tokens.get(playerID - 1).rollDice();
+                                Game.instance.tokens.get(playerID - 1).move();
+
+                                // SEND CURRENT GAME INFO TO ALL PLAYERS
                                 break;
                             case 1:
                                 System.out.println("Player " + playerID + " built");
+                                Game.instance.tokens.get(playerID - 1).build();
+
+                                // SEND CURRENT GAME INFO TO ALL PLAYERS
                                 break;
                             case 2:
                                 System.out.println("Player " + playerID + " used scroll");
+                                int scrollIndex = dataIn.readInt();
+                                int victimID = dataIn.readInt();
+                                // TO-DO CHECK WHETHER COMING VICTIM ID STARTS FROM 0 OR 1
+                                // SEND CURRENT GAME INFO TO ALL PLAYERS
+                                Game.instance.tokens.get(playerID - 1).useScroll(scrollIndex, Game.instance.tokens.get(victimID) );
                                 break;
                             case 3:
                                 System.out.println("Player " + playerID + " bought property");
+                                boolean purchaseSuccessful = Game.instance.tokens.get(playerID - 1).purchaseLand();
+                                dataOut.writeBoolean(purchaseSuccessful);
+                                dataOut.flush();
+                                // SEND CURRENT GAME INFO TO ALL PLAYERS
                                 break;
                             case 4:
                                 System.out.println("Player " + playerID + " sent trade request");
                                 try {
                                     try {
                                         TradeRequest tradeRequest = (TradeRequest) dataIn.readObject();
+                                        Game.instance.tokens.get(tradeRequest.tradeReceiver).currentPendingTradeRequest = tradeRequest;
                                     } catch (IOException e2) {
                                         e2.printStackTrace();
                                     }
                                 } catch (ClassNotFoundException e1) {
                                     e1.printStackTrace();
                                 }
+
+                                // SEND CURRENT GAME INFO TO ALL PLAYERS
                                 break;
                             case 5:
                                 System.out.println("Player " + playerID + " accepted trade request");
+                                Game.instance.tokens.get(playerID - 1).respondToTradeOffer(true);
+
+                                // SEND CURRENT GAME INFO TO ALL PLAYERS
                                 break;
                             case 6:
                                 System.out.println("Player " + playerID + " rejected trade request");
+
+                                Game.instance.tokens.get(playerID - 1).respondToTradeOffer(false);
+
+                                // SEND CURRENT GAME INFO TO ALL PLAYERS
                                 break;
                             case 7:
                                 System.out.println("Player " + playerID + " ended Turn");
@@ -377,7 +414,15 @@ public class Server {
                                 connections.get(nextPlayer - 1).isTurn = true;
                                 connections.get(nextPlayer - 1).dataOut.writeBoolean(true);
                                 connections.get(nextPlayer - 1).dataOut.flush();
+
+                                Game.instance.advanceTurn();
+
+                                // SEND CURRENT GAME INFO TO ALL PLAYERS
                                 break;
+                        }
+                        for(int i = 0; i < connections.size(); i++) {
+                            connections.get(i).dataOut.writeObject(Game.instance);
+                            connections.get(i).dataOut.flush();
                         }
                     }
                 }

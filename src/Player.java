@@ -26,6 +26,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
     volatile boolean gameStarted;
     private int playerCount = 0;
     volatile boolean done = false;
+    private Game currentGameState;
 
     // ana pencere
     Stage window;
@@ -356,6 +357,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                                 System.out.println("HOST COMMAND IS " + hostCommand);
                                 if(hostCommand == 0) {
                                     csc.dataOut.writeInt(0);
+                                    currentGameState = (Game) (csc.dataIn.readObject());
                                     startReceivingTurns();
                                     Platform.runLater(new Runnable() {
                                         @Override public void run() {
@@ -402,7 +404,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                                 }
                             }
                             return;
-                        } catch(IOException ex) {
+                        } catch(IOException | ClassNotFoundException ex) {
                             ex.printStackTrace();
                         }
                     }
@@ -578,6 +580,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                             int startConfirmed = csc.dataIn.readInt();
                             if (startConfirmed == 3) {
                                 gameStarted = true;
+                                currentGameState = (Game) (csc.dataIn.readObject());
                                 startReceivingTurns();
                                 Platform.runLater(new Runnable() {
                                     @Override public void run() {
@@ -600,7 +603,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                                 return;
                             }
                         }
-                    } catch(IOException ex) {
+                    } catch(IOException | ClassNotFoundException ex) {
                         ex.printStackTrace();
                     }
                 }
@@ -699,6 +702,16 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                     System.out.println("Player " + playerID + " used scroll");
                     csc.dataOut.writeInt(2);
                     csc.dataOut.flush();
+
+                    // GET PLAYER TO CHOOSE A SCROLL AND VICTIM
+                    int scrollIndex = 0;
+                    int victimID = 0;
+
+                    csc.dataOut.writeInt(scrollIndex);
+                    csc.dataOut.flush();
+                    csc.dataOut.writeInt(victimID);
+                    csc.dataOut.flush();
+
                 } catch(IOException e) {
                     e.printStackTrace();
                 }
@@ -711,6 +724,13 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                     System.out.println("Player " + playerID + " bought property");
                     csc.dataOut.writeInt(3);
                     csc.dataOut.flush();
+                    boolean purchaseSuccessful = csc.dataIn.readBoolean();
+                    if (!purchaseSuccessful) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Unable to purchase land!");
+                        alert.setHeaderText(null);
+                        alert.setContentText("You cannot purchase this land!");
+                    }
                 } catch(IOException e) {
                     e.printStackTrace();
                 }
@@ -721,6 +741,8 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                 sendTrade.setDisable(true);
                 try {
                     System.out.println("Player " + playerID + " sent trade");
+
+                    // TO-DO CONSTRUCT THE TRADE REQUEST PROPERLY
                     csc.dataOut.writeInt(4);
                     csc.dataOut.flush();
 
@@ -731,7 +753,8 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                     placesToTake.add(Game.instance.board.map[3]);
                     int moneyToGive = 100;
                     int moneyToTake = 300;
-                    TradeRequest tradeRequest = new TradeRequest(placesToGive, placesToTake, moneyToGive, moneyToTake);
+                    int tradeReceiver = 0;
+                    TradeRequest tradeRequest = new TradeRequest(placesToGive, placesToTake, moneyToGive, moneyToTake, tradeReceiver);
 
                     csc.dataOut.writeObject(tradeRequest);
                     csc.dataOut.flush();
