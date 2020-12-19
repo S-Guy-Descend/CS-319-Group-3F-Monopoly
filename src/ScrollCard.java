@@ -62,8 +62,13 @@ public class ScrollCard
         switch (effectID)
         {
             case 0:
-                int randomPropertyID = (int)(Math.random() * effectOwner.activeLands.size());
-                effectVictim.forceMove( effectOwner.activeLands.get(randomPropertyID), false );
+                if ( !(effectVictim.dungeonCountdown > 0) ) {
+                    int randomPropertyID = (int) (Math.random() * effectOwner.activeLands.size());
+                    effectVictim.forceMove(effectOwner.activeLands.get(randomPropertyID), false);
+                }
+                else {
+                    System.out.println("Can't teleport player; player is in the dungeon.");
+                }
                 break;
             case 1:
                 ((Feast) Game.instance.board.map[20]).buffTokenClass( effectOwner );
