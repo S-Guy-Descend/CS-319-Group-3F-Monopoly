@@ -63,14 +63,14 @@ public class Feast extends Square{
         }
         else if (player instanceof Builder) {
             int totalInns = 0;
-            for ( int i = 0; i < ((Builder)player).residenceIDs.size(); i ++ )
+            for ( int i = 0; i < player.residenceIDs.size(); i ++ )
             {
-                totalInns += ((Town)Game.instance.board.map[((Builder)player).residenceIDs.get(i)]).numberOfInns;
+                totalInns += ((Town)Game.instance.board.map[player.residenceIDs.get(i)]).numberOfInns;
             }
             player.receiveMoney( totalInns * ((Builder) player).BUILDER_FEAST_MULTIPLIER );
         }
         else if (player instanceof Cardinal) {
-            int homeToGo = (int)( Math.random() * ((Cardinal) player).residenceIDs.size() );
+            int homeToGo = (int)( Math.random() * player.residenceIDs.size() );
             player.forceMove( homeToGo, true );
         }
     }

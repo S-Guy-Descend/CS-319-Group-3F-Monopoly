@@ -62,19 +62,29 @@ public class ScrollCard
         switch (effectID)
         {
             case 0:
-                // effectVictim.forceMove();
+                int randomPropertyID = (int)(Math.random() * effectOwner.ownedAreas.size());
+                effectVictim.forceMove( effectOwner.ownedAreas.get(randomPropertyID), false );
                 break;
             case 1:
-                // gainFeastEffect() ???
+                ((Feast) Game.instance.board.map[20]).buffTokenClass( effectOwner );
                 break;
             case 2:
-                //
+                int squareWithBuildingID = (int)(Math.random() * effectVictim.residenceIDs.size() );
+                ((Town)Game.instance.board.map[squareWithBuildingID]).numberOfInns --;
                 break;
             case 3:
-                // if (notInJail), forceMove(30)
+                if ( effectVictim.dungeonCountdown == 0 )
+                {
+                    effectVictim.dungeonCountdown = 3;
+                }
+                else
+                {
+                    effectVictim.dungeonCountdown = 0;
+                }
                 break;
             case 4:
-                // effectVictim.scrollCards.....
+                int scrollToBurn = (int)(Math.random() * effectVictim.scrollCards.size());
+                effectVictim.scrollCards.remove( scrollToBurn );
                 break;
             default:
         }

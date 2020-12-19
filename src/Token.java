@@ -14,11 +14,15 @@ public class Token
     int ownedSmithCount;
     int ownedTransportCount;
     ArrayList<ScrollCard> scrollCards;
+    ArrayList<Integer> ownedAreas;
+    ArrayList<Integer> residenceIDs;
 
     public Token( String name )
     {
         this.name = name;
         scrollCards = new ArrayList<ScrollCard>();
+        ownedAreas = new ArrayList<Integer>();
+        residenceIDs = new ArrayList<Integer>();
         money = 150000;
         turnsPlayed = 0;
         isBankrupt = false;
@@ -120,6 +124,7 @@ public class Token
             }
             money -= currentTown.price;
             currentTown.changeOwner(ID);
+            ownedAreas.add( currentLocation );
             return true;
         }
         else if(Game.instance.board.map[this.currentLocation] instanceof Smith) {
@@ -147,6 +152,7 @@ public class Token
             currentTransport.changeOwner(ID);
             this.ownedTransportCount += 1;
             currentTransport.calculateRent();
+            ownedAreas.add( currentLocation );
             return true;
         }
         return false;
@@ -168,6 +174,7 @@ public class Token
             money -= currentTown.innPrice;
             currentTown.numberOfInns += 1;
             currentTown.calculateRent();
+            residenceIDs.add(this.currentLocation);
             return true;
         }
         return false;
@@ -184,6 +191,8 @@ public class Token
             money += currentTown.mortgagePrice;
             currentTown.setAsMortgaged();
             System.out.println("Land is mortgaged");
+            ownedAreas.remove( locationToMortgage );
+            residenceIDs.remove( locationToMortgage );
             return true;
         }
         else if(Game.instance.board.map[locationToMortgage] instanceof Smith) {
@@ -208,7 +217,7 @@ public class Token
             money += currentTransport.mortgagePrice;
             currentTransport.setAsMortgaged();
             System.out.println("Land is mortgaged");
-
+            ownedAreas.remove( locationToMortgage );
             return true;
         }
         return false;
@@ -225,6 +234,8 @@ public class Token
             money -= (int) (currentTown.mortgagePrice * currentTown.MORTGAGE_REDEMPTION_MULTIPLIER);
             currentTown.removeMortgage();
             System.out.println("Land is UNMORTGAGED");
+            ownedAreas.add( locationToMortgage );
+            residenceIDs.add( locationToMortgage );
             return true;
         }
         else if(Game.instance.board.map[locationToMortgage] instanceof Smith) {
@@ -249,6 +260,7 @@ public class Token
             money -= (int) (currentTransport.mortgagePrice * currentTransport.MORTGAGE_REDEMPTION_MULTIPLIER);
             currentTransport.removeMortgage();
             System.out.println("Land is UNMORTGAGED");
+            ownedAreas.add( locationToMortgage );
             return true;
         }
         return false;
@@ -319,7 +331,7 @@ public class Token
         //Square[] placesToTake;
         int moneyToGive;
         int moneyToTake;
-
+        // trade kodlarını halledince ownedAreas ve ownerID güncellenecek.
         //makeTradeOffer( placesToGive, placesToTake, moneyToGive, moneyToTake );
     }
 
