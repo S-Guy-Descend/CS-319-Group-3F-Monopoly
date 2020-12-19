@@ -48,7 +48,7 @@ public class ScrollCard
                 cardText = "Summon a powerful earthquake to destroy one of the buildings of a player.";
                 break;
             case 3:
-                cardText = "Send a player to dungeon, or if he is already in dungeon, release him.";
+                cardText = "Send a player to dungeon, or if he is already in dungeon, release him and send him to GO.";
                 break;
             case 4:
                 cardText = "Burn a player's randomly chosen scroll.";
@@ -62,29 +62,52 @@ public class ScrollCard
         switch (effectID)
         {
             case 0:
-                int randomPropertyID = (int)(Math.random() * effectOwner.ownedAreas.size());
-                effectVictim.forceMove( effectOwner.ownedAreas.get(randomPropertyID), false );
+                int randomPropertyID = (int)(Math.random() * effectOwner.activeLands.size());
+                effectVictim.forceMove( effectOwner.activeLands.get(randomPropertyID), false );
                 break;
             case 1:
                 ((Feast) Game.instance.board.map[20]).buffTokenClass( effectOwner );
+                System.out.println( "Gained Feast effect" );
                 break;
             case 2:
-                int squareWithBuildingID = (int)(Math.random() * effectVictim.residenceIDs.size() );
-                ((Town)Game.instance.board.map[squareWithBuildingID]).numberOfInns --;
+                if ( effectVictim.residenceIDs.size() > 0 )
+                {
+                    int squareWithBuildingID = (int)(Math.random() * effectVictim.residenceIDs.size() );
+                    ((Town)Game.instance.board.map[squareWithBuildingID]).numberOfInns --;
+                    if ( ((Town)Game.instance.board.map[squareWithBuildingID]).numberOfInns == 0 )
+                    {
+                        effectVictim.residenceIDs.remove( squareWithBuildingID );
+                    }
+                    System.out.println( "Earthquake on " + Game.instance.board.map[squareWithBuildingID].name + "!" );
+                }
+                else
+                {
+                    System.out.println( "No buildings to demolish" );
+                }
                 break;
             case 3:
                 if ( effectVictim.dungeonCountdown == 0 )
                 {
-                    effectVictim.dungeonCountdown = 3;
+                    effectVictim.forceMove( 30, false );
+                    System.out.println( "Player " + effectVictim.ID + " sent to dungeon" );
                 }
                 else
                 {
                     effectVictim.dungeonCountdown = 0;
+                    effectVictim.forceMove( 0, true );
+                    System.out.println( "Player " + effectVictim.ID + " is now free" );
                 }
                 break;
             case 4:
-                int scrollToBurn = (int)(Math.random() * effectVictim.scrollCards.size());
-                effectVictim.scrollCards.remove( scrollToBurn );
+                if ( effectVictim.scrollCards.size() > 0 )
+                {
+                    int scrollToBurn = (int)(Math.random() * effectVictim.scrollCards.size() );
+                    effectVictim.scrollCards.remove( scrollToBurn );
+                }
+                else
+                {
+                    System.out.println( "No scrolls to burn" );
+                }
                 break;
             default:
         }

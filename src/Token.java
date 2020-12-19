@@ -14,14 +14,14 @@ public class Token
     int ownedSmithCount;
     int ownedTransportCount;
     ArrayList<ScrollCard> scrollCards;
-    ArrayList<Integer> ownedAreas;
+    ArrayList<Integer> activeLands;
     ArrayList<Integer> residenceIDs;
 
     public Token( String name )
     {
         this.name = name;
         scrollCards = new ArrayList<ScrollCard>();
-        ownedAreas = new ArrayList<Integer>();
+        activeLands = new ArrayList<Integer>();
         residenceIDs = new ArrayList<Integer>();
         money = 150000;
         turnsPlayed = 0;
@@ -89,7 +89,7 @@ public class Token
             ((Feast) Game.instance.board.map[this.currentLocation]).buffTokenClass(this);
         }
     }
-    // If you face a problem in the future its probably because of this method. For emergencies pls call BKB.
+
     public void forceMove(int newPlace, boolean passGO)
     {
         if(newPlace < currentLocation && passGO) {
@@ -124,7 +124,7 @@ public class Token
             }
             money -= currentTown.price;
             currentTown.changeOwner(ID);
-            ownedAreas.add( currentLocation );
+            activeLands.add( currentLocation );
             return true;
         }
         else if(Game.instance.board.map[this.currentLocation] instanceof Smith) {
@@ -152,7 +152,7 @@ public class Token
             currentTransport.changeOwner(ID);
             this.ownedTransportCount += 1;
             currentTransport.calculateRent();
-            ownedAreas.add( currentLocation );
+            activeLands.add( currentLocation );
             return true;
         }
         return false;
@@ -174,7 +174,10 @@ public class Token
             money -= currentTown.innPrice;
             currentTown.numberOfInns += 1;
             currentTown.calculateRent();
-            residenceIDs.add(this.currentLocation);
+            if ( !residenceIDs.contains(this.currentLocation) )
+            {
+                residenceIDs.add(this.currentLocation);
+            }
             return true;
         }
         return false;
@@ -191,7 +194,7 @@ public class Token
             money += currentTown.mortgagePrice;
             currentTown.setAsMortgaged();
             System.out.println("Land is mortgaged");
-            ownedAreas.remove( locationToMortgage );
+            activeLands.remove( locationToMortgage );
             residenceIDs.remove( locationToMortgage );
             return true;
         }
@@ -217,7 +220,7 @@ public class Token
             money += currentTransport.mortgagePrice;
             currentTransport.setAsMortgaged();
             System.out.println("Land is mortgaged");
-            ownedAreas.remove( locationToMortgage );
+            activeLands.remove( locationToMortgage );
             return true;
         }
         return false;
@@ -234,7 +237,7 @@ public class Token
             money -= (int) (currentTown.mortgagePrice * currentTown.MORTGAGE_REDEMPTION_MULTIPLIER);
             currentTown.removeMortgage();
             System.out.println("Land is UNMORTGAGED");
-            ownedAreas.add( locationToMortgage );
+            activeLands.add( locationToMortgage );
             residenceIDs.add( locationToMortgage );
             return true;
         }
@@ -260,7 +263,7 @@ public class Token
             money -= (int) (currentTransport.mortgagePrice * currentTransport.MORTGAGE_REDEMPTION_MULTIPLIER);
             currentTransport.removeMortgage();
             System.out.println("Land is UNMORTGAGED");
-            ownedAreas.add( locationToMortgage );
+            activeLands.add( locationToMortgage );
             return true;
         }
         return false;
