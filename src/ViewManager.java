@@ -1,9 +1,12 @@
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -61,8 +64,23 @@ public class ViewManager {
     public void createHostGameSubScene() {
         hostGameSubScene = new Subscene(500,500,1300,230);
 
+        VBox hostGameLayout = new VBox( 20);
+        hostGameLayout.setLayoutX(40);
+        hostGameLayout.setAlignment( Pos.CENTER );
 
-        //joinGameButton.setOnAction(e -> { mainStage.setScene( inGame);});
+        InfoLabel numberOfPlayersLabel = new InfoLabel( "Please select the number of players:", 400, 150, 25, "Verdana" );
+
+        ObservableList<Integer> options = FXCollections.observableArrayList(2, 3, 4, 5, 6, 7, 8 );
+        final ComboBox playerNumDropDown = new ComboBox(options);
+        playerNumDropDown.setPrefWidth(200);
+        playerNumDropDown.setPrefHeight(50);
+
+        StyledButton hostGameButton = new StyledButton("Host Game");
+        StyledButton backButton = new StyledButton("Back");
+
+        hostGameLayout.getChildren().addAll( numberOfPlayersLabel, playerNumDropDown, hostGameButton);
+
+        hostGameSubScene.getPane().getChildren().add(hostGameLayout);
 
         mainPane.getChildren().add(hostGameSubScene);
     }
