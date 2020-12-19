@@ -1,7 +1,11 @@
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -28,6 +32,8 @@ public class ViewManager {
     private Subscene creditsSubScene;
     private Subscene settingsSubScene;
     private Subscene tutorialSubScene;
+    private Subscene joinGameSubScene;
+    private Subscene hostGameSubScene;
 
     public ViewManager() {
         mainPane = new AnchorPane();
@@ -42,11 +48,47 @@ public class ViewManager {
     public void createSubScenes(){
         settingsSubScene = new Subscene(250,500,-550,230);
         creditsSubScene = new Subscene(250,500,-550,485);
-        tutorialSubScene = new Subscene(500,500,1300,230);
+        tutorialSubScene = new Subscene(500,500,-550,230);
 
         mainPane.getChildren().add(creditsSubScene);
         mainPane.getChildren().add(settingsSubScene);
         mainPane.getChildren().add(tutorialSubScene);
+
+        createJoinGameSubScene();
+        createHostGameSubScene();
+    }
+
+    public void createHostGameSubScene() {
+        hostGameSubScene = new Subscene(500,500,1300,230);
+
+
+        //joinGameButton.setOnAction(e -> { mainStage.setScene( inGame);});
+
+        mainPane.getChildren().add(hostGameSubScene);
+    }
+
+    public void createJoinGameSubScene() {
+        joinGameSubScene = new Subscene(500,500,1300,230);
+
+        VBox joinGameLayout = new VBox( 20);
+        joinGameLayout.setLayoutX(40);
+        joinGameLayout.setAlignment( Pos.CENTER);
+
+        //Label
+        InfoLabel enterGameIdLabel = new InfoLabel("Please Enter the Game ID:",400, 150, 25,"Verdana");
+
+        //TextField
+        TextField gameIDTxtField = new TextField();
+        gameIDTxtField.setPrefWidth(200);
+        gameIDTxtField.setPrefHeight(50);
+
+        StyledButton joinGameButton = new StyledButton("Join");
+
+        joinGameLayout.getChildren().addAll( enterGameIdLabel, gameIDTxtField, joinGameButton);
+
+        joinGameSubScene.getPane().getChildren().add(joinGameLayout);
+
+        mainPane.getChildren().add(joinGameSubScene);
     }
 
     public Stage getMainStage() {
@@ -58,6 +100,13 @@ public class ViewManager {
         hostGameButton.setLayoutX(startingXCoordinate);
         hostGameButton.setLayoutY(startingYCoordinate);
 
+        hostGameButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                hostGameSubScene.rightFloatSubScene();
+            }
+        });
+
         mainPane.getChildren().add(hostGameButton);
     }
 
@@ -65,6 +114,13 @@ public class ViewManager {
         StyledButton joinGameButton = new StyledButton("Join Game");
         joinGameButton.setLayoutX(startingXCoordinate);
         joinGameButton.setLayoutY(startingYCoordinate + marginY);
+
+        joinGameButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                joinGameSubScene.rightFloatSubScene();
+            }
+        });
 
         mainPane.getChildren().add(joinGameButton);
     }
@@ -77,7 +133,7 @@ public class ViewManager {
         tutorialButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                tutorialSubScene.rightFloatSubScene();
+                tutorialSubScene.leftFloatSubScene();
             }
         });
 
@@ -118,6 +174,13 @@ public class ViewManager {
         StyledButton exitButton = new StyledButton("Exit");
         exitButton.setLayoutX(startingXCoordinate);
         exitButton.setLayoutY(startingYCoordinate + 5*marginY);
+
+        exitButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mainStage.close();
+            }
+        });
 
         mainPane.getChildren().add(exitButton);
     }
