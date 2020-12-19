@@ -2,15 +2,19 @@
         import javafx.event.ActionEvent;
         import javafx.event.EventHandler;
         import javafx.geometry.Pos;
+        import javafx.scene.Node;
         import javafx.scene.Scene;
         import javafx.scene.control.Button;
         import javafx.scene.control.Label;
         import javafx.scene.control.TextField;
-        import javafx.scene.layout.StackPane;
-        import javafx.scene.layout.VBox;
+        import javafx.scene.layout.*;
+        import javafx.scene.paint.Color;
+        import javafx.scene.shape.Circle;
+        import javafx.scene.shape.Rectangle;
+        import javafx.scene.text.Text;
         import javafx.stage.Stage;
 
-public class guiTest extends Application implements EventHandler<ActionEvent>{
+        public class guiTest extends Application implements EventHandler<ActionEvent>{
     // ana pencere
     Stage window;
 
@@ -44,13 +48,18 @@ public class guiTest extends Application implements EventHandler<ActionEvent>{
     Button endTurn;
 
     // credits ekran bileşenleri
-    /*
+
     Label creditsLabel;
-    Label atakuB;
-    Label keremKaramel;
-    Label memati06;
-    Label samarKing;
-     */
+    Label teamMembers;
+    Button creditsBack;
+
+    //board bileşenleri
+    public static final int SQUARE_SIZE = 91;
+    public static final int BOARD_WIDTH = 5;
+    public static final int BOARD_HEIGHT = 5;
+    int[][] boardShape = new int[BOARD_WIDTH][BOARD_HEIGHT];
+
+
 
 
 
@@ -64,7 +73,7 @@ public class guiTest extends Application implements EventHandler<ActionEvent>{
     {
         window = primaryStage;
         // pencerenin adı
-        primaryStage.setTitle( "Uzak Doğuya Has Macera, Karakterini Seç ve Savaşa Katıl");
+        primaryStage.setTitle( "Group 3F Monopoly");
 
         // buton oluşturma ve isimlendirme
         // main menü
@@ -93,7 +102,7 @@ public class guiTest extends Application implements EventHandler<ActionEvent>{
 
         creditsButton = new Button();
         creditsButton.setText( "Credits");
-        creditsButton.setOnAction( this);
+        creditsButton.setOnAction( e -> { window.setScene( credits);});
 
         // Main menu layout
         VBox mainMenuLayout = new VBox( 10);
@@ -102,7 +111,7 @@ public class guiTest extends Application implements EventHandler<ActionEvent>{
         mainMenu = new Scene( mainMenuLayout, 500, 500);
 
         // ilk ekran main menü olsun diye
-        window.setScene( mainMenu);
+        window.setScene( mainMenu );
         window.show();
 
         // join game ekranı
@@ -122,13 +131,14 @@ public class guiTest extends Application implements EventHandler<ActionEvent>{
         //join game layout ayarları
         VBox joinGameLayout = new VBox( 20);
         joinGameLayout.getChildren().addAll( enterGameId, gameIDTxtField, joinGameButton, joinGameBack);
+        joinGameLayout.setAlignment( Pos.CENTER);
         joinGame = new Scene( joinGameLayout, 500, 500);
 
 
         // inGame Ekranı
         rollDice = new Button();
         rollDice.setText( "Roll the Dice");
-        rollDice.setOnAction( this);
+        rollDice.setOnAction( this); // lambda expression kullanabiliriz
 
         build = new Button();
         build.setText( "Build");
@@ -158,33 +168,71 @@ public class guiTest extends Application implements EventHandler<ActionEvent>{
         endTurn.setText( "End Turn");
         endTurn.setOnAction( this);
 
+        // board
+        //Feast
+        SquareVisual[] rectArr = new SquareVisual[40];
+
+        for(int i = 0; i < 40; i++)
+        {
+            rectArr[i] = new SquareVisual(Game.instance.board.map[i].name);
+        }
+
+
+        GridPane gridPane = new GridPane();
+
+
+        for( int i = 0; i < 11; i++)
+        {
+            gridPane.add( rectArr[20 + i].sp, i, 0, 1,1);
+        }
+        // en sol satır
+        for( int i = 0; i < 9; i++)
+        {
+            gridPane.add( rectArr[19 - i].sp, 0, i + 1 , 1, 1);
+        }
+        //en sağ
+        for( int i = 0; i < 9; i++)
+        {
+            gridPane.add( rectArr[i + 31].sp,  10, i + 1, 1,1);
+        }
+
+         // en alt satır
+        for( int i = 0; i < 11; i++)
+        {
+            gridPane.add( rectArr[10 - i].sp, i,  10, 1,1);
+        }
+
+
+
 
         // layout ayarları
         VBox inGameLayout = new VBox( 20);
-        inGameLayout.getChildren().addAll( rollDice, build, useScroll, buyProperty, sendTrade, acceptTrade, declineTrade, endTurn);
+        inGameLayout.getChildren().addAll( gridPane);
         // içerik scenenin içine koyuluyor, constructor dimensionları alıyor
         inGame = new Scene( inGameLayout, 500, 500);
-        /*
-        StackPane layout = new StackPane();
-        layout.getChildren().add( rollDice);
-        layout.getChildren().add( build);
-        layout.getChildren().add( useScroll);
-        layout.getChildren().add( buyProperty);
-        layout.getChildren().add( sendTrade);
-        layout.getChildren().add( acceptTrade);
-        layout.getChildren().add( declineTrade);
-        layout.getChildren().add( endTurn);
 
-         */
+        // credits
+        creditsLabel = new Label();
+        creditsLabel.setText( "~Credits~");
 
-        // Main Menü
+        teamMembers = new Label();
+        teamMembers.setText("Atakan Sağlam \n" +
+                            "Sarp Ulaş Kaya \n" +
+                            "Furkan Başkaya \n" +
+                            "Oğulcan Çetinkaya \n" +
+                            "Berk Kerem Berçin");
 
+        creditsBack = new Button();
+        creditsBack.setText("Back");
+        creditsBack.setOnAction(e -> { window.setScene( mainMenu);});
 
+        // credits layout ayarları
+        VBox creditsLayout = new VBox();
+        creditsLayout.getChildren().addAll( creditsLabel, teamMembers, creditsBack);
+        creditsLayout.setAlignment( Pos.CENTER);
 
+        credits = new Scene( creditsLayout, 500, 500);
 
-        //primaryStage.setScene( inGame);
-        // kullanıcıya göstermek için
-        //primaryStage.show();
     }
     // kullanıcı butona tıklayınca bu çağırılıyor
     @Override
@@ -224,5 +272,38 @@ public class guiTest extends Application implements EventHandler<ActionEvent>{
         {
             System.out.println( "End Turn");
         }
+
     }
+
+    public class SquareVisual extends Rectangle
+    {
+        //properties
+        StackPane sp;
+        Text squareName;
+
+        //constructor
+        public SquareVisual( String name)
+        {
+            //Rectangle rect = new Rectangle();
+            setHeight( SQUARE_SIZE);
+            setWidth( SQUARE_SIZE);
+            setStroke( Color.BLACK);
+            setFill( Color.WHITE);
+            squareName = new Text( name);
+            sp = new StackPane();
+            sp.getChildren().addAll(this, squareName);
+        }
+        //methods
+
+
+
+    }
+    /*
+    public Pane constructBoardVisual()
+    {
+
+
+    }
+
+    */
 }
