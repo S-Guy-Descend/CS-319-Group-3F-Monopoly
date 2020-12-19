@@ -9,7 +9,6 @@ public class Token
     int diceRollOutcome;
     int dungeonCountdown;
     int turnsPlayed;
-    boolean isBankrupt;
     int currentLocation;
     int ownedSmithCount;
     int ownedTransportCount;
@@ -25,7 +24,6 @@ public class Token
         residenceIDs = new ArrayList<Integer>();
         money = 150000;
         turnsPlayed = 0;
-        isBankrupt = false;
         ownedSmithCount = 0;
         ownedTransportCount = 0;
         currentLocation = 0;
