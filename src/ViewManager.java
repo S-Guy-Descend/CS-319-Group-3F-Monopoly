@@ -76,7 +76,6 @@ public class ViewManager {
         playerNumDropDown.setPrefHeight(50);
 
         StyledButton hostGameButton = new StyledButton("Host Game");
-        StyledButton backButton = new StyledButton("Back");
 
         hostGameLayout.getChildren().addAll( numberOfPlayersLabel, playerNumDropDown, hostGameButton);
 
