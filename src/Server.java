@@ -184,7 +184,11 @@ public class Server {
                                         String playerClass = classes.get(j).substring(11);
                                         Game.instance.addPlayer(playerID, playerClass);
                                     }
-                                    connections.get(0).dataOut.writeObject(Game.instance);
+                                    for (int j = 0; j < connections.size(); j++) {
+                                        System.out.println("SENDING GAME DATA TO PLAYER " + j);
+                                        connections.get(j).dataOut.writeObject(Game.instance);
+                                        System.out.println("SENT GAME DATA TO PLAYER " + j);
+                                    }
                                     System.out.println("BEFORE WRITING TRUE");
                                     dataOut.writeBoolean(true);
                                     System.out.println("AFTER WRITING TRUE");
