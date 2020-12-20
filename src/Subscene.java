@@ -49,7 +49,7 @@ public class Subscene extends SubScene{
         transition.setNode(this);
 
         if(isHidden) {
-            transition.setToX(-520);
+            transition.setToX(-(this.getWidth() + 20));
             isHidden = false;
         }
         else{

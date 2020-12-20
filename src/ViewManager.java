@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -5,15 +6,18 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
+
+import java.io.IOException;
+import java.io.OptionalDataException;
+import java.io.UTFDataFormatException;
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ViewManager {
 
@@ -36,6 +40,22 @@ public class ViewManager {
     private Subscene tutorialSubScene;
     private Subscene joinGameSubScene;
     private Subscene hostGameSubScene;
+    private Subscene lobbySubScene;
+
+    // Connection properties
+    private ClientSideConnection csc;
+    volatile ArrayList<String> classes;
+    volatile boolean gameStarted;
+    private int playerCount = 0;
+    volatile boolean done = false;
+    private Game currentGameState;
+
+    // LobbySubScene components
+    ListView playerList;
+    ComboBox classDropdown;
+    StyledButton startGameButton;
+    StyledButton leaveLobbyButton;
+    InfoLabel gameID;
 
     public ViewManager() {
         mainPane = new AnchorPane();
@@ -58,6 +78,175 @@ public class ViewManager {
 
         createJoinGameSubScene();
         createHostGameSubScene();
+        createLobbySubScene();
+
+    }
+
+    public void createLobbySubScene() {
+        lobbySubScene = new Subscene((int) mainScene.getHeight() - 20, (int) mainScene.getWidth() - 20, (int) mainScene.getWidth(), 20);
+
+
+
+        playerList = new ListView();
+
+        ObservableList<String> classList =
+                FXCollections.observableArrayList(
+                        "Traveler (One-in-Two)",
+                        "Traveler (Three-in-Five)",
+                        "Noble",
+                        "Knight",
+                        "Treasure Hunter",
+                        "Wizard",
+                        "Fortune Teller",
+                        "Thief",
+                        "Builder",
+                        "Cardinal"
+                );
+
+        InfoLabel selectClassLabel = new InfoLabel( "Please select your class:", 400, 150, 25, "Verdana" );
+
+        classDropdown =  new ComboBox(classList);
+        classDropdown.getSelectionModel().selectFirst();
+        classDropdown.setOnAction( e -> {
+            switch (classDropdown.getValue().toString() ) {
+                case "Traveler (One-in-Two)":
+                    try {
+                        csc.dataOut.writeInt(2);
+                        csc.dataOut.flush();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    break;
+                case "Traveler (Three-in-Five)":
+                    try {
+                        csc.dataOut.writeInt(3);
+                        csc.dataOut.flush();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    break;
+                case "Noble":
+                    try {
+                        csc.dataOut.writeInt(4);
+                        csc.dataOut.flush();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    break;
+                case "Knight":
+                    try {
+                        csc.dataOut.writeInt(5);
+                        csc.dataOut.flush();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    break;
+                case "Treasure Hunter":
+                    try {
+                        csc.dataOut.writeInt(6);
+                        csc.dataOut.flush();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    break;
+                case "Wizard":
+                    try {
+                        csc.dataOut.writeInt(7);
+                        csc.dataOut.flush();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    break;
+                case "Fortune Teller":
+                    try {
+                        csc.dataOut.writeInt(8);
+                        csc.dataOut.flush();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    break;
+                case "Thief":
+                    try {
+                        csc.dataOut.writeInt(9);
+                        csc.dataOut.flush();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    break;
+                case "Builder":
+                    try {
+                        csc.dataOut.writeInt(10);
+                        csc.dataOut.flush();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    break;
+                case "Cardinal":
+                    try {
+                        csc.dataOut.writeInt(11);
+                        csc.dataOut.flush();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    break;
+            }
+        });
+
+        gameID = new InfoLabel( "Game ID: ", 400, 150, 25, "Verdana" );
+
+        startGameButton = new StyledButton("Start Game");
+        startGameButton.setOnAction( e -> {
+            try {
+                csc.dataOut.writeInt(0);
+                csc.dataOut.flush();
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+            if (classes.size() == playerCount) {
+                gameStarted = true;
+                //startReceivingTurns();
+
+                // CREATE GAMEVIEWMANAGER HERE
+                GameViewManager game = new GameViewManager();
+                mainStage.hide();
+                game.enterGame();
+
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Can't start game!");
+                alert.setHeaderText(null);
+                alert.setContentText("Not enough players!");
+                alert.showAndWait();
+            }
+        });
+
+        leaveLobbyButton = new StyledButton("Leave Lobby");
+        leaveLobbyButton.setOnAction( e -> {
+            try {
+                csc.dataOut.writeInt(1);
+                csc.dataOut.flush();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            lobbySubScene.rightFloatSubScene();
+        });
+
+        VBox lobbyBox1 = new VBox(0);
+        lobbyBox1.setLayoutX(40);
+        lobbyBox1.setAlignment( Pos.TOP_LEFT);
+        lobbyBox1.getChildren().addAll(playerList, selectClassLabel, classDropdown);
+
+        VBox lobbyBox2 = new VBox(0);
+        lobbyBox2.setLayoutX(40);
+        lobbyBox2.setAlignment( Pos.TOP_RIGHT);
+        lobbyBox1.getChildren().addAll(gameID, startGameButton, leaveLobbyButton);
+
+        HBox createLobbyLayout = new HBox(50);
+        createLobbyLayout.setAlignment( Pos.CENTER);
+
+        createLobbyLayout.getChildren().addAll(playerList, selectClassLabel, classDropdown, gameID, startGameButton, leaveLobbyButton);
+        lobbySubScene.getPane().getChildren().add(createLobbyLayout);
+        mainPane.getChildren().add(lobbySubScene);
     }
 
     public void createHostGameSubScene() {
@@ -73,8 +262,92 @@ public class ViewManager {
         final ComboBox playerNumDropDown = new ComboBox(options);
         playerNumDropDown.setPrefWidth(200);
         playerNumDropDown.setPrefHeight(50);
+        playerNumDropDown.setOnAction( e -> {
+            playerCount = Character.getNumericValue(playerNumDropDown.getValue().toString().charAt(0));
+        });
 
         StyledButton hostGameButton = new StyledButton("Host Game");
+        hostGameButton.setOnAction( e -> {
+            if (2 <= playerCount && playerCount <= 8) {
+                connectToServer(true, "");
+                boolean response = false;
+                try {
+                    response = csc.dataIn.readBoolean();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                if (response) {
+                    try {
+                        csc.dataOut.writeInt(playerCount);
+                        csc.dataOut.flush();
+                    } catch (IOException exception) {
+                        exception.printStackTrace();
+                    }
+                    csc.continueConnection();
+                    csc.isHost = true;
+                    try {
+                        csc.gameID = csc.dataIn.readInt();
+                        gameID.setText("Game ID: " + csc.gameID);
+                        classes = (ArrayList<String>) (csc.dataIn.readObject());
+                        playerList.getItems().setAll(classes);
+                        playerList.getItems().set(csc.playerID - 1, playerList.getItems().get(csc.playerID - 1) + " [YOU]");
+                    } catch (IOException | ClassNotFoundException ex) {
+                        ex.printStackTrace();
+                    }
+                    startGameButton.setVisible(true);
+                    Thread t2 = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            // HERE
+                            while (!gameStarted) {
+                                try {
+                                    try {
+                                        try {
+                                            classes = (ArrayList<String>) (csc.dataIn.readObject());
+                                            Platform.runLater(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    playerList.getItems().setAll(classes);
+                                                    playerList.getItems().set(csc.playerID - 1, playerList.getItems().get(csc.playerID - 1) + " [YOU]");
+                                                    return;
+                                                }
+                                            });
+                                        } catch (UTFDataFormatException UTFex) {
+                                            System.out.println("UTF");
+                                        }
+                                    } catch (OptionalDataException opEx) {
+                                        System.out.println(opEx.length);
+                                        break;
+                                    }
+                                } catch (IOException | ClassNotFoundException exception) {
+                                    exception.printStackTrace();
+                                }
+                            }
+                            return;
+                        }
+                    });
+                    t2.start();
+                    lobbySubScene.rightFloatSubScene();
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Unable to host game!");
+                    alert.setHeaderText(null);
+                    alert.setContentText("You can't host a game!");
+                    try {
+                        csc.dataOut.flush();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    alert.showAndWait();
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Unable to host game!");
+                alert.setHeaderText(null);
+                alert.setContentText("Please enter a valid player count!");
+                alert.showAndWait();
+            }
+        });
 
         hostGameLayout.getChildren().addAll( numberOfPlayersLabel, playerNumDropDown, hostGameButton);
 
@@ -99,12 +372,157 @@ public class ViewManager {
         gameIDTxtField.setPrefHeight(50);
 
         StyledButton joinGameButton = new StyledButton("Join");
-        joinGameButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                GameViewManager lobby = new GameViewManager();
-                mainStage.hide();
-                lobby.enterGame();
+        AtomicBoolean joinSuccessful = new AtomicBoolean(false);
+        joinGameButton.setOnAction( e -> {
+            try {
+                connectToServer(false, gameIDTxtField.getText());
+                int checkResponse = csc.dataIn.readInt();
+                switch (checkResponse) {
+                    case 0:
+                        joinSuccessful.set(false);
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Unable to join game!");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Game with such ID does not exist!");
+                        try {
+                            csc.dataOut.flush();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                        alert.showAndWait();
+                        break;
+                    case 1:
+                        joinSuccessful.set(false);
+                        Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
+                        alert2.setTitle("Unable to join game!");
+                        alert2.setHeaderText(null);
+                        alert2.setContentText("Game with such ID does not exist!");
+                        try {
+                            csc.dataOut.flush();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                        alert2.showAndWait();
+                        break;
+                    case 2:
+                        joinSuccessful.set(true);
+                        csc.continueConnection();
+                        //window.setScene(classSelect);
+                        break;
+                    case 3:
+                        joinSuccessful.set(false);
+                        Alert alert3 = new Alert(Alert.AlertType.INFORMATION);
+                        alert3.setTitle("Unable to join game!");
+                        alert3.setHeaderText(null);
+                        alert3.setContentText("Game is full!");
+                        try {
+                            csc.dataOut.flush();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                        alert3.showAndWait();
+                        break;
+                    case 4:
+                        joinSuccessful.set(false);
+                        Alert alert4 = new Alert(Alert.AlertType.INFORMATION);
+                        alert4.setTitle("Unable to join game!");
+                        alert4.setHeaderText(null);
+                        alert4.setContentText("Game is already in progress!");
+                        try {
+                            csc.dataOut.flush();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                        alert4.showAndWait();
+                        break;
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            if (joinSuccessful.get()) {
+                startGameButton.setVisible(false);
+                gameID.setText("Game ID: " + String.valueOf(gameIDTxtField.getText()));
+                try {
+                    try {
+                        int update = csc.dataIn.readInt();
+                        classes = (ArrayList<String>) (csc.dataIn.readObject());
+                        playerList.getItems().setAll(classes);
+                        csc.playerID = csc.dataIn.readInt();
+                        playerList.getItems().set(csc.playerID - 1, playerList.getItems().get(csc.playerID - 1) + " [YOU]");
+                    } catch (OptionalDataException ex) {
+                        System.out.println(ex.length);
+                    }
+                } catch (IOException | ClassNotFoundException exception) {
+                    exception.printStackTrace();
+                }
+                lobbySubScene.rightFloatSubScene();
+                Thread t = new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            // HERE
+                            while (!gameStarted) {
+                                int hostCommand = csc.dataIn.readInt();
+                                System.out.println("HOST COMMAND IS " + hostCommand);
+                                if (hostCommand == 0) {
+                                    csc.dataOut.writeInt(0);
+                                    //startReceivingTurns();
+                                    Platform.runLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            gameStarted = true;
+                                            // CREATE GAMEVIEWMANAGER HERE
+                                            GameViewManager game = new GameViewManager();
+                                            mainStage.hide();
+                                            game.enterGame();
+                                            return;
+                                        }
+                                    });
+                                    return;
+                                } else if (hostCommand == 1) {
+                                    return;
+                                } else if (hostCommand == 2) {
+                                    Platform.runLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            lobbySubScene.rightFloatSubScene();
+                                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                            alert.setTitle("Lobby disbanded!");
+                                            alert.setHeaderText(null);
+                                            alert.setContentText("Host left the lobby!");
+                                            try {
+                                                csc.dataOut.flush();
+                                            } catch (IOException ex) {
+                                                ex.printStackTrace();
+                                            }
+                                            alert.showAndWait();
+                                            return;
+                                        }
+                                    });
+                                    return;
+                                } else if (hostCommand == 3) {
+                                    try {
+                                        classes = (ArrayList<String>) (csc.dataIn.readObject());
+                                        csc.playerID = csc.dataIn.readInt();
+                                        Platform.runLater(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                playerList.getItems().setAll(classes);
+                                                playerList.getItems().set(csc.playerID - 1, playerList.getItems().get(csc.playerID - 1) + " [YOU]");
+                                                return;
+                                            }
+                                        });
+                                    } catch (IOException | ClassNotFoundException exception) {
+                                        exception.printStackTrace();
+                                    }
+                                }
+                            }
+                            return;
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+                t.start();
             }
         });
 
@@ -234,5 +652,82 @@ public class ViewManager {
         */
         mainPane.getChildren().add(logo);
     }
+
+    public void connectToServer(boolean isHost, String enteredGameID) {
+        csc = new ClientSideConnection(isHost, enteredGameID);
+        /*
+        rollDice.setDisable(!isHost);
+        build.setDisable(true);
+        useScroll.setDisable(true);
+        buyProperty.setDisable(true);
+        sendTrade.setDisable(true);
+        acceptTrade.setDisable(true);
+        declineTrade.setDisable(true);
+        endTurn.setDisable(true);
+        */
+    }
+
+    /*
+    public void startReceivingTurns() {
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    System.out.println("WAITING FOR GAME, " + csc.dataIn.available());
+                    currentGameState = (Game) (csc.dataIn.readObject());
+                    System.out.println("GOT GAME, " + csc.dataIn.available());
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                while (true) {
+                    try {
+                        System.out.println("WAITING FOR A BOOLEAN");
+                        csc.isTurn = csc.dataIn.readBoolean();
+                        System.out.println("GOT A BOOLEAN");
+                        System.out.println("Player " + csc.playerID + " started Turn");
+                        if (!csc.isTurn) {
+                            boolean isMyTurn = false;
+                            while (!isMyTurn) {
+                                // Getting game data during someone else's turn
+                                System.out.println("WAITING FOR GAME IN WAIT LOOP, " + csc.dataIn.available());
+                                currentGameState = (Game) (csc.dataIn.readObject());
+                                System.out.println("GOT GAME IN WAIT LOOP, " + csc.dataIn.available());
+                                System.out.println("WAITING FOR A BOOLEAN IN WAIT LOOP, " + csc.dataIn.available());
+                                isMyTurn = csc.dataIn.readBoolean();
+                                System.out.println("GOT A BOOLEAN IN WAIT LOOP");
+                            }
+                        }
+
+                        rollDice.setDisable(false);
+
+
+                        build.setDisable(true);
+                        useScroll.setDisable(true);
+                        buyProperty.setDisable(true);
+                        sendTrade.setDisable(true);
+                        acceptTrade.setDisable(true);
+                        declineTrade.setDisable(true);
+                        endTurn.setDisable(true);
+                        if (csc.isTurn) {
+                            boolean endedTurn = false;
+                            while (!endedTurn) {
+                                // Getting game data during your turn
+                                System.out.println("WAITING FOR GAME IN TURN LOOP, " + csc.dataIn.available());
+                                currentGameState = (Game) (csc.dataIn.readObject());
+                                System.out.println("GOT GAME IN TURN LOOP, " + csc.dataIn.available());
+                                System.out.println("WAITING FOR A BOOLEAN IN TURN LOOP");
+                                endedTurn = csc.dataIn.readBoolean();
+                                System.out.println("GOT A BOOLEAN IN TURN LOOP");
+                            }
+                        }
+                    } catch (IOException | ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        t.start();
+    } */
 
 }
