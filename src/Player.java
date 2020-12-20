@@ -16,6 +16,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
 public class Player extends Application implements EventHandler<ActionEvent> {
     // Connection properties
@@ -153,7 +154,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         hostGameButton = new Button();
         hostGameButton.setText("Host Game");
         hostGameButton.setOnAction(e -> {
-            if( 2 <= playerCount && playerCount <=8) {
+            if (2 <= playerCount && playerCount <= 8) {
                 connectToServer(true, "");
                 boolean response = false;
                 try {
@@ -184,7 +185,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         @Override
                         public void run() {
                             // HERE
-                            while(!gameStarted) {
+                            while (!gameStarted) {
                                 try {
                                     try {
                                         try {
@@ -202,6 +203,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                                         }
                                     } catch (OptionalDataException opEx) {
                                         System.out.println(opEx.length);
+                                        break;
                                     }
                                 } catch (IOException | ClassNotFoundException exception) {
                                     exception.printStackTrace();
@@ -273,7 +275,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
             try {
                 connectToServer(false, gameIDTxtField.getText());
                 int checkResponse = csc.dataIn.readInt();
-                switch(checkResponse) {
+                switch (checkResponse) {
                     case 0:
                         joinSuccessful.set(false);
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -282,7 +284,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         alert.setContentText("Game with such ID does not exist!");
                         try {
                             csc.dataOut.flush();
-                        } catch(IOException ex) {
+                        } catch (IOException ex) {
                             ex.printStackTrace();
                         }
                         alert.showAndWait();
@@ -295,7 +297,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         alert2.setContentText("Game with such ID does not exist!");
                         try {
                             csc.dataOut.flush();
-                        } catch(IOException ex) {
+                        } catch (IOException ex) {
                             ex.printStackTrace();
                         }
                         alert2.showAndWait();
@@ -313,7 +315,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         alert3.setContentText("Game is full!");
                         try {
                             csc.dataOut.flush();
-                        } catch(IOException ex) {
+                        } catch (IOException ex) {
                             ex.printStackTrace();
                         }
                         alert3.showAndWait();
@@ -326,16 +328,16 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         alert4.setContentText("Game is already in progress!");
                         try {
                             csc.dataOut.flush();
-                        } catch(IOException ex) {
+                        } catch (IOException ex) {
                             ex.printStackTrace();
                         }
                         alert4.showAndWait();
                         break;
                 }
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            if(joinSuccessful.get()) {
+            if (joinSuccessful.get()) {
                 startGame.setVisible(false);
                 gameID.setText("Game ID: " + String.valueOf(gameIDTxtField.getText()));
                 try {
@@ -345,7 +347,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         playerList.getItems().setAll(classes);
                         playerID = csc.dataIn.readInt();
                         playerList.getItems().set(playerID - 1, playerList.getItems().get(playerID - 1) + " [YOU]");
-                    } catch( OptionalDataException ex) {
+                    } catch (OptionalDataException ex) {
                         System.out.println(ex.length);
                     }
                 } catch (IOException | ClassNotFoundException exception) {
@@ -356,25 +358,27 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                     public void run() {
                         try {
                             // HERE
-                            while(!gameStarted) {
+                            while (!gameStarted) {
                                 int hostCommand = csc.dataIn.readInt();
                                 System.out.println("HOST COMMAND IS " + hostCommand);
-                                if(hostCommand == 0) {
+                                if (hostCommand == 0) {
                                     csc.dataOut.writeInt(0);
                                     startReceivingTurns();
                                     Platform.runLater(new Runnable() {
-                                        @Override public void run() {
+                                        @Override
+                                        public void run() {
                                             window.setScene(inGame);
                                             gameStarted = true;
                                             return;
                                         }
                                     });
                                     return;
-                                } else if(hostCommand == 1){
+                                } else if (hostCommand == 1) {
                                     return;
-                                } else if(hostCommand == 2) {
+                                } else if (hostCommand == 2) {
                                     Platform.runLater(new Runnable() {
-                                        @Override public void run() {
+                                        @Override
+                                        public void run() {
                                             window.setScene(mainMenu);
                                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                             alert.setTitle("Lobby disbanded!");
@@ -382,7 +386,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                                             alert.setContentText("Host left the lobby!");
                                             try {
                                                 csc.dataOut.flush();
-                                            } catch(IOException ex) {
+                                            } catch (IOException ex) {
                                                 ex.printStackTrace();
                                             }
                                             alert.showAndWait();
@@ -390,12 +394,13 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                                         }
                                     });
                                     return;
-                                } else if(hostCommand == 3) {
+                                } else if (hostCommand == 3) {
                                     try {
                                         classes = (ArrayList<String>) (csc.dataIn.readObject());
                                         playerID = csc.dataIn.readInt();
                                         Platform.runLater(new Runnable() {
-                                            @Override public void run() {
+                                            @Override
+                                            public void run() {
                                                 playerList.getItems().setAll(classes);
                                                 playerList.getItems().set(playerID - 1, playerList.getItems().get(playerID - 1) + " [YOU]");
                                                 return;
@@ -407,7 +412,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                                 }
                             }
                             return;
-                        } catch(IOException ex) {
+                        } catch (IOException ex) {
                             ex.printStackTrace();
                         }
                     }
@@ -434,11 +439,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         leaveLobby = new Button();
         leaveLobby.setText("Leave Lobby");
         leaveLobby.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(1);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
             window.setScene(mainMenu);
@@ -450,11 +454,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         traveler1 = new Button();
         traveler1.setText("Traveler (One-in-Two)");
         traveler1.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(2);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -462,11 +465,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         traveler2 = new Button();
         traveler2.setText("Traveler (Three-in-Five)");
         traveler2.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(3);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -474,11 +476,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         noble = new Button();
         noble.setText("Noble");
         noble.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(4);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -486,11 +487,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         knight = new Button();
         knight.setText("Knight");
         knight.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(5);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -498,11 +498,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         treasureHunter = new Button();
         treasureHunter.setText("Treasure Hunter");
         treasureHunter.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(6);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -510,11 +509,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         wizard = new Button();
         wizard.setText("Wizard");
         wizard.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(7);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -522,11 +520,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         fortuneTeller = new Button();
         fortuneTeller.setText("Fortune Teller");
         fortuneTeller.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(8);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -534,11 +531,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         thief = new Button();
         thief.setText("Thief");
         thief.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(9);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -546,11 +542,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         builder = new Button();
         builder.setText("Builder");
         builder.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(10);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -558,11 +553,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         cardinal = new Button();
         cardinal.setText("Cardinal");
         cardinal.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(11);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -573,44 +567,20 @@ public class Player extends Application implements EventHandler<ActionEvent> {
             try {
                 csc.dataOut.writeInt(0);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
-                ex.printStackTrace();
+            } catch (IOException exception) {
+                exception.printStackTrace();
             }
-            Thread t = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        while(true) {
-                            int startConfirmed = csc.dataIn.readInt();
-                            if (startConfirmed == 3) {
-                                gameStarted = true;
-                                startReceivingTurns();
-                                Platform.runLater(new Runnable() {
-                                    @Override public void run() {
-                                        window.setScene(inGame);
-                                        return;
-                                    }
-                                });
-                                return;
-                            } else {
-                                Platform.runLater(new Runnable() {
-                                    @Override public void run() {
-                                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                                        alert.setTitle("Can't start game!");
-                                        alert.setHeaderText(null);
-                                        alert.setContentText("Not enough players!");
-                                        alert.showAndWait();
-                                        return;
-                                    }
-                                });
-                                return;
-                            }
-                        }
-                    } catch(IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            });
-            t.start();
+            if (classes.size() == playerCount) {
+                gameStarted = true;
+                startReceivingTurns();
+                window.setScene(inGame);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Can't start game!");
+                alert.setHeaderText(null);
+                alert.setContentText("Not enough players!");
+                alert.showAndWait();
+            }
         });
 
         gameID = new Label();
@@ -667,7 +637,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
 
         // hangi buton ne yapıyor kontrol etmek için
         if (event.getSource() == rollDice) {
-            if(isTurn) {
+            if (isTurn) {
                 rollDice.setDisable(true);
                 build.setDisable(false);
                 useScroll.setDisable(false);
@@ -680,25 +650,25 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                     System.out.println("Player " + playerID + " rolled dice");
                     csc.dataOut.writeInt(0);
                     csc.dataOut.flush();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         if (event.getSource() == build) {
-            if(isTurn) {
+            if (isTurn) {
                 build.setDisable(true);
                 try {
                     System.out.println("Player " + playerID + " built");
                     csc.dataOut.writeInt(1);
                     csc.dataOut.flush();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         if (event.getSource() == useScroll) {
-            if(isTurn) {
+            if (isTurn) {
                 useScroll.setDisable(true);
                 try {
                     System.out.println("Player " + playerID + " used scroll");
@@ -714,13 +684,13 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                     csc.dataOut.writeInt(victimID);
                     csc.dataOut.flush();
 
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         if (event.getSource() == buyProperty) {
-            if(isTurn) {
+            if (isTurn) {
                 buyProperty.setDisable(true);
                 try {
                     System.out.println("Player " + playerID + " bought property");
@@ -733,13 +703,13 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         alert.setHeaderText(null);
                         alert.setContentText("You cannot purchase this land!");
                     }
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         if (event.getSource() == sendTrade) {
-            if(isTurn) {
+            if (isTurn) {
                 sendTrade.setDisable(true);
                 try {
                     System.out.println("Player " + playerID + " sent trade");
@@ -760,39 +730,39 @@ public class Player extends Application implements EventHandler<ActionEvent> {
 
                     csc.dataOut.writeObject(tradeRequest);
                     csc.dataOut.flush();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         if (event.getSource() == acceptTrade) {
-            if(isTurn) {
+            if (isTurn) {
                 acceptTrade.setDisable(true);
                 declineTrade.setDisable(true);
                 try {
                     System.out.println("Player " + playerID + " accepted trade");
                     csc.dataOut.writeInt(5);
                     csc.dataOut.flush();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         if (event.getSource() == declineTrade) {
-            if(isTurn) {
+            if (isTurn) {
                 declineTrade.setDisable(true);
                 acceptTrade.setDisable(true);
                 try {
                     System.out.println("Player " + playerID + " declined trade");
                     csc.dataOut.writeInt(6);
                     csc.dataOut.flush();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         if (event.getSource() == endTurn) {
-            if(isTurn) {
+            if (isTurn) {
                 rollDice.setDisable(true);
                 build.setDisable(true);
                 useScroll.setDisable(true);
@@ -805,7 +775,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                     System.out.println("Player " + playerID + " ended Turn");
                     csc.dataOut.writeInt(7);
                     csc.dataOut.flush();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -828,9 +798,9 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         Thread t = new Thread(new Runnable() {
             public void run() {
                 try {
-                    System.out.println("READING CURRENT GAME STATE");
+                    System.out.println("WAITING FOR GAME, " + csc.dataIn.available());
                     currentGameState = (Game) (csc.dataIn.readObject());
-                    System.out.println("READ CURRENT GAME STATE");
+                    System.out.println("GOT GAME, " + csc.dataIn.available());
                 } catch (IOException exception) {
                     exception.printStackTrace();
                 } catch (ClassNotFoundException e) {
@@ -838,11 +808,22 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                 }
                 while (true) {
                     try {
-                        System.out.println("BEFORE READING TRUE");
+                        System.out.println("WAITING FOR A BOOLEAN");
                         isTurn = csc.dataIn.readBoolean();
-                        System.out.println("AFTER READING TRUE");
+                        System.out.println("GOT A BOOLEAN");
                         System.out.println("Player " + playerID + " started Turn");
-                        rollDice.setDisable(!isTurn);
+                        if (!isTurn) {
+                            boolean isMyTurn = false;
+                            while (!isMyTurn) {
+                                // Getting game data during someone else's turn
+                                currentGameState = (Game) (csc.dataIn.readObject());
+                                isMyTurn = csc.dataIn.readBoolean();
+                            }
+                        }
+
+                        rollDice.setDisable(false);
+
+
                         build.setDisable(true);
                         useScroll.setDisable(true);
                         buyProperty.setDisable(true);
@@ -850,7 +831,15 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         acceptTrade.setDisable(true);
                         declineTrade.setDisable(true);
                         endTurn.setDisable(true);
-                    } catch (IOException e) {
+                        if (isTurn) {
+                            boolean endedTurn = false;
+                            while (!endedTurn) {
+                                // Getting game data during your turn
+                                currentGameState = (Game) (csc.dataIn.readObject());
+                                endedTurn = csc.dataIn.readBoolean();
+                            }
+                        }
+                    } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
@@ -873,7 +862,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                 dataOut = new ObjectOutputStream(socket.getOutputStream());
                 dataOut.flush();
                 dataIn = new ObjectInputStream(socket.getInputStream());
-                if(!isHost) {
+                if (!isHost) {
                     dataOut.writeBoolean(false);
                     dataOut.writeUTF(enteredGameID);
                     dataOut.flush();
@@ -891,7 +880,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                 playerID = dataIn.readInt();
                 isTurn = dataIn.readBoolean();
                 System.out.println("Connected to server as player " + playerID);
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 

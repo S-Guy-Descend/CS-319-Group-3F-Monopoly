@@ -171,34 +171,17 @@ public class Server {
                     while (true) {
                         int hostCommand = dataIn.readInt();
                         if (hostCommand == 0) {
+                            System.out.println("HOST PRESSED START");
                             if (numPlayers == maxPlayers) {
                                 gameStarted = true;
-                                dataOut.writeInt(3);
+                                dataOut.writeObject(classes);
                                 dataOut.flush();
                                 for (int i = 1; i < maxPlayers; i++) {
                                     connections.get(i).dataOut.writeInt(0);
                                     connections.get(i).dataOut.flush();
-
-                                    //START OF GAME
-                                    for(int j = 0; j < classes.size(); j++) {
-                                        String playerClass = classes.get(j).substring(11);
-                                        Game.instance.addPlayer(playerID, playerClass);
-                                    }
-                                    for (int j = 0; j < connections.size(); j++) {
-                                        System.out.println("SENDING GAME DATA TO PLAYER " + j);
-                                        connections.get(j).dataOut.writeObject(Game.instance);
-                                        System.out.println("SENT GAME DATA TO PLAYER " + j);
-                                    }
-                                    System.out.println("BEFORE WRITING TRUE");
-                                    dataOut.writeBoolean(true);
-                                    System.out.println("AFTER WRITING TRUE");
-                                    dataOut.flush();
-                                    Game.instance.turnCounter = Game.instance.advanceTurn();
                                 }
                                 break;
                             } else {
-                                dataOut.writeInt(2);
-                                dataOut.flush();
                                 System.out.println("NOT ENOUGH PLAYERS!");
                             }
                         } else if (hostCommand == 1) {
@@ -293,7 +276,6 @@ public class Server {
                                 }
                                 connections.get(i).dataOut.flush();
                             }
-                            break;
                         } else {
                             // NON-HOST CHANGED CLASS
                             switch (command) {
@@ -345,6 +327,34 @@ public class Server {
                     }
                 }
 
+                //START OF GAME
+                for(int j = 0; j < classes.size(); j++) {
+                    String playerClass = classes.get(j).substring(11);
+                    Game.instance.addPlayer(playerID, playerClass);
+                }
+                for (int j = 0; j < connections.size(); j++) {
+                    System.out.println("SENDING GAME DATA TO PLAYER " + (j + 1));
+                    connections.get(j).dataOut.writeObject(Game.instance);
+                    connections.get(j).dataOut.flush();
+                    System.out.println("SENT GAME DATA TO PLAYER " + (j + 1));
+                }
+                for (int j = 0; j < connections.size(); j++) {
+                    if ( j == 0) {
+                        System.out.println("BEFORE WRITING TRUE TO PLAYER " + (j + 1));
+                        connections.get(j).dataOut.writeBoolean(true);
+                        connections.get(j).dataOut.flush();
+                        System.out.println("AFTER WRITING TRUE TO PLAYER " + (j + 1));
+                    } else {
+                        System.out.println("BEFORE WRITING FALSE TO PLAYER " + (j + 1));
+                        connections.get(j).dataOut.writeBoolean(false);
+                        connections.get(j).dataOut.flush();
+                        System.out.println("AFTER WRITING FALSE TO PLAYER " + (j + 1));
+                    }
+                }
+
+                dataOut.flush();
+                Game.instance.turnCounter = Game.instance.advanceTurn();
+
                 while (true) {
                     if (isTurn) {
                         int operation = dataIn.readInt();
@@ -373,6 +383,7 @@ public class Server {
                             case 3:
                                 System.out.println("Player " + playerID + " bought property");
                                 boolean purchaseSuccessful = Game.instance.tokens.get(playerID - 1).purchaseLand();
+                                System.out.println("PURCHASE " + purchaseSuccessful);
                                 dataOut.writeBoolean(purchaseSuccessful);
                                 dataOut.flush();
                                 // SEND CURRENT GAME INFO TO ALL PLAYERS
@@ -414,20 +425,35 @@ public class Server {
                                 } else {
                                     nextPlayer = 1;
                                 }
-                                connections.get(nextPlayer - 1).isTurn = true;
-                                connections.get(nextPlayer - 1).dataOut.writeBoolean(true);
-                                connections.get(nextPlayer - 1).dataOut.flush();
+
 
                                 Game.instance.advanceTurn();
 
                                 // SEND CURRENT GAME INFO TO ALL PLAYERS
                                 break;
                         }
-                        /*
-                        for(int i = 0; i < connections.size(); i++) {
-                            connections.get(i).dataOut.writeObject(Game.instance);
-                            connections.get(i).dataOut.flush();
-                        } */
+
+                        if (operation != 7) {
+                            // WRITE GAME DATA TO ALL PLAYERS
+                            for(int i = 0; i < connections.size(); i++) {
+                                connections.get(i).dataOut.writeObject(Game.instance);
+                                connections.get(i).dataOut.flush();
+                            }
+                            // WRITE FALSE TO ALL PLAYERS
+                            for(int i = 0; i < connections.size(); i++) {
+                                connections.get(i).dataOut.writeBoolean(false);
+                                connections.get(i).dataOut.flush();
+                            }
+                        } else {
+                            // WRITE GAME DATA TO ALL PLAYERS
+                            for(int i = 0; i < connections.size(); i++) {
+                                connections.get(i).dataOut.writeObject(Game.instance);
+                                connections.get(i).dataOut.flush();
+                            }
+
+                            // WRITE TRUE TO CURRENT AND NEXT PLAYER
+                            connections.get(playerID - 1)
+                        }
                     }
                 }
             } catch (IOException e) {
