@@ -162,7 +162,10 @@ public class Token implements Serializable
                 money -= currentTransport.price;
                 currentTransport.changeOwner(ID);
                 this.ownedTransportCount += 1;
-                currentTransport.calculateRent();
+                ((Transport)Game.instance.board.map[5]).calculateRent();
+                ((Transport)Game.instance.board.map[15]).calculateRent();
+                ((Transport)Game.instance.board.map[25]).calculateRent();
+                ((Transport)Game.instance.board.map[35]).calculateRent();
                 activeLands.add( currentLocation );
                 return true;
             }
@@ -258,6 +261,11 @@ public class Token implements Serializable
                 Transport currentTransport = (Transport) Game.instance.board.map[locationToMortgage];
                 money += currentTransport.mortgagePrice;
                 currentTransport.setAsMortgaged();
+                ownedTransportCount --;
+                ((Transport)Game.instance.board.map[5]).calculateRent();
+                ((Transport)Game.instance.board.map[15]).calculateRent();
+                ((Transport)Game.instance.board.map[25]).calculateRent();
+                ((Transport)Game.instance.board.map[35]).calculateRent();
                 System.out.println("Land is mortgaged");
                 activeLands.remove( locationToMortgage );
                 return true;
@@ -321,6 +329,11 @@ public class Token implements Serializable
                 Transport currentTransport = (Transport) Game.instance.board.map[locationToUnmortgage];
                 money -= (int) (currentTransport.mortgagePrice * currentTransport.MORTGAGE_REDEMPTION_MULTIPLIER);
                 currentTransport.removeMortgage();
+                ownedTransportCount ++;
+                ((Transport)Game.instance.board.map[5]).calculateRent();
+                ((Transport)Game.instance.board.map[15]).calculateRent();
+                ((Transport)Game.instance.board.map[25]).calculateRent();
+                ((Transport)Game.instance.board.map[35]).calculateRent();
                 System.out.println("Land is UNMORTGAGED");
                 activeLands.add( locationToUnmortgage );
                 return true;

@@ -24,13 +24,13 @@ public class Transport extends Square{
         if(Game.instance.tokens.get(ownerId).ownedTransportCount == 1) {
             rent = RENT_FOR_ONE_TRANSPORT_OWNED;
         }
-        else if(Game.instance.tokens.get(ownerId).ownedSmithCount == 2) {
+        else if(Game.instance.tokens.get(ownerId).ownedTransportCount == 2) {
             rent = RENT_FOR_TWO_TRANSPORT_OWNED;
         }
-        else if(Game.instance.tokens.get(ownerId).ownedSmithCount == 3) {
+        else if(Game.instance.tokens.get(ownerId).ownedTransportCount == 3) {
             rent = RENT_FOR_THREE_TRANSPORT_OWNED;
         }
-        else if(Game.instance.tokens.get(ownerId).ownedSmithCount == 4) {
+        else if(Game.instance.tokens.get(ownerId).ownedTransportCount == 4) {
             rent = RENT_FOR_FOUR_TRANSPORT_OWNED;
         }
     }
