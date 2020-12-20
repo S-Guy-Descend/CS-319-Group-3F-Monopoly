@@ -12,10 +12,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
+import sun.audio.AudioData;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+import sun.audio.ContinuousAudioDataStream;
 
-import java.io.IOException;
-import java.io.OptionalDataException;
-import java.io.UTFDataFormatException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -56,7 +58,18 @@ public class ViewManager {
     StyledButton leaveLobbyButton;
     InfoLabel gameID;
 
+    // music
+    InputStream music;
+
     public ViewManager() {
+        try {
+            AudioData data = new AudioStream(new FileInputStream(".bgm.mp3")).getData();
+            ContinuousAudioDataStream sound = new ContinuousAudioDataStream(data);
+            AudioPlayer.player.start(sound);
+        } catch ( Exception exception) {
+            exception.printStackTrace();
+        }
+
         mainPane = new AnchorPane();
         mainScene = new Scene(mainPane, WIDTH, HEIGHT);
         mainStage = new Stage();
