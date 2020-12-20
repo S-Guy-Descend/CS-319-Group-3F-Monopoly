@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="03c25cf0-65d8-4206-a584-fcc934e9a856" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/bgm.mp3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ViewManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ViewManager.java" afterDir="false" />
     </list>
@@ -52,13 +51,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="class" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -90,6 +91,7 @@
       <workItem from="1608136629845" duration="28000" />
       <workItem from="1608429093625" duration="330000" />
       <workItem from="1608483002708" duration="607000" />
+      <workItem from="1608486311514" duration="102000" />
     </task>
     <servers />
   </component>
@@ -106,6 +108,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />

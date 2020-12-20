@@ -72,6 +72,7 @@ public class ViewManager {
             clip = AudioSystem.getClip();
             clip.open(audioInput);
             clip.loop(Clip.LOOP_CONTINUOUSLY);
+            clip.stop();
         } catch ( Exception exception) {
             exception.printStackTrace();
         }
