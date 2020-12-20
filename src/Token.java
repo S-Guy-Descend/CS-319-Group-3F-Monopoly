@@ -56,6 +56,11 @@ public class Token implements Serializable
 
         currentLocation = (currentLocation + diceRollOutcome) % 40;
 
+        activateSquare();
+    }
+
+    public void activateSquare()
+    {
         if(Game.instance.board.map[this.currentLocation] instanceof ScrollSquare) {
             drawScroll();
             return;

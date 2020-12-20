@@ -2,53 +2,67 @@ import java.io.Serializable;
 
 public interface TravelStrategy
 {
-    void move( int currentLocation, int diceRollOutcome, int readyToTravel, int feastCounter );
+    void move( Traveler traveler );
 }
 
 class OneInTwo implements TravelStrategy, Serializable
 {
-    public void move( int currentLocation, int diceRollOutcome, int readyToTravel, int feastCounter )
+    public void move( Traveler traveler )
     {
-        readyToTravel ++;
-
-        if ( feastCounter != 0 )
+        if(traveler.currentLocation + traveler.diceRollOutcome >= 40)
         {
-            currentLocation = currentLocation + diceRollOutcome + 1;
-            feastCounter = feastCounter - 1;
+            traveler.money += 20000;
         }
 
-        if ( readyToTravel == 2 )
+        traveler.readyToTravel ++;
+
+        if ( traveler.feastCounter != 0 )
         {
-            currentLocation = currentLocation + diceRollOutcome + 1;
-            readyToTravel = 0;
+            traveler.currentLocation = traveler.currentLocation + traveler.diceRollOutcome + 1;
+            traveler.feastCounter = traveler.feastCounter - 1;
+        }
+
+        if ( traveler.readyToTravel == 2 )
+        {
+            traveler.currentLocation = traveler.currentLocation + traveler.diceRollOutcome + 1;
+            traveler.readyToTravel = 0;
         }
         else
         {
-            currentLocation = currentLocation + diceRollOutcome;
+            traveler.currentLocation = traveler.currentLocation + traveler.diceRollOutcome;
         }
+
+        traveler.activateSquare();
     }
 }
 
 class ThreeInFive implements TravelStrategy, Serializable
 {
-    public void move( int currentLocation, int diceRollOutcome, int readyToTravel, int feastCounter )
+    public void move( Traveler traveler )
     {
-        readyToTravel ++;
-
-        if ( feastCounter != 0 )
+        if(traveler.currentLocation + traveler.diceRollOutcome >= 40)
         {
-            currentLocation = currentLocation + diceRollOutcome + 1;
-            feastCounter = feastCounter - 1;
+            traveler.money += 20000;
         }
 
-        if ( readyToTravel == 5 )
+        traveler.readyToTravel ++;
+
+        if ( traveler.feastCounter != 0 )
         {
-            currentLocation = currentLocation + diceRollOutcome + 3;
-            readyToTravel = 0;
+            traveler.currentLocation = traveler.currentLocation + traveler.diceRollOutcome + 1;
+            traveler.feastCounter = traveler.feastCounter - 1;
+        }
+
+        if ( traveler.readyToTravel == 5 )
+        {
+            traveler.currentLocation = traveler.currentLocation + traveler.diceRollOutcome + 3;
+            traveler.readyToTravel = 0;
         }
         else
         {
-            currentLocation = currentLocation + diceRollOutcome;
+            traveler.currentLocation = traveler.currentLocation + traveler.diceRollOutcome;
         }
+
+        traveler.activateSquare();
     }
 }

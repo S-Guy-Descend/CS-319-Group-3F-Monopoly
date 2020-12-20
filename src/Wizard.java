@@ -14,13 +14,9 @@ public class Wizard extends Token
     // asdfsadfsdafsadfsadf
     public void move()
     {
-
-        System.out.println("Wizard's move method entered");
-        System.out.println("DiceRollOutcome in Wizard move method: " + diceRollOutcome);
-
         // Restore mana
         currentMana = currentMana + ( diceRollOutcome * manaGainMultiplier );
-        System.out.println("currentMana in Wizard move method: " + currentMana);
+        System.out.println("Your Mana: " + currentMana);
 
         // Draw card for each fulled mana bar
         if ( currentMana >= maxMana )
@@ -31,6 +27,7 @@ public class Wizard extends Token
             for ( int i = drawAmount; i != 0; i -- )
             {
                 this.drawScroll();
+                System.out.println( "Mana bar filled" );
             }
         }
         super.move();
