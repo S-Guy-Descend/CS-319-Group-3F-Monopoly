@@ -12,6 +12,8 @@
         import javafx.scene.paint.Color;
         import javafx.scene.shape.Circle;
         import javafx.scene.shape.Rectangle;
+        import javafx.scene.shape.StrokeType;
+        import javafx.scene.text.Font;
         import javafx.scene.text.Text;
         import javafx.stage.Stage;
 
@@ -206,7 +208,7 @@
 
         //rectArr[1].player1Avatar.setVisible( true);
         //rectArr[1].player2Avatar.setVisible( true);
-/*
+
         // test alanı
         Button test1 = new Button( "TEST 1");
         test1.setOnAction( e->{
@@ -246,7 +248,7 @@
             }
         });
 
- */
+
 
         /*
         for( int i = 0; i < rectArr.length; i++)
@@ -258,7 +260,7 @@
         
         // layout ayarları
         HBox inGameLayout = new HBox( 20);
-        inGameLayout.getChildren().addAll( gridPane);
+        inGameLayout.getChildren().addAll( gridPane, test1, test2);
         // içerik scenenin içine koyuluyor, constructor dimensionları alıyor
         inGame = new Scene( inGameLayout, 500, 500);
 
@@ -445,8 +447,11 @@
             setHeight( SQUARE_SIZE);
             setWidth( SQUARE_SIZE);
             setStroke( Color.BLACK);
+            setStrokeType(StrokeType.INSIDE);
+            setStrokeWidth(3);
             setFill( Color.WHITE);
             squareName = new Text( name);
+            squareName.setFont(new Font(12));
 
             // square sp nin içinde tutuluyor
             sp = new StackPane();
