@@ -17,6 +17,10 @@ import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 import sun.audio.ContinuousAudioDataStream;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.swing.text.Style;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -59,13 +63,16 @@ public class ViewManager {
     InfoLabel gameID;
 
     // music
-    InputStream music;
+    Clip clip;
+    volatile boolean muted = false;
 
     public ViewManager() {
         try {
-            AudioData data = new AudioStream(new FileInputStream(".bgm.mp3")).getData();
-            ContinuousAudioDataStream sound = new ContinuousAudioDataStream(data);
-            AudioPlayer.player.start(sound);
+            AudioInputStream audioInput = AudioSystem.getAudioInputStream( new File("src/bgm.wav"));
+            clip = AudioSystem.getClip();
+            clip.open(audioInput);
+            clip.start();
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
         } catch ( Exception exception) {
             exception.printStackTrace();
         }
@@ -81,18 +88,40 @@ public class ViewManager {
         createSubScenes();
     }
     public void createSubScenes(){
-        settingsSubScene = new Subscene(250,500,-550,230);
+
         creditsSubScene = new Subscene(250,500,-550,485);
         tutorialSubScene = new Subscene(500,500,-550,230);
 
         mainPane.getChildren().add(creditsSubScene);
-        mainPane.getChildren().add(settingsSubScene);
         mainPane.getChildren().add(tutorialSubScene);
 
+        createSettingsSubScene();
         createJoinGameSubScene();
         createHostGameSubScene();
         createLobbySubScene();
 
+
+    }
+
+    public void createSettingsSubScene() {
+        settingsSubScene = new Subscene(250,500,-550,230);
+
+        mainPane.getChildren().add(settingsSubScene);
+        StyledButton mute = new StyledButton("Music On");
+        mute.setOnAction( e -> {
+            if(muted) {
+                mute.setText("Music On");
+                muted = false;
+                clip.start();
+            } else {
+                mute.setText("Music Off");
+                muted = true;
+                clip.stop();
+            }
+        });
+        mute.setLayoutX(135);
+        mute.setLayoutY(100);
+        settingsSubScene.getPane().getChildren().add(mute);
     }
 
     public void createLobbySubScene() {
