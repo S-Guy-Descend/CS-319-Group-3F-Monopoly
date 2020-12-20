@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.math.*;
 
-public class Town extends Square {
+public class Town extends Square implements Serializable {
     //variables
     final double RENT_MULTIPLIER_PER_INN = 1.1;
     final double RENT_MULTIPLIER_PER_MANSION = 1.7;
@@ -12,9 +13,8 @@ public class Town extends Square {
     boolean isPurchased = false;
     int mortgagePrice;
     boolean isMortgaged;
-    int numberOfInns = 0;
-    int numberOfMansions = 0;   // Should we get rid of this?
-                                // Maybe we can just show it as a mansion in the game once there are 5 inns?
+    int numberOfInns;
+
     int ownerId;
     int price;
     int rent;
@@ -30,6 +30,7 @@ public class Town extends Square {
         this.ownerId = -1;
         this.innPrice = innPrice;
         this.isMortgaged = isMortgaged;
+        this.numberOfInns = 0;
     }
 
     //methods

@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Token
+public class Token implements Serializable
 {
     String name;
     int ID;
@@ -9,13 +10,16 @@ public class Token
     int diceRollOutcome;
     int dungeonCountdown;
     int turnsPlayed;
-    boolean isBankrupt;
     int currentLocation;
     int ownedSmithCount;
     int ownedTransportCount;
     ArrayList<ScrollCard> scrollCards;
+
+    TradeRequest currentPendingTradeRequest;
+
     ArrayList<Integer> activeLands;
     ArrayList<Integer> residenceIDs;
+
 
     public Token( String name )
     {
@@ -25,7 +29,6 @@ public class Token
         residenceIDs = new ArrayList<Integer>();
         money = 150000;
         turnsPlayed = 0;
-        isBankrupt = false;
         ownedSmithCount = 0;
         ownedTransportCount = 0;
         currentLocation = 0;
@@ -318,6 +321,7 @@ public class Token
         money = money - amount;
     }
 
+    // TO-DO WRITE THIS METHOD
     public void respondToTradeOffer( boolean response )
     {
 

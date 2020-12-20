@@ -1,4 +1,6 @@
-public class FortuneCard
+import java.io.Serializable;
+
+public class FortuneCard implements Serializable
 {
     int effectID;
     String cardName;
