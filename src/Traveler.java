@@ -14,6 +14,6 @@ public class Traveler extends Token
 
     public void move()
     {
-        strategy.move( currentLocation, diceRollOutcome, readyToTravel, feastCounter );
+        strategy.move( this );
     }
 }
