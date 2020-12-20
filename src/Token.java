@@ -386,6 +386,11 @@ public class Token implements Serializable
 
     public void useScroll( int scrollIndex, Token effectVictim )
     {
+        if ( scrollIndex >= scrollCards.size() )
+        {
+            System.out.println( "Scroll card index invalid" );
+            return;
+        }
         if ( isScrollAvailable() )
         {
             scrollCards.get( scrollIndex ).performEffect( this, effectVictim );
