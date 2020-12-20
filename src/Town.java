@@ -13,9 +13,8 @@ public class Town extends Square implements Serializable {
     boolean isPurchased = false;
     int mortgagePrice;
     boolean isMortgaged;
-    int numberOfInns = 0;
-    int numberOfMansions = 0;   //Should we get rid of this?
-                                // Maybe we can just show it as a mansion in the game once there are 5 inns?
+    int numberOfInns;
+
     int ownerId;
     int price;
     int rent;
@@ -31,6 +30,7 @@ public class Town extends Square implements Serializable {
         this.ownerId = -1;
         this.innPrice = innPrice;
         this.isMortgaged = isMortgaged;
+        this.numberOfInns = 0;
     }
 
     //methods

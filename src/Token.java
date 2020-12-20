@@ -10,20 +10,25 @@ public class Token implements Serializable
     int diceRollOutcome;
     int dungeonCountdown;
     int turnsPlayed;
-    boolean isBankrupt;
     int currentLocation;
     int ownedSmithCount;
     int ownedTransportCount;
     ArrayList<ScrollCard> scrollCards;
+
     TradeRequest currentPendingTradeRequest;
+
+    ArrayList<Integer> activeLands;
+    ArrayList<Integer> residenceIDs;
+
 
     public Token( String name )
     {
         this.name = name;
         scrollCards = new ArrayList<ScrollCard>();
+        activeLands = new ArrayList<Integer>();
+        residenceIDs = new ArrayList<Integer>();
         money = 150000;
         turnsPlayed = 0;
-        isBankrupt = false;
         ownedSmithCount = 0;
         ownedTransportCount = 0;
         currentLocation = 0;
@@ -87,7 +92,7 @@ public class Token implements Serializable
             ((Feast) Game.instance.board.map[this.currentLocation]).buffTokenClass(this);
         }
     }
-    // If you face a problem in the future its probably because of this method. For emergencies pls call BKB.
+
     public void forceMove(int newPlace, boolean passGO)
     {
         if(newPlace < currentLocation && passGO) {
@@ -122,6 +127,7 @@ public class Token implements Serializable
             }
             money -= currentTown.price;
             currentTown.changeOwner(ID);
+            activeLands.add( currentLocation );
             return true;
         }
         else if(Game.instance.board.map[this.currentLocation] instanceof Smith) {
@@ -149,6 +155,7 @@ public class Token implements Serializable
             currentTransport.changeOwner(ID);
             this.ownedTransportCount += 1;
             currentTransport.calculateRent();
+            activeLands.add( currentLocation );
             return true;
         }
         return false;
@@ -170,6 +177,10 @@ public class Token implements Serializable
             money -= currentTown.innPrice;
             currentTown.numberOfInns += 1;
             currentTown.calculateRent();
+            if ( !residenceIDs.contains(this.currentLocation) )
+            {
+                residenceIDs.add(this.currentLocation);
+            }
             return true;
         }
         return false;
@@ -186,6 +197,8 @@ public class Token implements Serializable
             money += currentTown.mortgagePrice;
             currentTown.setAsMortgaged();
             System.out.println("Land is mortgaged");
+            activeLands.remove( locationToMortgage );
+            residenceIDs.remove( locationToMortgage );
             return true;
         }
         else if(Game.instance.board.map[locationToMortgage] instanceof Smith) {
@@ -210,7 +223,7 @@ public class Token implements Serializable
             money += currentTransport.mortgagePrice;
             currentTransport.setAsMortgaged();
             System.out.println("Land is mortgaged");
-
+            activeLands.remove( locationToMortgage );
             return true;
         }
         return false;
@@ -227,6 +240,8 @@ public class Token implements Serializable
             money -= (int) (currentTown.mortgagePrice * currentTown.MORTGAGE_REDEMPTION_MULTIPLIER);
             currentTown.removeMortgage();
             System.out.println("Land is UNMORTGAGED");
+            activeLands.add( locationToMortgage );
+            residenceIDs.add( locationToMortgage );
             return true;
         }
         else if(Game.instance.board.map[locationToMortgage] instanceof Smith) {
@@ -251,6 +266,7 @@ public class Token implements Serializable
             money -= (int) (currentTransport.mortgagePrice * currentTransport.MORTGAGE_REDEMPTION_MULTIPLIER);
             currentTransport.removeMortgage();
             System.out.println("Land is UNMORTGAGED");
+            activeLands.add( locationToMortgage );
             return true;
         }
         return false;
@@ -322,7 +338,7 @@ public class Token implements Serializable
         //Square[] placesToTake;
         int moneyToGive;
         int moneyToTake;
-
+        // trade kodlarını halledince ownedAreas ve ownerID güncellenecek.
         //makeTradeOffer( placesToGive, placesToTake, moneyToGive, moneyToTake );
     }
 
