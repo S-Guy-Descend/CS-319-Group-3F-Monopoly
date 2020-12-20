@@ -39,6 +39,17 @@ public class GameViewManager {
         rollDice.setOnAction( e -> {
             if (csc.isTurn) {
                 rollDice.disable(true);
+                // CHECK EACH BUTTON HERE
+                /*
+                build.disable(!currentGameState.tokens.get(csc.playerID - 1).isBuildAvailable());
+                useScroll.disable(!currentGameState.tokens.get(csc.playerID - 1).isScrollAvailable());
+                purchaseLand.disable(currentGameState.tokens.get(csc.playerID - 1).isLandPurchasable());
+                sendTrade.disable(true);
+                acceptTrade.disable(true);
+                declineTrade.disable(true);
+                endTurn.disable(false);
+
+                 */
                 build.disable(false);
                 useScroll.disable(false);
                 purchaseLand.disable(false);
@@ -102,13 +113,6 @@ public class GameViewManager {
                     System.out.println("Player " + csc.playerID + " bought property");
                     csc.dataOut.writeInt(3);
                     csc.dataOut.flush();
-                    boolean purchaseSuccessful = csc.dataIn.readBoolean();
-                    if (!purchaseSuccessful) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Unable to purchase land!");
-                        alert.setHeaderText(null);
-                        alert.setContentText("You cannot purchase this land!");
-                    }
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -255,9 +259,10 @@ public class GameViewManager {
         Thread t = new Thread(new Runnable() {
             public void run() {
                 try {
-                    System.out.println("WAITING FOR GAME, " + csc.dataIn.available());
                     currentGameState = (Game) (csc.dataIn.readObject());
-                    System.out.println("GOT GAME, " + csc.dataIn.available());
+                    for(int i = 0; i < currentGameState.tokens.size(); i++) {
+                        System.out.println("Player: " + (i + 1) + "Location: " +  currentGameState.tokens.get(i).currentLocation + "Money: " + currentGameState.tokens.get(i).money);
+                    }
                 } catch (IOException exception) {
                     exception.printStackTrace();
                 } catch (ClassNotFoundException e) {
@@ -265,25 +270,29 @@ public class GameViewManager {
                 }
                 while (true) {
                     try {
-                        System.out.println("WAITING FOR A BOOLEAN");
                         csc.isTurn = csc.dataIn.readBoolean();
-                        System.out.println("GOT A BOOLEAN");
                         System.out.println("Player " + csc.playerID + " started Turn");
                         if (!csc.isTurn) {
                             boolean isMyTurn = false;
                             while (!isMyTurn) {
                                 // Getting game data during someone else's turn
-                                System.out.println("WAITING FOR GAME IN WAIT LOOP, " + csc.dataIn.available());
                                 currentGameState = (Game) (csc.dataIn.readObject());
-                                System.out.println("GOT GAME IN WAIT LOOP, " + csc.dataIn.available());
-                                System.out.println("WAITING FOR A BOOLEAN IN WAIT LOOP, " + csc.dataIn.available());
+                                for(int i = 0; i < currentGameState.tokens.size(); i++) {
+                                    System.out.println("Player: " + (i + 1) + " Location: " +  currentGameState.tokens.get(i).currentLocation + " Money: " + currentGameState.tokens.get(i).money + "ScrollCards: " + currentGameState.tokens.get(i).scrollCards.size() );
+                                }
+
+                                //UPDATE BOARD HERE
+
                                 isMyTurn = csc.dataIn.readBoolean();
-                                System.out.println("GOT A BOOLEAN IN WAIT LOOP");
                             }
                         }
-
-                        rollDice.disable(false);
-
+                        if ( currentGameState.tokens.get(csc.playerID - 1).dungeonCountdown > 0 || currentGameState.tokens.get(csc.playerID - 1).money <= 0) {
+                            rollDice.disable(true);
+                            csc.dataOut.writeInt(8);
+                            csc.dataOut.flush();
+                        } else {
+                            rollDice.disable(false);
+                        }
 
                         build.disable(true);
                         useScroll.disable(true);
@@ -296,12 +305,14 @@ public class GameViewManager {
                             boolean endedTurn = false;
                             while (!endedTurn) {
                                 // Getting game data during your turn
-                                System.out.println("WAITING FOR GAME IN TURN LOOP, " + csc.dataIn.available());
                                 currentGameState = (Game) (csc.dataIn.readObject());
-                                System.out.println("GOT GAME IN TURN LOOP, " + csc.dataIn.available());
-                                System.out.println("WAITING FOR A BOOLEAN IN TURN LOOP");
+                                for(int i = 0; i < currentGameState.tokens.size(); i++) {
+                                    System.out.println("Player: " + (i + 1) + "Location: " +  currentGameState.tokens.get(i).currentLocation + "Money: " + currentGameState.tokens.get(i).money);
+                                }
+
+                                // UPDATE BOARD HERE
+
                                 endedTurn = csc.dataIn.readBoolean();
-                                System.out.println("GOT A BOOLEAN IN TURN LOOP");
                             }
                         }
                     } catch (IOException | ClassNotFoundException e) {

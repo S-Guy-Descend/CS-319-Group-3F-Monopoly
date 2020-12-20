@@ -67,12 +67,7 @@ public class Game implements Serializable {
                 playerCount++;
                 break;
         }
-        /*
-        for(int i = 0; i < playerCount; i++) {
-            Wizard player = new Wizard("Player"+i);
-            player.ID = i;
-            tokens.add(player);
-        }*/
+
     }
 
     public int advanceTurn() {

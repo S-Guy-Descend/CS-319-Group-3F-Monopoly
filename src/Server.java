@@ -331,12 +331,13 @@ public class Server {
                     //START OF GAME
                     for (int j = 0; j < classes.size(); j++) {
                         String playerClass = classes.get(j).substring(11);
-                        Game.instance.addPlayer(playerID, playerClass);
+                        Game.instance.addPlayer(j, playerClass);
                     }
                     for (int j = 0; j < connections.size(); j++) {
                         System.out.println("SENDING GAME DATA TO PLAYER " + (j + 1));
                         connections.get(j).dataOut.writeObject(Game.instance);
                         connections.get(j).dataOut.flush();
+                        connections.get(j).dataOut.reset();
                         System.out.println("SENT GAME DATA TO PLAYER " + (j + 1));
                     }
                     for (int j = 0; j < connections.size(); j++) {
@@ -364,7 +365,9 @@ public class Server {
                             case 0:
                                 System.out.println("Player " + playerID + " rolled dice");
                                 Game.instance.tokens.get(playerID - 1).rollDice();
+                                System.out.println("Player " + playerID + " rolled " + Game.instance.tokens.get(playerID - 1).diceRollOutcome );
                                 Game.instance.tokens.get(playerID - 1).move();
+                                System.out.println("Player " + playerID + " moved to " + Game.instance.tokens.get(playerID - 1).currentLocation );
 
                                 // SEND CURRENT GAME INFO TO ALL PLAYERS
                                 break;
@@ -386,8 +389,6 @@ public class Server {
                                 System.out.println("Player " + playerID + " bought property");
                                 boolean purchaseSuccessful = Game.instance.tokens.get(playerID - 1).purchaseLand();
                                 System.out.println("PURCHASE " + purchaseSuccessful);
-                                dataOut.writeBoolean(purchaseSuccessful);
-                                dataOut.flush();
                                 // SEND CURRENT GAME INFO TO ALL PLAYERS
                                 break;
                             case 4:
@@ -407,14 +408,17 @@ public class Server {
                                 break;
                             case 5:
                                 System.out.println("Player " + playerID + " accepted trade request");
+                                /*
                                 Game.instance.tokens.get(playerID - 1).respondToTradeOffer(true);
+                                 */
 
                                 // SEND CURRENT GAME INFO TO ALL PLAYERS
                                 break;
                             case 6:
                                 System.out.println("Player " + playerID + " rejected trade request");
-
+                                /*
                                 Game.instance.tokens.get(playerID - 1).respondToTradeOffer(false);
+                                 */
 
                                 // SEND CURRENT GAME INFO TO ALL PLAYERS
                                 break;
@@ -428,13 +432,15 @@ public class Server {
 
                                 // SEND CURRENT GAME INFO TO ALL PLAYERS
                                 break;
+                            case 8:
+                                break;
                         }
-
                         if (operation != 7) {
                             // WRITE GAME DATA TO ALL PLAYERS
                             for(int i = 0; i < connections.size(); i++) {
                                 connections.get(i).dataOut.writeObject(Game.instance);
                                 connections.get(i).dataOut.flush();
+                                connections.get(i).dataOut.reset();
                             }
                             // WRITE FALSE TO ALL PLAYERS
                             for(int i = 0; i < connections.size(); i++) {
@@ -447,6 +453,7 @@ public class Server {
                             for(int i = 0; i < connections.size(); i++) {
                                 connections.get(i).dataOut.writeObject(Game.instance);
                                 connections.get(i).dataOut.flush();
+                                connections.get(i).dataOut.reset();
                             }
 
                             // WRITE TRUE TO CURRENT AND NEXT PLAYER

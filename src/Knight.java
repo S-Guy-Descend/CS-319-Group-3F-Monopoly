@@ -11,6 +11,7 @@ public class Knight extends Token
     public void payMoney( Token receiver, int amount )
     {
         int newAmount = (int)(amount * 0.75);
+
         if ( feastEvasion )
         {
             newAmount = 0;
