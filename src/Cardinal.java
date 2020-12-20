@@ -2,8 +2,6 @@ import java.util.ArrayList;
 
 public class Cardinal extends Token
 {
-    ArrayList<Integer> residenceIDs = new ArrayList<Integer>();
-
     public Cardinal( String name )
     {
         super( name );

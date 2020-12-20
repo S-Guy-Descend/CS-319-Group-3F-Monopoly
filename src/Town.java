@@ -7,6 +7,7 @@ public class Town extends Square implements Serializable {
     final double RENT_MULTIPLIER_PER_MANSION = 1.7;
     final double RENT_MULTIPLIER_BY_CARDINAL = 1.2;
     final double MORTGAGE_REDEMPTION_MULTIPLIER = 1.5;
+    final int MAX_NUMBER_OF_HOUSES = 5;
 
     boolean belongsToCardinal = false;
     ColorGroup colorGroup;

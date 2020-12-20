@@ -4,7 +4,6 @@ public class Builder extends Token
 {
     final double BUILDER_CLASS_DISCOUNT = 0.8;
     final int BUILDER_FEAST_MULTIPLIER = 5000;
-    ArrayList<Integer> residenceIDs = new ArrayList<Integer>();
     public Builder( String name )
     {
         super( name );
