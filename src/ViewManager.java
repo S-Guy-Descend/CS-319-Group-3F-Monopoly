@@ -83,11 +83,16 @@ public class ViewManager {
         gameIDTxtField.setPrefHeight(50);
 
         StyledButton joinGameButton = new StyledButton("Join");
+        joinGameButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                LobbyViewManager lobby = new LobbyViewManager();
+                lobby.enterLobby();
+            }
+        });
 
         joinGameLayout.getChildren().addAll( enterGameIdLabel, gameIDTxtField, joinGameButton);
-
         joinGameSubScene.getPane().getChildren().add(joinGameLayout);
-
         mainPane.getChildren().add(joinGameSubScene);
     }
 
