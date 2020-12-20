@@ -83,7 +83,7 @@ public class ScrollCard implements Serializable
                     ((Town)Game.instance.board.map[squareWithBuildingID]).numberOfInns --;
                     if ( ((Town)Game.instance.board.map[squareWithBuildingID]).numberOfInns == 0 )
                     {
-                        effectVictim.residenceIDs.remove( squareWithBuildingID );
+                        effectVictim.residenceIDs.remove( new Integer(squareWithBuildingID) );
                     }
                     System.out.println( "Earthquake on " + Game.instance.board.map[squareWithBuildingID].name + "!" );
                 }

@@ -246,8 +246,8 @@ public class Token implements Serializable
                 money += currentTown.mortgagePrice;
                 currentTown.setAsMortgaged();
                 System.out.println("Land is mortgaged");
-                activeLands.remove( locationToMortgage );
-                residenceIDs.remove( locationToMortgage );
+                activeLands.remove( new Integer(locationToMortgage) );
+                residenceIDs.remove( new Integer(locationToMortgage) );
                 return true;
             }
             else if(Game.instance.board.map[locationToMortgage] instanceof Smith) {
@@ -267,7 +267,7 @@ public class Token implements Serializable
                 ((Transport)Game.instance.board.map[25]).calculateRent();
                 ((Transport)Game.instance.board.map[35]).calculateRent();
                 System.out.println("Land is mortgaged");
-                activeLands.remove( locationToMortgage );
+                activeLands.remove( new Integer(locationToMortgage) );
                 return true;
             }
             return false;
