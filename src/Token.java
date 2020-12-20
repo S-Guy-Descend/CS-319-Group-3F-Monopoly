@@ -36,7 +36,7 @@ public class Token implements Serializable
     }
 
     public void rollDice()
-    {
+    { /*
         int diceTotal = 0;
         int die1 = 0;
         int die2 = 0;
@@ -45,7 +45,8 @@ public class Token implements Serializable
         die2 = (int)(Math.random()*6 + 1);
         diceTotal = die1 + die2;
 
-        diceRollOutcome = diceTotal;
+        diceRollOutcome = diceTotal; */
+        diceRollOutcome = 9;
     }
 
     public void move()

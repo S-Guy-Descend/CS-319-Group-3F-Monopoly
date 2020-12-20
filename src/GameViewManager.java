@@ -40,12 +40,22 @@ public class GameViewManager {
             if (csc.isTurn) {
                 rollDice.disable(true);
                 // CHECK EACH BUTTON HERE
+                /*
                 build.disable(!currentGameState.tokens.get(csc.playerID - 1).isBuildAvailable());
                 useScroll.disable(!currentGameState.tokens.get(csc.playerID - 1).isScrollAvailable());
                 purchaseLand.disable(currentGameState.tokens.get(csc.playerID - 1).isLandPurchasable());
                 sendTrade.disable(true);
                 acceptTrade.disable(true);
                 declineTrade.disable(true);
+                endTurn.disable(false);
+
+                 */
+                build.disable(false);
+                useScroll.disable(false);
+                purchaseLand.disable(false);
+                sendTrade.disable(false);
+                acceptTrade.disable(false);
+                declineTrade.disable(false);
                 endTurn.disable(false);
                 try {
                     System.out.println("Player " + csc.playerID + " rolled dice");
@@ -103,13 +113,6 @@ public class GameViewManager {
                     System.out.println("Player " + csc.playerID + " bought property");
                     csc.dataOut.writeInt(3);
                     csc.dataOut.flush();
-                    boolean purchaseSuccessful = csc.dataIn.readBoolean();
-                    if (!purchaseSuccessful) {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("Unable to purchase land!");
-                        alert.setHeaderText(null);
-                        alert.setContentText("You cannot purchase this land!");
-                    }
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -275,7 +278,7 @@ public class GameViewManager {
                                 // Getting game data during someone else's turn
                                 currentGameState = (Game) (csc.dataIn.readObject());
                                 for(int i = 0; i < currentGameState.tokens.size(); i++) {
-                                    System.out.println("Player: " + (i + 1) + "Location: " +  currentGameState.tokens.get(i).currentLocation + "Money: " + currentGameState.tokens.get(i).money);
+                                    System.out.println("Player: " + (i + 1) + " Location: " +  currentGameState.tokens.get(i).currentLocation + " Money: " + currentGameState.tokens.get(i).money + "ScrollCards: " + currentGameState.tokens.get(i).scrollCards.size() );
                                 }
 
                                 //UPDATE BOARD HERE

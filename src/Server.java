@@ -331,7 +331,7 @@ public class Server {
                     //START OF GAME
                     for (int j = 0; j < classes.size(); j++) {
                         String playerClass = classes.get(j).substring(11);
-                        Game.instance.addPlayer(playerID, playerClass);
+                        Game.instance.addPlayer(j, playerClass);
                     }
                     for (int j = 0; j < connections.size(); j++) {
                         System.out.println("SENDING GAME DATA TO PLAYER " + (j + 1));
