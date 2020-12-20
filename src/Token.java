@@ -102,20 +102,9 @@ public class Token implements Serializable
         currentLocation = newPlace;
         diceRollOutcome = 0;
         this.move();
-        /*
-        newPlace = (newPlace+40) % 40;
-
-        if(dontPassGO) {
-            diceRollOutcome = newPlace - currentLocation;
-        }
-        else {
-            diceRollOutcome = 40 - currentLocation + newPlace;
-        }
-        this.move();
-         */
     }
 
-    public boolean purchaseLand()
+    public boolean isLandPurchasable()
     {
         if(Game.instance.board.map[this.currentLocation] instanceof Town) {
             Town currentTown = (Town) Game.instance.board.map[this.currentLocation];
@@ -125,9 +114,6 @@ public class Token implements Serializable
             if(money < currentTown.price) {
                 return false;
             }
-            money -= currentTown.price;
-            currentTown.changeOwner(ID);
-            activeLands.add( currentLocation );
             return true;
         }
         else if(Game.instance.board.map[this.currentLocation] instanceof Smith) {
@@ -138,9 +124,6 @@ public class Token implements Serializable
             if(money < currentSmith.price) {
                 return false;
             }
-            money -= currentSmith.price;
-            currentSmith.changeOwner(ID);
-            ownedSmithCount++;
             return true;
         }
         else if(Game.instance.board.map[this.currentLocation] instanceof Transport) {
@@ -151,17 +134,49 @@ public class Token implements Serializable
             if(money < currentTransport.price) {
                 return false;
             }
-            money -= currentTransport.price;
-            currentTransport.changeOwner(ID);
-            this.ownedTransportCount += 1;
-            currentTransport.calculateRent();
-            activeLands.add( currentLocation );
             return true;
         }
         return false;
     }
 
-    public boolean build()
+    public boolean purchaseLand()
+    {
+        if(Game.instance.board.map[this.currentLocation] instanceof Town) {
+            Town currentTown = (Town) Game.instance.board.map[this.currentLocation];
+            if ( isLandPurchasable() )
+            {
+                money -= currentTown.price;
+                currentTown.changeOwner(ID);
+                activeLands.add( currentLocation );
+                return true;
+            }
+        }
+        else if(Game.instance.board.map[this.currentLocation] instanceof Smith) {
+            Smith currentSmith = (Smith) Game.instance.board.map[this.currentLocation];
+            if ( isLandPurchasable() )
+            {
+                money -= currentSmith.price;
+                currentSmith.changeOwner(ID);
+                ownedSmithCount++;
+                return true;
+            }
+        }
+        else if(Game.instance.board.map[this.currentLocation] instanceof Transport) {
+            Transport currentTransport = (Transport) Game.instance.board.map[this.currentLocation];
+            if ( isLandPurchasable() )
+            {
+                money -= currentTransport.price;
+                currentTransport.changeOwner(ID);
+                this.ownedTransportCount += 1;
+                currentTransport.calculateRent();
+                activeLands.add( currentLocation );
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isBuildAvailable()
     {
         if(Game.instance.board.map[this.currentLocation] instanceof Town) {
             Town currentTown = (Town) Game.instance.board.map[this.currentLocation];
@@ -173,13 +188,52 @@ public class Token implements Serializable
                 System.out.println("You don't own all of the color group. Can't Build");
                 return false;
             }
+            return true;
+        }
+        return false;
+    }
 
-            money -= currentTown.innPrice;
-            currentTown.numberOfInns += 1;
-            currentTown.calculateRent();
+    public boolean build()
+    {
+        if ( isBuildAvailable() )
+        {
+            Town currentTownToBuild = (Town) Game.instance.board.map[this.currentLocation];
+            money -= currentTownToBuild.innPrice;
+            currentTownToBuild.numberOfInns += 1;
+            currentTownToBuild.calculateRent();
             if ( !residenceIDs.contains(this.currentLocation) )
             {
                 residenceIDs.add(this.currentLocation);
+            }
+            System.out.println( "Build successful" );
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isMortgageable( int locationToMortgage )
+    {
+        if(Game.instance.board.map[locationToMortgage] instanceof Town) {
+            Town currentTown = (Town) Game.instance.board.map[locationToMortgage];
+            if(currentTown.ownerId != this.ID || currentTown.isMortgaged()) {
+                System.out.println("You cant mortgage this land");
+                return false;
+            }
+            return true;
+        }
+        else if(Game.instance.board.map[locationToMortgage] instanceof Smith) {
+            Smith currentSmith = (Smith) Game.instance.board.map[locationToMortgage];
+            if(currentSmith.ownerId != this.ID || currentSmith.isMortgaged()) {
+                System.out.println("You cant mortgage this land");
+                return false;
+            }
+            return true;
+        }
+        else if(Game.instance.board.map[locationToMortgage] instanceof Transport) {
+            Transport currentTransport = (Transport) Game.instance.board.map[locationToMortgage];
+            if(currentTransport.ownerId != this.ID || currentTransport.isMortgaged()) {
+                System.out.println("You cant mortgage this land");
+                return false;
             }
             return true;
         }
@@ -189,59 +243,48 @@ public class Token implements Serializable
     public boolean mortgageLand( int locationToMortgage ) {
         if(Game.instance.board.map[locationToMortgage] instanceof Town) {
             Town currentTown = (Town) Game.instance.board.map[locationToMortgage];
-            if(currentTown.ownerId != this.ID || currentTown.isMortgaged()) {
-                System.out.println("You cant mortgage this land");
-                return false;
+            if ( isMortgageable( locationToMortgage ) )
+            {
+                money += currentTown.mortgagePrice;
+                currentTown.setAsMortgaged();
+                System.out.println("Land is mortgaged");
+                activeLands.remove( locationToMortgage );
+                residenceIDs.remove( locationToMortgage );
+                return true;
             }
-
-            money += currentTown.mortgagePrice;
-            currentTown.setAsMortgaged();
-            System.out.println("Land is mortgaged");
-            activeLands.remove( locationToMortgage );
-            residenceIDs.remove( locationToMortgage );
-            return true;
         }
         else if(Game.instance.board.map[locationToMortgage] instanceof Smith) {
             Smith currentSmith = (Smith) Game.instance.board.map[locationToMortgage];
-            if(currentSmith.ownerId != this.ID || currentSmith.isMortgaged()) {
-                System.out.println("You cant mortgage this land");
-                return false;
+            if ( isMortgageable( locationToMortgage ) )
+            {
+                money += currentSmith.mortgagePrice;
+                currentSmith.setAsMortgaged();
+                System.out.println("Land is mortgaged");
+                return true;
             }
-
-            money += currentSmith.mortgagePrice;
-            currentSmith.setAsMortgaged();
-            System.out.println("Land is mortgaged");
-            return true;
         }
         else if(Game.instance.board.map[locationToMortgage] instanceof Transport) {
             Transport currentTransport = (Transport) Game.instance.board.map[locationToMortgage];
-            if(currentTransport.ownerId != this.ID || currentTransport.isMortgaged()) {
-                System.out.println("You cant mortgage this land");
-                return false;
+            if ( isMortgageable( locationToMortgage ) )
+            {
+                money += currentTransport.mortgagePrice;
+                currentTransport.setAsMortgaged();
+                System.out.println("Land is mortgaged");
+                activeLands.remove( locationToMortgage );
+                return true;
             }
-
-            money += currentTransport.mortgagePrice;
-            currentTransport.setAsMortgaged();
-            System.out.println("Land is mortgaged");
-            activeLands.remove( locationToMortgage );
-            return true;
         }
         return false;
     }
 
-    public boolean redeemMortgage( int locationToMortgage ) {
+    public boolean isUnmortgageable( int locationToMortgage )
+    {
         if(Game.instance.board.map[locationToMortgage] instanceof Town) {
             Town currentTown = (Town) Game.instance.board.map[locationToMortgage];
             if(currentTown.ownerId != this.ID || !currentTown.isMortgaged()) {
                 System.out.println("You cant UNMORTGAGE this land");
                 return false;
             }
-
-            money -= (int) (currentTown.mortgagePrice * currentTown.MORTGAGE_REDEMPTION_MULTIPLIER);
-            currentTown.removeMortgage();
-            System.out.println("Land is UNMORTGAGED");
-            activeLands.add( locationToMortgage );
-            residenceIDs.add( locationToMortgage );
             return true;
         }
         else if(Game.instance.board.map[locationToMortgage] instanceof Smith) {
@@ -250,10 +293,6 @@ public class Token implements Serializable
                 System.out.println("You cant UNMORTGAGE this land");
                 return false;
             }
-
-            money -= (int) (currentSmith.mortgagePrice * currentSmith.MORTGAGE_REDEMPTION_MULTIPLIER);
-            currentSmith.removeMortgage();
-            System.out.println("Land is UNMORTGAGED");
             return true;
         }
         else if(Game.instance.board.map[locationToMortgage] instanceof Transport) {
@@ -262,12 +301,47 @@ public class Token implements Serializable
                 System.out.println("You cant UNMORTGAGE this land");
                 return false;
             }
-
-            money -= (int) (currentTransport.mortgagePrice * currentTransport.MORTGAGE_REDEMPTION_MULTIPLIER);
-            currentTransport.removeMortgage();
-            System.out.println("Land is UNMORTGAGED");
-            activeLands.add( locationToMortgage );
             return true;
+        }
+        return false;
+    }
+
+
+    public boolean redeemMortgage( int locationToMortgage ) {
+        if(Game.instance.board.map[locationToMortgage] instanceof Town) {
+            Town currentTown = (Town) Game.instance.board.map[locationToMortgage];
+            if ( isUnmortgageable( locationToMortgage ) )
+            {
+                money -= (int) (currentTown.mortgagePrice * currentTown.MORTGAGE_REDEMPTION_MULTIPLIER);
+                currentTown.removeMortgage();
+                System.out.println("Land is UNMORTGAGED");
+                activeLands.add( locationToMortgage );
+                residenceIDs.add( locationToMortgage );
+                return true;
+            }
+        }
+
+        else if(Game.instance.board.map[locationToMortgage] instanceof Smith) {
+            Smith currentSmith = (Smith) Game.instance.board.map[locationToMortgage];
+            if ( isUnmortgageable( locationToMortgage ) )
+            {
+                money -= (int) (currentSmith.mortgagePrice * currentSmith.MORTGAGE_REDEMPTION_MULTIPLIER);
+                currentSmith.removeMortgage();
+                System.out.println("Land is UNMORTGAGED");
+                return true;
+            }
+        }
+
+        else if(Game.instance.board.map[locationToMortgage] instanceof Transport) {
+            Transport currentTransport = (Transport) Game.instance.board.map[locationToMortgage];
+            if ( isUnmortgageable( locationToMortgage ) )
+            {
+                money -= (int) (currentTransport.mortgagePrice * currentTransport.MORTGAGE_REDEMPTION_MULTIPLIER);
+                currentTransport.removeMortgage();
+                System.out.println("Land is UNMORTGAGED");
+                activeLands.add( locationToMortgage );
+                return true;
+            }
         }
         return false;
     }
@@ -297,10 +371,18 @@ public class Token implements Serializable
         System.out.println("Scroll " + Game.instance.board.scrollDeck[effectID].cardName + " is drawn");
     }
 
+    public boolean isScrollAvailable()
+    {
+        return ( scrollCards.size() > 0 );
+    }
+
     public void useScroll( int scrollIndex, Token effectVictim )
     {
-        scrollCards.get( scrollIndex ).performEffect( this, effectVictim );
-        scrollCards.remove( scrollIndex );
+        if ( isScrollAvailable() )
+        {
+            scrollCards.get( scrollIndex ).performEffect( this, effectVictim );
+            scrollCards.remove( scrollIndex );
+        }
     }
 
     public void drawFortuneCard()
@@ -321,15 +403,16 @@ public class Token implements Serializable
         money = money - amount;
     }
 
-    // TO-DO WRITE THIS METHOD
-    public void respondToTradeOffer( boolean response )
-    {
-
-    }
-
     public void receiveMoney( int amount )
     {
         money = money + amount;
+    }
+
+    // TRADE FEATURE ON HOLD
+    /*
+    public void respondToTradeOffer( boolean response )
+    {
+
     }
 
     public void prepareTradeOffer( Token receiver )
@@ -342,12 +425,10 @@ public class Token implements Serializable
         //makeTradeOffer( placesToGive, placesToTake, moneyToGive, moneyToTake );
     }
 
-    /*
+
     public void makeTradeOffer( Square[] placesToGive, Square[] placesToTake, int moneyToGive, int moneyToTake)
     {
 
-    }*/
-
-
+    } */
 
 }
