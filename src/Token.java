@@ -247,7 +247,10 @@ public class Token implements Serializable
                 currentTown.setAsMortgaged();
                 System.out.println("Land is mortgaged");
                 activeLands.remove( new Integer(locationToMortgage) );
-                residenceIDs.remove( new Integer(locationToMortgage) );
+                if ( residenceIDs.contains( locationToMortgage ) )
+                {
+                    residenceIDs.remove( new Integer(locationToMortgage) );
+                }
                 return true;
             }
             else if(Game.instance.board.map[locationToMortgage] instanceof Smith) {
@@ -314,7 +317,10 @@ public class Token implements Serializable
                 currentTown.removeMortgage();
                 System.out.println("Land is UNMORTGAGED");
                 activeLands.add(locationToUnmortgage);
-                residenceIDs.add(locationToUnmortgage);
+                if ( ((Town) Game.instance.board.map[locationToUnmortgage]).numberOfInns > 0 )
+                {
+                    residenceIDs.add(locationToUnmortgage);
+                }
                 return true;
             }
             else if(Game.instance.board.map[locationToUnmortgage] instanceof Smith) {
