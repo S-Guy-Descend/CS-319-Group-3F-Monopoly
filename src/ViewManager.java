@@ -192,7 +192,7 @@ public class ViewManager {
             }
         });
 
-        gameID = new InfoLabel( "Game ID: ", 400, 150, 25, "Verdana" );
+        gameID = new InfoLabel( "Game ID: ", 250, 150, 25, "Verdana" );
 
         startGameButton = new StyledButton("Start Game");
         startGameButton.setOnAction( e -> {
@@ -232,19 +232,19 @@ public class ViewManager {
         });
 
         VBox lobbyBox1 = new VBox(0);
-        lobbyBox1.setLayoutX(40);
-        lobbyBox1.setAlignment( Pos.TOP_LEFT);
+        lobbyBox1.setAlignment( Pos.CENTER);
         lobbyBox1.getChildren().addAll(playerList, selectClassLabel, classDropdown);
 
         VBox lobbyBox2 = new VBox(0);
-        lobbyBox2.setLayoutX(40);
-        lobbyBox2.setAlignment( Pos.TOP_RIGHT);
-        lobbyBox1.getChildren().addAll(gameID, startGameButton, leaveLobbyButton);
+        lobbyBox2.setAlignment( Pos.CENTER);
+        lobbyBox2.getChildren().addAll(gameID, startGameButton, leaveLobbyButton);
 
-        HBox createLobbyLayout = new HBox(50);
+        HBox createLobbyLayout = new HBox(250);
+        createLobbyLayout.setLayoutX(150);
+        createLobbyLayout.setLayoutY(50);
         createLobbyLayout.setAlignment( Pos.CENTER);
 
-        createLobbyLayout.getChildren().addAll(playerList, selectClassLabel, classDropdown, gameID, startGameButton, leaveLobbyButton);
+        createLobbyLayout.getChildren().addAll(lobbyBox1, lobbyBox2);
         lobbySubScene.getPane().getChildren().add(createLobbyLayout);
         mainPane.getChildren().add(lobbySubScene);
     }
