@@ -9,12 +9,20 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Welcome to the game");
 
+
+        for(int i = 0; i < 2; i++) {
+            Wizard player = new Wizard("Player"+i);
+            player.ID = i;
+            Game.instance.addPlayer(i, "Wizard");
+        }
+
+
         GAME:
         while(running){
             System.out.println("--------------------------------------------------");
             turnCounter = Game.instance.advanceTurn();
-            Wizard player = (Wizard) Game.instance.tokens.get(turnCounter);
-            player.currentLocation = 1;
+            Token player = Game.instance.tokens.get(turnCounter);
+            player.rollDice();
             System.out.println("Player" + turnCounter + " moved: " + player.diceRollOutcome + " squares.");
             player.move();
             System.out.println("Player" + turnCounter + "'s current location: " + player.currentLocation);

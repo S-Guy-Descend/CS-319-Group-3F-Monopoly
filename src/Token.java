@@ -171,6 +171,7 @@ public class Token implements Serializable
             }
             return false;
         }
+        System.out.println("ISLANDPURCHASABLE RETURNED FALSE IN PURCHASELAND");
         return false;
     }
 
