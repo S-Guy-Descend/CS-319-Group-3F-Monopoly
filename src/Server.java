@@ -419,12 +419,7 @@ public class Server {
                             case 7:
                                 System.out.println("Player " + playerID + " ended Turn");
                                 isTurn = false;
-                                int nextPlayer;
-                                if (playerID < maxPlayers) {
-                                    nextPlayer = playerID + 1;
-                                } else {
-                                    nextPlayer = 1;
-                                }
+
 
 
                                 Game.instance.advanceTurn();
@@ -452,7 +447,25 @@ public class Server {
                             }
 
                             // WRITE TRUE TO CURRENT AND NEXT PLAYER
-                            connections.get(playerID - 1)
+                            int nextPlayer;
+                            if (playerID < maxPlayers) {
+                                nextPlayer = playerID + 1;
+                            } else {
+                                nextPlayer = 1;
+                            }
+                            connections.get(nextPlayer - 1).isTurn = true;
+                            connections.get(playerID - 1).dataOut.writeBoolean(true);
+                            connections.get(playerID - 1).dataOut.flush();
+                            connections.get(nextPlayer - 1).dataOut.writeBoolean(true);
+                            connections.get(nextPlayer - 1).dataOut.flush();
+
+                            // WRITE FALSE TO CURRENT PLAYER AND OTHER PLAYERS
+                            for(int i = 0; i < connections.size(); i++) {
+                                if ( i != nextPlayer - 1) {
+                                    connections.get(i).dataOut.writeBoolean(false);
+                                    connections.get(i).dataOut.flush();
+                                }
+                            }
                         }
                     }
                 }
