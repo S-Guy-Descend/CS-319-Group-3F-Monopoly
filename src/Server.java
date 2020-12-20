@@ -327,28 +327,30 @@ public class Server {
                     }
                 }
 
-                //START OF GAME
-                for(int j = 0; j < classes.size(); j++) {
-                    String playerClass = classes.get(j).substring(11);
-                    Game.instance.addPlayer(playerID, playerClass);
-                }
-                for (int j = 0; j < connections.size(); j++) {
-                    System.out.println("SENDING GAME DATA TO PLAYER " + (j + 1));
-                    connections.get(j).dataOut.writeObject(Game.instance);
-                    connections.get(j).dataOut.flush();
-                    System.out.println("SENT GAME DATA TO PLAYER " + (j + 1));
-                }
-                for (int j = 0; j < connections.size(); j++) {
-                    if ( j == 0) {
-                        System.out.println("BEFORE WRITING TRUE TO PLAYER " + (j + 1));
-                        connections.get(j).dataOut.writeBoolean(true);
+                if(isHost) {
+                    //START OF GAME
+                    for (int j = 0; j < classes.size(); j++) {
+                        String playerClass = classes.get(j).substring(11);
+                        Game.instance.addPlayer(playerID, playerClass);
+                    }
+                    for (int j = 0; j < connections.size(); j++) {
+                        System.out.println("SENDING GAME DATA TO PLAYER " + (j + 1));
+                        connections.get(j).dataOut.writeObject(Game.instance);
                         connections.get(j).dataOut.flush();
-                        System.out.println("AFTER WRITING TRUE TO PLAYER " + (j + 1));
-                    } else {
-                        System.out.println("BEFORE WRITING FALSE TO PLAYER " + (j + 1));
-                        connections.get(j).dataOut.writeBoolean(false);
-                        connections.get(j).dataOut.flush();
-                        System.out.println("AFTER WRITING FALSE TO PLAYER " + (j + 1));
+                        System.out.println("SENT GAME DATA TO PLAYER " + (j + 1));
+                    }
+                    for (int j = 0; j < connections.size(); j++) {
+                        if (j == 0) {
+                            System.out.println("BEFORE WRITING TRUE TO PLAYER " + (j + 1));
+                            connections.get(j).dataOut.writeBoolean(true);
+                            connections.get(j).dataOut.flush();
+                            System.out.println("AFTER WRITING TRUE TO PLAYER " + (j + 1));
+                        } else {
+                            System.out.println("BEFORE WRITING FALSE TO PLAYER " + (j + 1));
+                            connections.get(j).dataOut.writeBoolean(false);
+                            connections.get(j).dataOut.flush();
+                            System.out.println("AFTER WRITING FALSE TO PLAYER " + (j + 1));
+                        }
                     }
                 }
 
@@ -436,6 +438,7 @@ public class Server {
                             }
                             // WRITE FALSE TO ALL PLAYERS
                             for(int i = 0; i < connections.size(); i++) {
+                                System.out.println("WRITING FALSE TO PLAYER " + (i + 1));
                                 connections.get(i).dataOut.writeBoolean(false);
                                 connections.get(i).dataOut.flush();
                             }
@@ -466,6 +469,10 @@ public class Server {
                                     connections.get(i).dataOut.flush();
                                 }
                             }
+
+                            // WRITE TRUE TO NEXT PLAYER
+                            connections.get(nextPlayer - 1).dataOut.writeBoolean(true);
+                            connections.get(nextPlayer - 1).dataOut.flush();
                         }
                     }
                 }

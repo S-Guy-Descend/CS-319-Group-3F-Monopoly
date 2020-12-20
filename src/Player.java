@@ -816,8 +816,12 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                             boolean isMyTurn = false;
                             while (!isMyTurn) {
                                 // Getting game data during someone else's turn
+                                System.out.println("WAITING FOR GAME IN WAIT LOOP, " + csc.dataIn.available());
                                 currentGameState = (Game) (csc.dataIn.readObject());
+                                System.out.println("GOT GAME IN WAIT LOOP, " + csc.dataIn.available());
+                                System.out.println("WAITING FOR A BOOLEAN IN WAIT LOOP, " + csc.dataIn.available());
                                 isMyTurn = csc.dataIn.readBoolean();
+                                System.out.println("GOT A BOOLEAN IN WAIT LOOP");
                             }
                         }
 
@@ -835,8 +839,12 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                             boolean endedTurn = false;
                             while (!endedTurn) {
                                 // Getting game data during your turn
+                                System.out.println("WAITING FOR GAME IN TURN LOOP, " + csc.dataIn.available());
                                 currentGameState = (Game) (csc.dataIn.readObject());
+                                System.out.println("GOT GAME IN TURN LOOP, " + csc.dataIn.available());
+                                System.out.println("WAITING FOR A BOOLEAN IN TURN LOOP");
                                 endedTurn = csc.dataIn.readBoolean();
+                                System.out.println("GOT A BOOLEAN IN TURN LOOP");
                             }
                         }
                     } catch (IOException | ClassNotFoundException e) {
