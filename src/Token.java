@@ -178,6 +178,10 @@ public class Token implements Serializable
     {
         if(Game.instance.board.map[this.currentLocation] instanceof Town) {
             Town currentTown = (Town) Game.instance.board.map[this.currentLocation];
+            if( currentTown.numberOfInns >= currentTown.MAX_NUMBER_OF_HOUSES )
+            {
+                System.out.println( "There are already max number of buildings" );
+            }
             if(money < currentTown.innPrice) {
                 System.out.println("You don't have enough money to build");
                 return false;
