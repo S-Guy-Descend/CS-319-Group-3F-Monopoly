@@ -16,6 +16,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
 public class Player extends Application implements EventHandler<ActionEvent> {
     // Connection properties
@@ -26,6 +27,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
     volatile boolean gameStarted;
     private int playerCount = 0;
     volatile boolean done = false;
+    private Game currentGameState;
 
     // ana pencere
     Stage window;
@@ -152,7 +154,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         hostGameButton = new Button();
         hostGameButton.setText("Host Game");
         hostGameButton.setOnAction(e -> {
-            if( 2 <= playerCount && playerCount <=8) {
+            if (2 <= playerCount && playerCount <= 8) {
                 connectToServer(true, "");
                 boolean response = false;
                 try {
@@ -183,25 +185,28 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         @Override
                         public void run() {
                             // HERE
-                            while(!gameStarted) {
+                            while (!gameStarted) {
                                 try {
                                     try {
-                                        classes = (ArrayList<String>) (csc.dataIn.readObject());
-                                        Platform.runLater(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                playerList.getItems().setAll(classes);
-                                                playerList.getItems().set(playerID - 1, playerList.getItems().get(playerID - 1) + " [YOU]");
-                                                return;
-                                            }
-                                        });
+                                        try {
+                                            classes = (ArrayList<String>) (csc.dataIn.readObject());
+                                            Platform.runLater(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    playerList.getItems().setAll(classes);
+                                                    playerList.getItems().set(playerID - 1, playerList.getItems().get(playerID - 1) + " [YOU]");
+                                                    return;
+                                                }
+                                            });
+                                        } catch (UTFDataFormatException UTFex) {
+                                            System.out.println("UTF");
+                                        }
                                     } catch (OptionalDataException opEx) {
                                         System.out.println(opEx.length);
+                                        break;
                                     }
-                                } catch (IOException exception) {
+                                } catch (IOException | ClassNotFoundException exception) {
                                     exception.printStackTrace();
-                                } catch (ClassNotFoundException classNotFoundException) {
-                                    classNotFoundException.printStackTrace();
                                 }
                             }
                             return;
@@ -270,7 +275,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
             try {
                 connectToServer(false, gameIDTxtField.getText());
                 int checkResponse = csc.dataIn.readInt();
-                switch(checkResponse) {
+                switch (checkResponse) {
                     case 0:
                         joinSuccessful.set(false);
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -279,7 +284,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         alert.setContentText("Game with such ID does not exist!");
                         try {
                             csc.dataOut.flush();
-                        } catch(IOException ex) {
+                        } catch (IOException ex) {
                             ex.printStackTrace();
                         }
                         alert.showAndWait();
@@ -292,7 +297,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         alert2.setContentText("Game with such ID does not exist!");
                         try {
                             csc.dataOut.flush();
-                        } catch(IOException ex) {
+                        } catch (IOException ex) {
                             ex.printStackTrace();
                         }
                         alert2.showAndWait();
@@ -310,7 +315,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         alert3.setContentText("Game is full!");
                         try {
                             csc.dataOut.flush();
-                        } catch(IOException ex) {
+                        } catch (IOException ex) {
                             ex.printStackTrace();
                         }
                         alert3.showAndWait();
@@ -323,16 +328,16 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         alert4.setContentText("Game is already in progress!");
                         try {
                             csc.dataOut.flush();
-                        } catch(IOException ex) {
+                        } catch (IOException ex) {
                             ex.printStackTrace();
                         }
                         alert4.showAndWait();
                         break;
                 }
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            if(joinSuccessful.get()) {
+            if (joinSuccessful.get()) {
                 startGame.setVisible(false);
                 gameID.setText("Game ID: " + String.valueOf(gameIDTxtField.getText()));
                 try {
@@ -342,7 +347,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         playerList.getItems().setAll(classes);
                         playerID = csc.dataIn.readInt();
                         playerList.getItems().set(playerID - 1, playerList.getItems().get(playerID - 1) + " [YOU]");
-                    } catch( OptionalDataException ex) {
+                    } catch (OptionalDataException ex) {
                         System.out.println(ex.length);
                     }
                 } catch (IOException | ClassNotFoundException exception) {
@@ -353,25 +358,27 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                     public void run() {
                         try {
                             // HERE
-                            while(!gameStarted) {
+                            while (!gameStarted) {
                                 int hostCommand = csc.dataIn.readInt();
                                 System.out.println("HOST COMMAND IS " + hostCommand);
-                                if(hostCommand == 0) {
+                                if (hostCommand == 0) {
                                     csc.dataOut.writeInt(0);
                                     startReceivingTurns();
                                     Platform.runLater(new Runnable() {
-                                        @Override public void run() {
+                                        @Override
+                                        public void run() {
                                             window.setScene(inGame);
                                             gameStarted = true;
                                             return;
                                         }
                                     });
                                     return;
-                                } else if(hostCommand == 1){
+                                } else if (hostCommand == 1) {
                                     return;
-                                } else if(hostCommand == 2) {
+                                } else if (hostCommand == 2) {
                                     Platform.runLater(new Runnable() {
-                                        @Override public void run() {
+                                        @Override
+                                        public void run() {
                                             window.setScene(mainMenu);
                                             Alert alert = new Alert(Alert.AlertType.INFORMATION);
                                             alert.setTitle("Lobby disbanded!");
@@ -379,7 +386,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                                             alert.setContentText("Host left the lobby!");
                                             try {
                                                 csc.dataOut.flush();
-                                            } catch(IOException ex) {
+                                            } catch (IOException ex) {
                                                 ex.printStackTrace();
                                             }
                                             alert.showAndWait();
@@ -387,26 +394,25 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                                         }
                                     });
                                     return;
-                                } else if(hostCommand == 3) {
+                                } else if (hostCommand == 3) {
                                     try {
                                         classes = (ArrayList<String>) (csc.dataIn.readObject());
                                         playerID = csc.dataIn.readInt();
                                         Platform.runLater(new Runnable() {
-                                            @Override public void run() {
+                                            @Override
+                                            public void run() {
                                                 playerList.getItems().setAll(classes);
                                                 playerList.getItems().set(playerID - 1, playerList.getItems().get(playerID - 1) + " [YOU]");
                                                 return;
                                             }
                                         });
-                                    } catch (IOException exception) {
+                                    } catch (IOException | ClassNotFoundException exception) {
                                         exception.printStackTrace();
-                                    } catch (ClassNotFoundException classNotFoundException) {
-                                        classNotFoundException.printStackTrace();
                                     }
                                 }
                             }
                             return;
-                        } catch(IOException ex) {
+                        } catch (IOException ex) {
                             ex.printStackTrace();
                         }
                     }
@@ -433,11 +439,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         leaveLobby = new Button();
         leaveLobby.setText("Leave Lobby");
         leaveLobby.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(1);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
             window.setScene(mainMenu);
@@ -449,11 +454,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         traveler1 = new Button();
         traveler1.setText("Traveler (One-in-Two)");
         traveler1.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(2);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -461,11 +465,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         traveler2 = new Button();
         traveler2.setText("Traveler (Three-in-Five)");
         traveler2.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(3);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -473,11 +476,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         noble = new Button();
         noble.setText("Noble");
         noble.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(4);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -485,11 +487,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         knight = new Button();
         knight.setText("Knight");
         knight.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(5);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -497,11 +498,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         treasureHunter = new Button();
         treasureHunter.setText("Treasure Hunter");
         treasureHunter.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(6);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -509,11 +509,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         wizard = new Button();
         wizard.setText("Wizard");
         wizard.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(7);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -521,11 +520,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         fortuneTeller = new Button();
         fortuneTeller.setText("Fortune Teller");
         fortuneTeller.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(8);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -533,11 +531,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         thief = new Button();
         thief.setText("Thief");
         thief.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(9);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -545,11 +542,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         builder = new Button();
         builder.setText("Builder");
         builder.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(10);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -557,11 +553,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
         cardinal = new Button();
         cardinal.setText("Cardinal");
         cardinal.setOnAction(e -> {
-            try
-            {
+            try {
                 csc.dataOut.writeInt(11);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         });
@@ -572,44 +567,20 @@ public class Player extends Application implements EventHandler<ActionEvent> {
             try {
                 csc.dataOut.writeInt(0);
                 csc.dataOut.flush();
-            } catch(IOException ex) {
-                ex.printStackTrace();
+            } catch (IOException exception) {
+                exception.printStackTrace();
             }
-            Thread t = new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        while(true) {
-                            int startConfirmed = csc.dataIn.readInt();
-                            if (startConfirmed == 3) {
-                                gameStarted = true;
-                                startReceivingTurns();
-                                Platform.runLater(new Runnable() {
-                                    @Override public void run() {
-                                        window.setScene(inGame);
-                                        return;
-                                    }
-                                });
-                                return;
-                            } else {
-                                Platform.runLater(new Runnable() {
-                                    @Override public void run() {
-                                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                                        alert.setTitle("Can't start game!");
-                                        alert.setHeaderText(null);
-                                        alert.setContentText("Not enough players!");
-                                        alert.showAndWait();
-                                        return;
-                                    }
-                                });
-                                return;
-                            }
-                        }
-                    } catch(IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            });
-            t.start();
+            if (classes.size() == playerCount) {
+                gameStarted = true;
+                startReceivingTurns();
+                window.setScene(inGame);
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Can't start game!");
+                alert.setHeaderText(null);
+                alert.setContentText("Not enough players!");
+                alert.showAndWait();
+            }
         });
 
         gameID = new Label();
@@ -666,7 +637,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
 
         // hangi buton ne yapıyor kontrol etmek için
         if (event.getSource() == rollDice) {
-            if(isTurn) {
+            if (isTurn) {
                 rollDice.setDisable(true);
                 build.setDisable(false);
                 useScroll.setDisable(false);
@@ -679,52 +650,71 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                     System.out.println("Player " + playerID + " rolled dice");
                     csc.dataOut.writeInt(0);
                     csc.dataOut.flush();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         if (event.getSource() == build) {
-            if(isTurn) {
+            if (isTurn) {
                 build.setDisable(true);
                 try {
                     System.out.println("Player " + playerID + " built");
                     csc.dataOut.writeInt(1);
                     csc.dataOut.flush();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         if (event.getSource() == useScroll) {
-            if(isTurn) {
+            if (isTurn) {
                 useScroll.setDisable(true);
                 try {
                     System.out.println("Player " + playerID + " used scroll");
                     csc.dataOut.writeInt(2);
                     csc.dataOut.flush();
-                } catch(IOException e) {
+
+                    // GET PLAYER TO CHOOSE A SCROLL AND VICTIM
+                    int scrollIndex = 0;
+                    int victimID = 0;
+
+                    csc.dataOut.writeInt(scrollIndex);
+                    csc.dataOut.flush();
+                    csc.dataOut.writeInt(victimID);
+                    csc.dataOut.flush();
+
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         if (event.getSource() == buyProperty) {
-            if(isTurn) {
+            if (isTurn) {
                 buyProperty.setDisable(true);
                 try {
                     System.out.println("Player " + playerID + " bought property");
                     csc.dataOut.writeInt(3);
                     csc.dataOut.flush();
-                } catch(IOException e) {
+                    boolean purchaseSuccessful = csc.dataIn.readBoolean();
+                    if (!purchaseSuccessful) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Unable to purchase land!");
+                        alert.setHeaderText(null);
+                        alert.setContentText("You cannot purchase this land!");
+                    }
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         if (event.getSource() == sendTrade) {
-            if(isTurn) {
+            if (isTurn) {
                 sendTrade.setDisable(true);
                 try {
                     System.out.println("Player " + playerID + " sent trade");
+
+                    // TO-DO CONSTRUCT THE TRADE REQUEST PROPERLY
                     csc.dataOut.writeInt(4);
                     csc.dataOut.flush();
 
@@ -735,43 +725,44 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                     placesToTake.add(Game.instance.board.map[3]);
                     int moneyToGive = 100;
                     int moneyToTake = 300;
-                    TradeRequest tradeRequest = new TradeRequest(placesToGive, placesToTake, moneyToGive, moneyToTake);
+                    int tradeReceiver = 0;
+                    TradeRequest tradeRequest = new TradeRequest(placesToGive, placesToTake, moneyToGive, moneyToTake, tradeReceiver);
 
                     csc.dataOut.writeObject(tradeRequest);
                     csc.dataOut.flush();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         if (event.getSource() == acceptTrade) {
-            if(isTurn) {
+            if (isTurn) {
                 acceptTrade.setDisable(true);
                 declineTrade.setDisable(true);
                 try {
                     System.out.println("Player " + playerID + " accepted trade");
                     csc.dataOut.writeInt(5);
                     csc.dataOut.flush();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         if (event.getSource() == declineTrade) {
-            if(isTurn) {
+            if (isTurn) {
                 declineTrade.setDisable(true);
                 acceptTrade.setDisable(true);
                 try {
                     System.out.println("Player " + playerID + " declined trade");
                     csc.dataOut.writeInt(6);
                     csc.dataOut.flush();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
         if (event.getSource() == endTurn) {
-            if(isTurn) {
+            if (isTurn) {
                 rollDice.setDisable(true);
                 build.setDisable(true);
                 useScroll.setDisable(true);
@@ -784,7 +775,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                     System.out.println("Player " + playerID + " ended Turn");
                     csc.dataOut.writeInt(7);
                     csc.dataOut.flush();
-                } catch(IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -806,11 +797,37 @@ public class Player extends Application implements EventHandler<ActionEvent> {
     public void startReceivingTurns() {
         Thread t = new Thread(new Runnable() {
             public void run() {
+                try {
+                    System.out.println("WAITING FOR GAME, " + csc.dataIn.available());
+                    currentGameState = (Game) (csc.dataIn.readObject());
+                    System.out.println("GOT GAME, " + csc.dataIn.available());
+                } catch (IOException exception) {
+                    exception.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
                 while (true) {
                     try {
+                        System.out.println("WAITING FOR A BOOLEAN");
                         isTurn = csc.dataIn.readBoolean();
+                        System.out.println("GOT A BOOLEAN");
                         System.out.println("Player " + playerID + " started Turn");
-                        rollDice.setDisable(!isTurn);
+                        if (!isTurn) {
+                            boolean isMyTurn = false;
+                            while (!isMyTurn) {
+                                // Getting game data during someone else's turn
+                                System.out.println("WAITING FOR GAME IN WAIT LOOP, " + csc.dataIn.available());
+                                currentGameState = (Game) (csc.dataIn.readObject());
+                                System.out.println("GOT GAME IN WAIT LOOP, " + csc.dataIn.available());
+                                System.out.println("WAITING FOR A BOOLEAN IN WAIT LOOP, " + csc.dataIn.available());
+                                isMyTurn = csc.dataIn.readBoolean();
+                                System.out.println("GOT A BOOLEAN IN WAIT LOOP");
+                            }
+                        }
+
+                        rollDice.setDisable(false);
+
+
                         build.setDisable(true);
                         useScroll.setDisable(true);
                         buyProperty.setDisable(true);
@@ -818,7 +835,19 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                         acceptTrade.setDisable(true);
                         declineTrade.setDisable(true);
                         endTurn.setDisable(true);
-                    } catch (IOException e) {
+                        if (isTurn) {
+                            boolean endedTurn = false;
+                            while (!endedTurn) {
+                                // Getting game data during your turn
+                                System.out.println("WAITING FOR GAME IN TURN LOOP, " + csc.dataIn.available());
+                                currentGameState = (Game) (csc.dataIn.readObject());
+                                System.out.println("GOT GAME IN TURN LOOP, " + csc.dataIn.available());
+                                System.out.println("WAITING FOR A BOOLEAN IN TURN LOOP");
+                                endedTurn = csc.dataIn.readBoolean();
+                                System.out.println("GOT A BOOLEAN IN TURN LOOP");
+                            }
+                        }
+                    } catch (IOException | ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
@@ -841,7 +870,7 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                 dataOut = new ObjectOutputStream(socket.getOutputStream());
                 dataOut.flush();
                 dataIn = new ObjectInputStream(socket.getInputStream());
-                if(!isHost) {
+                if (!isHost) {
                     dataOut.writeBoolean(false);
                     dataOut.writeUTF(enteredGameID);
                     dataOut.flush();
@@ -859,312 +888,10 @@ public class Player extends Application implements EventHandler<ActionEvent> {
                 playerID = dataIn.readInt();
                 isTurn = dataIn.readBoolean();
                 System.out.println("Connected to server as player " + playerID);
-            } catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
         }
     }
-
 }
-
-/*
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
-import java.net.Socket;
-import java.util.ArrayList;
-
-public class Player extends JFrame{
-    private ClientSideConnection csc;
-    private int playerID;
-    private boolean isTurn;
-
-    // placeholder UI
-    private Container contentPane;
-    private JButton rollDice;
-    private JButton endTurn;
-    private JButton build;
-    private JButton useScroll;
-    private JButton buyProperty;
-    private JButton sendTrade;
-    private JButton acceptTrade;
-    private JButton declineTrade;
-
-    public Player() {
-        contentPane = this.getContentPane();
-
-        rollDice = new JButton("Roll Dice");
-        build = new JButton("Build");
-        useScroll = new JButton("Use Scroll");
-        buyProperty = new JButton("Buy Property");
-        sendTrade = new JButton("Send Trade");
-        acceptTrade = new JButton("Accept Trade");
-        declineTrade = new JButton("Decline Trade");
-        endTurn = new JButton("End Turn");
-
-        this.setSize(1400, 100);
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        contentPane.setLayout(new GridLayout(1,7));
-
-        contentPane.add(rollDice);     // 0
-        contentPane.add(build);        // 1
-        contentPane.add(useScroll);    // 2
-        contentPane.add(buyProperty);  // 3
-        contentPane.add(sendTrade);    // 4
-        contentPane.add(acceptTrade);  // 5
-        contentPane.add(declineTrade); // 6
-        contentPane.add(endTurn);      // 7
-
-        this.setVisible(true);
-
-        // Roll dice action listener
-        ActionListener rollDiceAL = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if(isTurn) {
-                    JButton b = (JButton) ae.getSource();
-                    b.setEnabled(false);
-                    rollDice.setEnabled(false);
-                    build.setEnabled(true);
-                    useScroll.setEnabled(true);
-                    buyProperty.setEnabled(true);
-                    sendTrade.setEnabled(true);
-                    acceptTrade.setEnabled(true);
-                    declineTrade.setEnabled(true);
-                    endTurn.setEnabled(true);
-                    try {
-                        System.out.println("Player " + playerID + " rolled dice");
-                        csc.dataOut.writeInt(0);
-                        csc.dataOut.flush();
-                    } catch(IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        rollDice.addActionListener(rollDiceAL);
-
-        // Build action listener
-        ActionListener buildAL = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if(isTurn) {
-                    JButton b = (JButton) ae.getSource();
-                    b.setEnabled(false);
-                    try {
-                        System.out.println("Player " + playerID + " built");
-                        csc.dataOut.writeInt(1);
-                        csc.dataOut.flush();
-                    } catch(IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        build.addActionListener(buildAL);
-
-        // Use scroll action listener
-        ActionListener useScrollAL = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if(isTurn) {
-                    JButton b = (JButton) ae.getSource();
-                    b.setEnabled(false);
-                    try {
-                        System.out.println("Player " + playerID + " used scroll");
-                        csc.dataOut.writeInt(2);
-                        csc.dataOut.flush();
-                    } catch(IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        useScroll.addActionListener(useScrollAL);
-
-        // Buy property action listener
-        ActionListener buyPropertyAL = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if(isTurn) {
-                    JButton b = (JButton) ae.getSource();
-                    b.setEnabled(false);
-                    try {
-                        System.out.println("Player " + playerID + " bought property");
-                        csc.dataOut.writeInt(3);
-                        csc.dataOut.flush();
-                    } catch(IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        buyProperty.addActionListener(buyPropertyAL);
-
-        // Send trade action listener
-        ActionListener sendTradeAL = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if(isTurn) {
-                    JButton b = (JButton) ae.getSource();
-                    b.setEnabled(false);
-                    try {
-                        System.out.println("Player " + playerID + " sent trade");
-                        csc.dataOut.writeInt(4);
-                        csc.dataOut.flush();
-
-                        //Construct the trade request
-                        ArrayList<Square> placesToGive = new ArrayList<Square>();
-                        placesToGive.add(Game.instance.board.map[1]);
-                        ArrayList<Square> placesToTake = new ArrayList<Square>();
-                        placesToTake.add(Game.instance.board.map[3]);
-                        int moneyToGive = 100;
-                        int moneyToTake = 300;
-                        TradeRequest tradeRequest = new TradeRequest(placesToGive, placesToTake, moneyToGive, moneyToTake);
-
-                        csc.dataOut.writeObject(tradeRequest);
-                        csc.dataOut.flush();
-                    } catch(IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        sendTrade.addActionListener(sendTradeAL);
-
-        // Accept trade action listener
-        ActionListener acceptTradeAL = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if(isTurn) {
-                    JButton b = (JButton) ae.getSource();
-                    b.setEnabled(false);
-                    declineTrade.setEnabled(false);
-                    try {
-                        System.out.println("Player " + playerID + " accepted trade");
-                        csc.dataOut.writeInt(5);
-                        csc.dataOut.flush();
-                    } catch(IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        acceptTrade.addActionListener(acceptTradeAL);
-
-        // Decline trade action listener
-        ActionListener declineTradeAL = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if(isTurn) {
-                    JButton b = (JButton) ae.getSource();
-                    b.setEnabled(false);
-                    acceptTrade.setEnabled(false);
-                    try {
-                        System.out.println("Player " + playerID + " declined trade");
-                        csc.dataOut.writeInt(6);
-                        csc.dataOut.flush();
-                    } catch(IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        declineTrade.addActionListener(declineTradeAL);
-
-        // End turn action listener
-        ActionListener endTurnAL = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                if(isTurn) {
-                    JButton b = (JButton) ae.getSource();
-                    rollDice.setEnabled(false);
-                    build.setEnabled(false);
-                    useScroll.setEnabled(false);
-                    buyProperty.setEnabled(false);
-                    sendTrade.setEnabled(false);
-                    acceptTrade.setEnabled(false);
-                    declineTrade.setEnabled(false);
-                    endTurn.setEnabled(false);
-                    try {
-                        System.out.println("Player " + playerID + " ended Turn");
-                        csc.dataOut.writeInt(7);
-                        csc.dataOut.flush();
-                    } catch(IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        endTurn.addActionListener(endTurnAL);
-    }
-
-    public void connectToServer() {
-        csc = new ClientSideConnection();
-        rollDice.setEnabled(isTurn);
-        build.setEnabled(false);
-        useScroll.setEnabled(false);
-        buyProperty.setEnabled(false);
-        sendTrade.setEnabled(false);
-        acceptTrade.setEnabled(false);
-        declineTrade.setEnabled(false);
-        endTurn.setEnabled(false);
-    }
-
-    public void startReceivingTurns() {
-        Thread t = new Thread( new Runnable() {
-            public void run() {
-                while(true) {
-                    try {
-                        isTurn = csc.dataIn.readBoolean();
-                        System.out.println("Player " + playerID + " started Turn");
-                        rollDice.setEnabled(isTurn);
-                        build.setEnabled(false);
-                        useScroll.setEnabled(false);
-                        buyProperty.setEnabled(false);
-                        sendTrade.setEnabled(false);
-                        acceptTrade.setEnabled(false);
-                        declineTrade.setEnabled(false);
-                        endTurn.setEnabled(false);
-                    } catch(IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-        t.start();
-    }
-
-    //Client connection
-    private class ClientSideConnection {
-        private Socket socket;
-        private ObjectInputStream dataIn;
-        private ObjectOutputStream dataOut;
-
-        private ClientSideConnection() {
-            try {
-                socket = new Socket("localhost", 12345);
-                dataOut = new ObjectOutputStream(socket.getOutputStream());
-                dataOut.flush();
-                dataIn = new ObjectInputStream(socket.getInputStream());
-                playerID = dataIn.readInt();
-                setTitle("Player " + playerID);
-                isTurn = dataIn.readBoolean();
-                System.out.println("Connected to server as player " + playerID);
-            } catch(IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static void main(String[] args) {
-        Player p = new Player();
-        p.connectToServer();
-        p.startReceivingTurns();
-    }
-}*/

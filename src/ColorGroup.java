@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ColorGroup {
+public class ColorGroup implements Serializable {
 
     String name;
     ArrayList<Town> towns = new ArrayList<Town>();

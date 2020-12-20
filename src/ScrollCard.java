@@ -1,4 +1,6 @@
-public class ScrollCard
+import java.io.Serializable;
+
+public class ScrollCard implements Serializable
 {
     int effectID;
     String cardName;

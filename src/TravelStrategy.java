@@ -1,9 +1,11 @@
+import java.io.Serializable;
+
 public interface TravelStrategy
 {
     void move( int currentLocation, int diceRollOutcome, int readyToTravel, int feastCounter );
 }
 
-class OneInTwo implements TravelStrategy
+class OneInTwo implements TravelStrategy, Serializable
 {
     public void move( int currentLocation, int diceRollOutcome, int readyToTravel, int feastCounter )
     {
@@ -27,7 +29,7 @@ class OneInTwo implements TravelStrategy
     }
 }
 
-class ThreeInFive implements TravelStrategy
+class ThreeInFive implements TravelStrategy, Serializable
 {
     public void move( int currentLocation, int diceRollOutcome, int readyToTravel, int feastCounter )
     {
