@@ -181,6 +181,7 @@ public class Token implements Serializable
             if( currentTown.numberOfInns >= currentTown.MAX_NUMBER_OF_HOUSES )
             {
                 System.out.println( "There are already max number of buildings" );
+                return false;
             }
             if(money < currentTown.innPrice) {
                 System.out.println("You don't have enough money to build");
