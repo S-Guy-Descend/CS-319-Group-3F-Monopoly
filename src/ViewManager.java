@@ -48,7 +48,6 @@ public class ViewManager {
     volatile boolean gameStarted;
     private int playerCount = 0;
     volatile boolean done = false;
-    private Game currentGameState;
 
     // LobbySubScene components
     ListView playerList;
@@ -62,6 +61,7 @@ public class ViewManager {
         mainScene = new Scene(mainPane, WIDTH, HEIGHT);
         mainStage = new Stage();
         mainStage.setScene(mainScene);
+        mainStage.setResizable(false);
         createMainMenuButtons();
         createBackground();
         createLogo();
@@ -204,10 +204,10 @@ public class ViewManager {
             }
             if (classes.size() == playerCount) {
                 gameStarted = true;
-                //startReceivingTurns();
 
                 // CREATE GAMEVIEWMANAGER HERE
-                GameViewManager game = new GameViewManager();
+                GameViewManager game = new GameViewManager(csc);
+                game.startReceivingTurns();
                 mainStage.hide();
                 game.enterGame();
 
@@ -465,13 +465,13 @@ public class ViewManager {
                                 System.out.println("HOST COMMAND IS " + hostCommand);
                                 if (hostCommand == 0) {
                                     csc.dataOut.writeInt(0);
-                                    //startReceivingTurns();
                                     Platform.runLater(new Runnable() {
                                         @Override
                                         public void run() {
                                             gameStarted = true;
                                             // CREATE GAMEVIEWMANAGER HERE
-                                            GameViewManager game = new GameViewManager();
+                                            GameViewManager game = new GameViewManager(csc);
+                                            game.startReceivingTurns();
                                             mainStage.hide();
                                             game.enterGame();
                                             return;
@@ -655,79 +655,7 @@ public class ViewManager {
 
     public void connectToServer(boolean isHost, String enteredGameID) {
         csc = new ClientSideConnection(isHost, enteredGameID);
-        /*
-        rollDice.setDisable(!isHost);
-        build.setDisable(true);
-        useScroll.setDisable(true);
-        buyProperty.setDisable(true);
-        sendTrade.setDisable(true);
-        acceptTrade.setDisable(true);
-        declineTrade.setDisable(true);
-        endTurn.setDisable(true);
-        */
     }
 
-    /*
-    public void startReceivingTurns() {
-        Thread t = new Thread(new Runnable() {
-            public void run() {
-                try {
-                    System.out.println("WAITING FOR GAME, " + csc.dataIn.available());
-                    currentGameState = (Game) (csc.dataIn.readObject());
-                    System.out.println("GOT GAME, " + csc.dataIn.available());
-                } catch (IOException exception) {
-                    exception.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                while (true) {
-                    try {
-                        System.out.println("WAITING FOR A BOOLEAN");
-                        csc.isTurn = csc.dataIn.readBoolean();
-                        System.out.println("GOT A BOOLEAN");
-                        System.out.println("Player " + csc.playerID + " started Turn");
-                        if (!csc.isTurn) {
-                            boolean isMyTurn = false;
-                            while (!isMyTurn) {
-                                // Getting game data during someone else's turn
-                                System.out.println("WAITING FOR GAME IN WAIT LOOP, " + csc.dataIn.available());
-                                currentGameState = (Game) (csc.dataIn.readObject());
-                                System.out.println("GOT GAME IN WAIT LOOP, " + csc.dataIn.available());
-                                System.out.println("WAITING FOR A BOOLEAN IN WAIT LOOP, " + csc.dataIn.available());
-                                isMyTurn = csc.dataIn.readBoolean();
-                                System.out.println("GOT A BOOLEAN IN WAIT LOOP");
-                            }
-                        }
-
-                        rollDice.setDisable(false);
-
-
-                        build.setDisable(true);
-                        useScroll.setDisable(true);
-                        buyProperty.setDisable(true);
-                        sendTrade.setDisable(true);
-                        acceptTrade.setDisable(true);
-                        declineTrade.setDisable(true);
-                        endTurn.setDisable(true);
-                        if (csc.isTurn) {
-                            boolean endedTurn = false;
-                            while (!endedTurn) {
-                                // Getting game data during your turn
-                                System.out.println("WAITING FOR GAME IN TURN LOOP, " + csc.dataIn.available());
-                                currentGameState = (Game) (csc.dataIn.readObject());
-                                System.out.println("GOT GAME IN TURN LOOP, " + csc.dataIn.available());
-                                System.out.println("WAITING FOR A BOOLEAN IN TURN LOOP");
-                                endedTurn = csc.dataIn.readBoolean();
-                                System.out.println("GOT A BOOLEAN IN TURN LOOP");
-                            }
-                        }
-                    } catch (IOException | ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-        t.start();
-    } */
 
 }
