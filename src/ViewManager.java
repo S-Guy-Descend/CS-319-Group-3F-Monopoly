@@ -64,14 +64,13 @@ public class ViewManager {
 
     // music
     Clip clip;
-    volatile boolean muted = false;
+    volatile boolean muted = true;
 
     public ViewManager() {
         try {
             AudioInputStream audioInput = AudioSystem.getAudioInputStream( new File("src/bgm.wav"));
             clip = AudioSystem.getClip();
             clip.open(audioInput);
-            clip.start();
             clip.loop(Clip.LOOP_CONTINUOUSLY);
         } catch ( Exception exception) {
             exception.printStackTrace();
@@ -107,7 +106,7 @@ public class ViewManager {
         settingsSubScene = new Subscene(250,500,-550,230);
 
         mainPane.getChildren().add(settingsSubScene);
-        StyledButton mute = new StyledButton("Music On");
+        StyledButton mute = new StyledButton("Music Off");
         mute.setOnAction( e -> {
             if(muted) {
                 mute.setText("Music On");
