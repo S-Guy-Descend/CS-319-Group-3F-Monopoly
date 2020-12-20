@@ -1,23 +1,34 @@
-        import javafx.application.Application;
-        import javafx.event.ActionEvent;
-        import javafx.event.EventHandler;
-        import javafx.geometry.Insets;
-        import javafx.geometry.Pos;
-        import javafx.scene.Node;
-        import javafx.scene.Scene;
-        import javafx.scene.control.Button;
-        import javafx.scene.control.Label;
-        import javafx.scene.control.TextField;
-        import javafx.scene.layout.*;
-        import javafx.scene.paint.Color;
-        import javafx.scene.shape.Circle;
-        import javafx.scene.shape.Rectangle;
-        import javafx.scene.text.Text;
-        import javafx.stage.Stage;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
 
-        import java.util.ArrayList;
+import java.util.ArrayList;
 
-        public class guiTest extends Application implements EventHandler<ActionEvent>{
+public class guiTest extends Application implements EventHandler<ActionEvent>{
+
+    public static void main( String[] args)
+    {
+        launch( args);
+    }
+
+
     // ana pencere
     Stage window;
 
@@ -66,10 +77,7 @@
 
 
 
-    public static void main( String[] args)
-    {
-        launch( args);
-    }
+
 
     @Override
     public void start(Stage primaryStage) throws Exception
@@ -77,6 +85,7 @@
         window = primaryStage;
         // pencerenin adı
         primaryStage.setTitle( "Group 3F Monopoly");
+
 
         // buton oluşturma ve isimlendirme
         // main menü
@@ -171,17 +180,22 @@
         endTurn.setText( "End Turn");
         endTurn.setOnAction( this);
 
+
+
         // board
+        // board arrayi
         SquareVisual[] rectArr = new SquareVisual[40];
 
+        //square objelerini teker teker arraya ekle. Constructor isim ve squareID alıyor. squareID maptaki sayılarla
+        // squareleri bağdaştırmak için
         for(int i = 0; i < 40; i++)
         {
-            rectArr[i] = new SquareVisual(Game.instance.board.map[i].name, i);
+            rectArr[i] = new SquareVisual(Game.instance.board.map[i].name + "\nPrice:", i);
+
+
         }
 
-
         GridPane gridPane = new GridPane();
-
 
         for( int i = 0; i < 11; i++)
         {
@@ -190,7 +204,7 @@
         // en sol satır
         for( int i = 0; i < 9; i++)
         {
-            gridPane.add( rectArr[19 - i].sp, 0, i + 1 , 1, 1);
+            gridPane.add( rectArr[19 - i].sp, 0, i + 1 , 1,1);
         }
         //en sağ
         for( int i = 0; i < 9; i++)
@@ -198,15 +212,97 @@
             gridPane.add( rectArr[i + 31].sp,  10, i + 1, 1,1);
         }
 
-         // en alt satır
+        // en alt satır
         for( int i = 0; i < 11; i++)
         {
             gridPane.add( rectArr[10 - i].sp, i,  10, 1,1);
         }
 
-        //rectArr[1].player1Avatar.setVisible( true);
-        //rectArr[1].player2Avatar.setVisible( true);
-/*
+        // teker teker renk gruplarını girdim
+        rectArr[1].squareColor.setFill( Color.PURPLE);
+        rectArr[1].colorContainer.setVisible( true);
+
+        rectArr[3].squareColor.setFill( Color.PURPLE);
+        rectArr[3].colorContainer.setVisible( true);
+
+        rectArr[6].squareColor.setFill( Color.LIGHTBLUE);
+        rectArr[6].colorContainer.setVisible( true);
+
+        rectArr[8].squareColor.setFill( Color.LIGHTBLUE);
+        rectArr[8].colorContainer.setVisible( true);
+
+        rectArr[9].squareColor.setFill( Color.LIGHTBLUE);
+        rectArr[9].colorContainer.setVisible( true);
+
+        //dungeon burda yapılacak
+
+        //
+        rectArr[11].squareColor.setFill( Color.DEEPPINK);
+        rectArr[11].colorContainer.setVisible( true);
+
+
+
+        rectArr[13].squareColor.setFill( Color.DEEPPINK);
+        rectArr[13].colorContainer.setVisible( true);
+
+        rectArr[14].squareColor.setFill( Color.DEEPPINK);
+        rectArr[14].colorContainer.setVisible( true);
+
+        rectArr[16].squareColor.setFill( Color.ORANGE);
+        rectArr[16].colorContainer.setVisible( true);
+
+        rectArr[18].squareColor.setFill( Color.ORANGE);
+        rectArr[18].colorContainer.setVisible( true);
+
+        rectArr[19].squareColor.setFill( Color.ORANGE);
+        rectArr[19].colorContainer.setVisible( true);
+
+        // feast
+        //
+        rectArr[21].squareColor.setFill( Color.RED);
+        rectArr[21].colorContainer.setVisible( true);
+
+        rectArr[23].squareColor.setFill( Color.RED);
+        rectArr[23].colorContainer.setVisible( true);
+
+        rectArr[24].squareColor.setFill( Color.RED);
+        rectArr[24].colorContainer.setVisible( true);
+
+        rectArr[26].squareColor.setFill( Color.GOLD);
+        rectArr[26].colorContainer.setVisible( true);
+
+        rectArr[27].squareColor.setFill( Color.GOLD);
+        rectArr[27].colorContainer.setVisible( true);
+
+        rectArr[29].squareColor.setFill( Color.GOLD);
+        rectArr[29].colorContainer.setVisible( true);
+
+        //go to dungeon
+        //
+        rectArr[31].squareColor.setFill( Color.GREEN);
+        rectArr[31].colorContainer.setVisible( true);
+
+        rectArr[32].squareColor.setFill( Color.GREEN);
+        rectArr[32].colorContainer.setVisible( true);
+
+        rectArr[34].squareColor.setFill( Color.GREEN);
+        rectArr[34].colorContainer.setVisible( true);
+
+        rectArr[37].squareColor.setFill( Color.DARKBLUE);
+        rectArr[37].colorContainer.setVisible( true);
+
+        rectArr[39].squareColor.setFill( Color.DARKBLUE);
+        rectArr[39].colorContainer.setVisible( true);
+
+        Image testAvatar = new Image( "thiefAvatar.png");
+
+        rectArr[1].player1Avatar.setFill( new ImagePattern(testAvatar));
+
+
+
+
+
+
         // test alanı
         Button test1 = new Button( "TEST 1");
         test1.setOnAction( e->{
@@ -246,7 +342,14 @@
             }
         });
 
- */
+
+
+
+
+
+
+
+
 
         /*
         for( int i = 0; i < rectArr.length; i++)
@@ -255,12 +358,13 @@
         }
 
         */
-        
+
         // layout ayarları
         HBox inGameLayout = new HBox( 20);
-        inGameLayout.getChildren().addAll( gridPane);
+        inGameLayout.getChildren().addAll( gridPane, test1, test2);
         // içerik scenenin içine koyuluyor, constructor dimensionları alıyor
         inGame = new Scene( inGameLayout, 500, 500);
+
 
         // credits
         creditsLabel = new Label();
@@ -268,14 +372,16 @@
 
         teamMembers = new Label();
         teamMembers.setText("Atakan Sağlam \n" +
-                            "Sarp Ulaş Kaya \n" +
-                            "Furkan Başkaya \n" +
-                            "Oğulcan Çetinkaya \n" +
-                            "Berk Kerem Berçin");
+                "Sarp Ulaş Kaya \n" +
+                "Furkan Başkaya \n" +
+                "Oğulcan Çetinkaya \n" +
+                "Berk Kerem Berçin");
 
         creditsBack = new Button();
         creditsBack.setText("Back");
         creditsBack.setOnAction(e -> { window.setScene( mainMenu);});
+
+
 
         // credits layout ayarları
         VBox creditsLayout = new VBox();
@@ -284,7 +390,14 @@
 
         credits = new Scene( creditsLayout, 500, 500);
 
+
+
+
+
+
     }
+
+
     // kullanıcı butona tıklayınca bu çağırılıyor
     @Override
     public void handle(ActionEvent event) {
@@ -335,6 +448,7 @@
         VBox right;
         HBox bottom;
 
+
         //player avatarları
         Color player1Color = Color.BLACK;
         Color player2Color = Color.RED;
@@ -358,20 +472,21 @@
         StackPane sp;
         Text squareName;
         int squareID;
+        Rectangle squareColor;
+        VBox colorContainer;
 
         //constructor
         public SquareVisual( String name, int ID)
         {
             //hazır player tokenleri şimdilik rectangle daha sonra image ile değiştirilecek
 
-
-
-
             player1Avatar = new Rectangle();
             player1Avatar.setStroke( Color.BLACK);
+            player1Avatar.setFill( player1Color);
             player1Avatar.setWidth(25);
             player1Avatar.setHeight(25);
             player1Avatar.setVisible( false);
+
 
             player2Avatar = new Rectangle();
             player2Avatar.setStroke( Color.BLACK);
@@ -440,17 +555,35 @@
             left.getChildren().addAll( player7Avatar, player8Avatar);
             left.setAlignment( Pos.CENTER_LEFT);
 
-          // square özellikleri
+            // square özellikleri
             squareID = ID;
             setHeight( SQUARE_SIZE);
             setWidth( SQUARE_SIZE);
             setStroke( Color.BLACK);
             setFill( Color.WHITE);
+            setStrokeType( StrokeType.INSIDE);
+
             squareName = new Text( name);
+
+
+
+            squareColor = new Rectangle();
+            squareColor.setFill( Color.WHITE);
+            squareColor.setWidth( SQUARE_SIZE - 1 );
+            squareColor.setStroke( Color.BLACK);
+            squareColor.setHeight( 25);
+
+
+
+            colorContainer = new VBox();
+            colorContainer.getChildren().add( squareColor);
+            colorContainer.setAlignment( Pos.TOP_CENTER);
+            colorContainer.setVisible( false);
+
 
             // square sp nin içinde tutuluyor
             sp = new StackPane();
-            sp.getChildren().addAll(this, squareName, top, right, bottom, left);
+            sp.getChildren().addAll(this,colorContainer,  top, right, bottom, left, squareName);
         }
         //methods
 
@@ -634,4 +767,3 @@
         }
     }
 }
-
