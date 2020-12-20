@@ -3,15 +3,14 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.geometry.Side;
 import javafx.scene.Scene;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
@@ -100,11 +99,17 @@ public class ViewManager {
         gameIDTxtField.setPrefHeight(50);
 
         StyledButton joinGameButton = new StyledButton("Join");
+        joinGameButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                GameViewManager lobby = new GameViewManager();
+                mainStage.hide();
+                lobby.enterGame();
+            }
+        });
 
         joinGameLayout.getChildren().addAll( enterGameIdLabel, gameIDTxtField, joinGameButton);
-
         joinGameSubScene.getPane().getChildren().add(joinGameLayout);
-
         mainPane.getChildren().add(joinGameSubScene);
     }
 
