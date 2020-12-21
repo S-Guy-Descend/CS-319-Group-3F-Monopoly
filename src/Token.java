@@ -6,13 +6,15 @@ public class Token implements Serializable
     String name;
     int ID;
     int money;
-    int color; //Why is this still here?
     int diceRollOutcome;
     int dungeonCountdown;
     int turnsPlayed;
     int currentLocation;
     int ownedSmithCount;
     int ownedTransportCount;
+
+    boolean isBankrupt;
+
     ArrayList<ScrollCard> scrollCards;
 
     TradeRequest currentPendingTradeRequest;
@@ -33,6 +35,7 @@ public class Token implements Serializable
         ownedTransportCount = 0;
         currentLocation = 0;
         dungeonCountdown = 0;
+        isBankrupt = false;
     }
 
     public void rollDice()

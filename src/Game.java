@@ -8,6 +8,7 @@ public class Game implements Serializable {
     public Board board;
     int playerCount = 0;
     int turnCounter = 0;
+    int gameWinnerID = -1;
 
     private Game() {
         tokens = new ArrayList<Token>();
@@ -73,17 +74,31 @@ public class Game implements Serializable {
     public int advanceTurn() {
         int playerIdToPlay = turnCounter % playerCount;
         turnCounter++;
+        if(tokens.get(playerIdToPlay).isBankrupt) {
+            return advanceTurn();
+        }
+
+        int bankruptPlayerCount = 0;
+        for (int i = 0; i < playerCount; i++) {
+            if ( tokens.get(i).isBankrupt) {
+                bankruptPlayerCount++;
+            }
+            if (bankruptPlayerCount >= playerCount - 1) {
+                for (int j = 0; j < playerCount; j++ ) {
+                    if (!tokens.get(j).isBankrupt) {
+                        gameWinnerID = j;
+                        break;
+                    }
+                }
+            }
+        }
+
         if(tokens.get(playerIdToPlay).dungeonCountdown > 0) {
             tokens.get(playerIdToPlay).dungeonCountdown -= 1;
             tokens.get(playerIdToPlay).diceRollOutcome = 0;
             System.out.println("This player is in dungeon, Remaining turns in dungeon: " + tokens.get(playerIdToPlay).dungeonCountdown);
             return advanceTurn();
         }
-        // ID SIKINTISI OLABİLİR
-        // ID SIKINTISI OLABİLİR
-        // ID SIKINTISI OLABİLİR
-        // ID SIKINTISI OLABİLİR
-        // ID SIKINTISI OLABİLİR
 
         if ( tokens.get(playerIdToPlay).money < 0 ) {
             for (int i = 0; i < board.map.length; i++) {
@@ -116,6 +131,7 @@ public class Game implements Serializable {
                 }
             }
 
+            /*
             for (int i = playerIdToPlay + 1; i < tokens.size(); i++) {
                 for (int j = 0; j < board.map.length; j++) {
                     if ( board.map[i] instanceof Town && ( (Town) board.map[i]).ownerId == i ) {
@@ -129,17 +145,20 @@ public class Game implements Serializable {
                     }
                 }
             }
-            tokens.remove(playerIdToPlay);
+             */
+
+            //tokens.remove(playerIdToPlay);
+
+            tokens.get(playerIdToPlay).activeLands.clear();
+            //tokens.get(playerIdToPlay).mortgagedLands.clear(); //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            tokens.get(playerIdToPlay).scrollCards.clear();
+            tokens.get(playerIdToPlay).isBankrupt = true;
+            tokens.get(playerIdToPlay).currentLocation = 0;
+            board.map[0].removeTokenFromSquare(playerIdToPlay);
+
             return advanceTurn();
         }
         return playerIdToPlay;
     }
 
-    public void initializeGame() {
-
-    }
-
-    public void endGame() {
-
-    }
 }
