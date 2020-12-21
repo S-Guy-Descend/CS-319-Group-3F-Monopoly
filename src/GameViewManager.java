@@ -255,8 +255,8 @@ public class GameViewManager {
                     playerMoneys.get(i).setTextFill(Color.HOTPINK);
                     break;
                 case 6:
-                    playerNames.get(i).setTextFill(Color.ORANGE);
-                    playerMoneys.get(i).setTextFill(Color.ORANGE);
+                    playerNames.get(i).setTextFill(Color.DARKORANGE);
+                    playerMoneys.get(i).setTextFill(Color.DARKORANGE);
                     break;
                 case 7:
                     playerNames.get(i).setTextFill(Color.PURPLE);
@@ -405,6 +405,7 @@ public class GameViewManager {
 
                                 // UPDATE BOARD HERE
                                 redrawBoard();
+
                                 Platform.runLater(new Runnable() {
                                     @Override public void run() {
                                         updateMoneys();
