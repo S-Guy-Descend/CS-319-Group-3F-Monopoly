@@ -57,6 +57,7 @@ public class ViewManager {
     volatile boolean gameStarted;
     private int playerCount = 0;
     volatile boolean done = false;
+    volatile boolean isWizard;
 
     // LobbySubScene components
     ListView playerList;
@@ -182,6 +183,7 @@ public class ViewManager {
             switch (classDropdown.getValue().toString() ) {
                 case "Traveler (One-in-Two)":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(2);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -190,6 +192,7 @@ public class ViewManager {
                     break;
                 case "Traveler (Three-in-Five)":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(3);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -198,6 +201,7 @@ public class ViewManager {
                     break;
                 case "Noble":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(4);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -206,6 +210,7 @@ public class ViewManager {
                     break;
                 case "Knight":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(5);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -214,6 +219,7 @@ public class ViewManager {
                     break;
                 case "Treasure Hunter":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(6);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -222,6 +228,7 @@ public class ViewManager {
                     break;
                 case "Wizard":
                     try {
+                        isWizard = true;
                         csc.dataOut.writeInt(7);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -230,6 +237,7 @@ public class ViewManager {
                     break;
                 case "Fortune Teller":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(8);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -238,6 +246,7 @@ public class ViewManager {
                     break;
                 case "Thief":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(9);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -246,6 +255,7 @@ public class ViewManager {
                     break;
                 case "Builder":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(10);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -254,6 +264,7 @@ public class ViewManager {
                     break;
                 case "Cardinal":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(11);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -277,7 +288,7 @@ public class ViewManager {
                 gameStarted = true;
 
                 // CREATE GAMEVIEWMANAGER HERE
-                GameViewManager game = new GameViewManager(csc, classes);
+                GameViewManager game = new GameViewManager(csc, classes, isWizard);
                 game.startReceivingTurns();
                 mainStage.hide();
                 game.enterGame();
@@ -541,7 +552,7 @@ public class ViewManager {
                                         public void run() {
                                             gameStarted = true;
                                             // CREATE GAMEVIEWMANAGER HERE
-                                            GameViewManager game = new GameViewManager(csc, classes);
+                                            GameViewManager game = new GameViewManager(csc, classes, isWizard);
                                             game.startReceivingTurns();
                                             mainStage.hide();
                                             game.enterGame();

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class GameViewManager {
     private final static int GAME_WIDTH = 1024;
     private final static int GAME_HEIGHT = 1024;
+    private final Color CUSTOM_GREY = new Color(0.7, 0.7, 0.7, 1);
     private final String PLAYER_INFO_BACKGROUND = "-fx-background-color: #B2B2B2;";
 
     private AnchorPane gamePane;
@@ -29,11 +30,16 @@ public class GameViewManager {
     private StyledButton acceptTrade;
     private StyledButton declineTrade;
     private StyledButton endTurn;
+    private Label currentPlayer;
 
     private GridPane playerInfo;
+    private GridPane wizardInfo;
 
     private ArrayList<Label> playerNames;
     private ArrayList<Label> playerMoneys;
+
+    private ArrayList<Label> wizardInfoTexts;
+    private ArrayList<Label> wizardInfoNums;
 
     private ClientSideConnection csc;
     private ArrayList<String> classes;
@@ -43,15 +49,16 @@ public class GameViewManager {
 
     private SquareVisual[] rectArr;
 
-    public GameViewManager(ClientSideConnection csc, ArrayList<String> classes) {
+    private boolean isWizard;
+
+    public GameViewManager(ClientSideConnection csc, ArrayList<String> classes, boolean isWizard) {
+        this.isWizard = isWizard;
         this.csc = csc;
         this.classes = classes;
         initializeGame();
     }
 
     private void initializeGame() {
-
-
 
         rollDice = new StyledButton("Roll Dice");
         rollDice.setOnAction( e -> {
@@ -228,6 +235,26 @@ public class GameViewManager {
             playerMoneys.get(i).setFont( new Font(24));
         }
 
+        wizardInfo = new GridPane();
+        wizardInfo.setGridLinesVisible(true);
+        wizardInfo.setStyle(PLAYER_INFO_BACKGROUND);
+        wizardInfoTexts = new ArrayList<Label>();
+        wizardInfoTexts.add( new Label("Max Mana: "));
+        wizardInfoTexts.add( new Label("Current Mana: "));
+        wizardInfoTexts.add( new Label("Current Mana Multiplier: "));
+
+        wizardInfoNums = new ArrayList<Label>();
+        for ( int i = 0; i < 3; i++) {
+            wizardInfoNums.add( new Label(""));
+        }
+
+        for ( int i = 0; i < 3; i++) {
+            wizardInfoTexts.get(i).setFont( new Font(24));
+            wizardInfoNums.get(i).setFont( new Font(24));
+        }
+
+
+
         for ( int i = 0; i < classes.size(); i++) {
             switch (i) {
                 case 0:
@@ -265,41 +292,83 @@ public class GameViewManager {
             }
         }
 
+        currentPlayer = new Label("You are " + playerNames.get(csc.playerID - 1).getText());
+        currentPlayer.setFont( new Font(24));
+
+        switch (csc.playerID - 1) {
+            case 0:
+                currentPlayer.setTextFill(Color.RED);
+                break;
+            case 1:
+                currentPlayer.setTextFill(Color.GREEN);
+                break;
+            case 2:
+                currentPlayer.setTextFill(Color.BLUE);
+                break;
+            case 3:
+                currentPlayer.setTextFill(Color.YELLOW);
+                break;
+            case 4:
+                currentPlayer.setTextFill(Color.CYAN);
+                break;
+            case 5:
+                currentPlayer.setTextFill(Color.HOTPINK);
+                break;
+            case 6:
+                currentPlayer.setTextFill(Color.DARKORANGE);
+                break;
+            case 7:
+                currentPlayer.setTextFill(Color.PURPLE);
+                break;
+        }
+
+        currentPlayer.setStyle(PLAYER_INFO_BACKGROUND);
+
         for (int i = 0; i < classes.size(); i++) {
             playerInfo.add( playerNames.get(i), 0, i);
             playerInfo.add( playerMoneys.get(i), 1, i);
         }
 
+        for (int i = 0; i < 3; i++) {
+            wizardInfo.add( wizardInfoTexts.get(i), 0, i);
+            wizardInfo.add( wizardInfoNums.get(i), 1, i);
+        }
 
         gamePane = new AnchorPane();
         createBackground();
 
         rollDice.setLayoutX(1050);
-        rollDice.setLayoutY(50);
+        rollDice.setLayoutY(100);
 
         build.setLayoutX(1050);
-        build.setLayoutY(100);
+        build.setLayoutY(150);
 
         purchaseLand.setLayoutX(1050);
-        purchaseLand.setLayoutY(150);
+        purchaseLand.setLayoutY(200);
 
         useScroll.setLayoutX(1050);
-        useScroll.setLayoutY(200);
+        useScroll.setLayoutY(250);
 
         sendTrade.setLayoutX(1050);
-        sendTrade.setLayoutY(350);
+        sendTrade.setLayoutY(400);
 
         acceptTrade.setLayoutX(1050);
-        acceptTrade.setLayoutY(400);
+        acceptTrade.setLayoutY(450);
 
         declineTrade.setLayoutX(1050);
-        declineTrade.setLayoutY(450);
+        declineTrade.setLayoutY(500);
 
         endTurn.setLayoutX(1050);
-        endTurn.setLayoutY(250);
+        endTurn.setLayoutY(300);
 
         playerInfo.setLayoutX(1300);
-        playerInfo.setLayoutY(50);
+        playerInfo.setLayoutY(100);
+
+        currentPlayer.setLayoutX(1150);
+        currentPlayer.setLayoutY(40);
+
+        wizardInfo.setLayoutX(1050);
+        wizardInfo.setLayoutY(800);
 
         rollDice.disable(!csc.isHost);
         build.disable(true);
@@ -310,7 +379,12 @@ public class GameViewManager {
         declineTrade.disable(true);
         endTurn.disable(true);
 
-        gamePane.getChildren().addAll(rollDice, build, purchaseLand, useScroll, endTurn, playerInfo);
+        if (isWizard) {
+            gamePane.getChildren().addAll(currentPlayer, rollDice, build, purchaseLand, useScroll, endTurn, playerInfo, wizardInfo);
+        } else {
+            gamePane.getChildren().addAll(currentPlayer, rollDice, build, purchaseLand, useScroll, endTurn, playerInfo);
+        }
+
         gameScene = new Scene(gamePane, GAME_WIDTH, GAME_HEIGHT);
         gameStage = new Stage();
         gameStage.setScene(gameScene);
@@ -339,6 +413,9 @@ public class GameViewManager {
                     Platform.runLater(new Runnable() {
                         @Override public void run() {
                             updateMoneys();
+                            if (isWizard) {
+                                updateWizardInfo();
+                            }
                         }
                     });
                     for(int i = 0; i < currentGameState.tokens.size(); i++) {
@@ -368,6 +445,9 @@ public class GameViewManager {
                                 Platform.runLater(new Runnable() {
                                     @Override public void run() {
                                         updateMoneys();
+                                        if (isWizard) {
+                                            updateWizardInfo();
+                                        }
                                     }
                                 });
 
@@ -394,6 +474,26 @@ public class GameViewManager {
                                     build.disable(!currentGameState.tokens.get(csc.playerID - 1).isBuildAvailable());
                                     useScroll.disable(!currentGameState.tokens.get(csc.playerID - 1).isScrollAvailable());
                                     purchaseLand.disable(!currentGameState.tokens.get(csc.playerID - 1).isLandPurchasable());
+                                    Square currentSquare = currentGameState.board.map[currentGameState.tokens.get(csc.playerID - 1).currentLocation];
+                                    if (currentSquare instanceof Town) {
+                                        if ( ((Town) currentSquare).isPurchased) {
+                                            purchaseLand.setDisable(true);
+                                        } else {
+                                            purchaseLand.setDisable(false);
+                                        }
+                                    } else if (currentSquare instanceof Transport) {
+                                        if ( ((Transport) currentSquare).isPurchased) {
+                                            purchaseLand.setDisable(true);
+                                        } else {
+                                            purchaseLand.setDisable(false);
+                                        }
+                                    } else if (currentSquare instanceof Smith) {
+                                        if ( ((Smith) currentSquare).isPurchased) {
+                                            purchaseLand.setDisable(true);
+                                        } else {
+                                            purchaseLand.setDisable(false);
+                                        }
+                                    }
                                     sendTrade.disable(true);
                                     acceptTrade.disable(true);
                                     declineTrade.disable(true);
@@ -409,6 +509,9 @@ public class GameViewManager {
                                 Platform.runLater(new Runnable() {
                                     @Override public void run() {
                                         updateMoneys();
+                                        if (isWizard) {
+                                            updateWizardInfo();
+                                        }
                                     }
                                 });
 
@@ -554,5 +657,11 @@ public class GameViewManager {
         for ( int i = 0; i < classes.size(); i++) {
             playerMoneys.get(i).setText(String.valueOf(currentGameState.tokens.get(i).money));
         }
+    }
+
+    public void updateWizardInfo() {
+        wizardInfoNums.get(0).setText( String.valueOf( ( (Wizard) currentGameState.tokens.get(csc.playerID - 1)).maxMana) );
+        wizardInfoNums.get(1).setText( String.valueOf( ( (Wizard) currentGameState.tokens.get(csc.playerID - 1)).currentMana) );
+        wizardInfoNums.get(2).setText( String.valueOf( ( (Wizard) currentGameState.tokens.get(csc.playerID - 1)).manaGainMultiplier) );
     }
 }
