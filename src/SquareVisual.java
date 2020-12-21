@@ -225,6 +225,58 @@ public class SquareVisual extends Rectangle
             }
         }
     }
+
+    public void checkPriceOrRent(Game currentGame)
+    {
+        if( currentGame.board.map[ squareID] instanceof  Town)
+        {
+            if ( !((Town)(currentGame.board.map[ squareID])).isMortgaged) {
+                if (((Town) (currentGame.board.map[squareID])).ownerId == -1) {
+                    squareName.setText( currentGame.board.map[ squareID].name + "\n" + "Price: " + ((Town) (currentGame.board.map[squareID])).price);
+                } else {
+                    squareName.setText( currentGame.board.map[ squareID].name + "\n" + "Rent: " + ((Town) (currentGame.board.map[squareID])).rent);
+                }
+            }
+            else {
+                squareName.setText(currentGame.board.map[ squareID].name + "\n" + "Unmortgage for " + (((Town) (currentGame.board.map[squareID])).mortgagePrice *  (((Town) (currentGame.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER)));
+            }
+        }
+        else if( currentGame.board.map[ squareID] instanceof  Transport) {
+            if ( !((Transport)(currentGame.board.map[ squareID])).isMortgaged) {
+                if (((Transport) (currentGame.board.map[squareID])).ownerId == -1) {
+                    squareName.setText(currentGame.board.map[ squareID].name + "\n" + "Price: " + ((Transport) (currentGame.board.map[squareID])).price);
+                } else {
+                    squareName.setText(currentGame.board.map[ squareID].name + "\n" + "Rent: " + ((Transport) (currentGame.board.map[squareID])).rent);
+                }
+            }
+            else {
+                squareName.setText(currentGame.board.map[ squareID].name + "\n" + "Unmortgage for " + (((Transport) (currentGame.board.map[squareID])).mortgagePrice *  (((Transport) (currentGame.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER)));
+            }
+        }
+        else if( currentGame.board.map[ squareID] instanceof  Smith) {
+            if ( !((Smith)(currentGame.board.map[ squareID])).isMortgaged) {
+                if (((Smith) (currentGame.board.map[squareID])).ownerId == -1) {
+                    squareName.setText(currentGame.board.map[ squareID].name + "\n" + "Price: " + ((Smith) (currentGame.board.map[squareID])).price);
+                } else {
+                    if ( squareID != currentGame.tokens.get( (currentGame.turnCounter - 1) % currentGame.playerCount ).currentLocation ) {
+                        if (currentGame.tokens.get(((Smith) (currentGame.board.map[squareID])).ownerId).ownedSmithCount == 1) {
+                            squareName.setText(currentGame.board.map[squareID].name + "\n" + "Rent: Dice * " + 400);
+                        }
+                        else if (currentGame.tokens.get(((Smith) (currentGame.board.map[squareID])).ownerId).ownedSmithCount == 2) {
+                            squareName.setText(currentGame.board.map[squareID].name + "\n" + "Rent: Dice * " + 1000);
+                        }
+                    }
+                    else {
+                        squareName.setText(currentGame.board.map[squareID].name + "\n" + "Rent: " + ((Smith) (currentGame.board.map[squareID])).rent);
+                    }
+                }
+            }
+            else {
+                squareName.setText(currentGame.board.map[ squareID].name + "\n" + "Unmortgage for " + (((Smith) (currentGame.board.map[squareID])).mortgagePrice *  (((Smith) (currentGame.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER)));
+            }
+        }
+    }
+
     public void checkOwner(Game currentGame)
     {
         if( currentGame.board.map[ squareID] instanceof  Town)
@@ -256,7 +308,6 @@ public class SquareVisual extends Rectangle
                     setStroke( player8Color);
                     break;
             }
-
 
         }
         else if( currentGame.board.map[ squareID] instanceof  Transport) {
@@ -337,5 +388,6 @@ public class SquareVisual extends Rectangle
         this.checkBuildings(currentGame);
         this.checkTokensOnTop(currentGame);
         this.checkOwner(currentGame);
+        this.checkPriceOrRent(currentGame);
     }
 }
