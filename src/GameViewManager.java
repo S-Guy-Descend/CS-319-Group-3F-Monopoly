@@ -474,6 +474,26 @@ public class GameViewManager {
                                     build.disable(!currentGameState.tokens.get(csc.playerID - 1).isBuildAvailable());
                                     useScroll.disable(!currentGameState.tokens.get(csc.playerID - 1).isScrollAvailable());
                                     purchaseLand.disable(!currentGameState.tokens.get(csc.playerID - 1).isLandPurchasable());
+                                    Square currentSquare = currentGameState.board.map[currentGameState.tokens.get(csc.playerID - 1).currentLocation];
+                                    if (currentSquare instanceof Town) {
+                                        if ( ((Town) currentSquare).isPurchased) {
+                                            purchaseLand.setDisable(true);
+                                        } else {
+                                            purchaseLand.setDisable(false);
+                                        }
+                                    } else if (currentSquare instanceof Transport) {
+                                        if ( ((Transport) currentSquare).isPurchased) {
+                                            purchaseLand.setDisable(true);
+                                        } else {
+                                            purchaseLand.setDisable(false);
+                                        }
+                                    } else if (currentSquare instanceof Smith) {
+                                        if ( ((Smith) currentSquare).isPurchased) {
+                                            purchaseLand.setDisable(true);
+                                        } else {
+                                            purchaseLand.setDisable(false);
+                                        }
+                                    }
                                     sendTrade.disable(true);
                                     acceptTrade.disable(true);
                                     declineTrade.disable(true);
