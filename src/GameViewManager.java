@@ -1,8 +1,7 @@
 import com.sun.security.ntlm.Client;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -32,6 +31,14 @@ public class GameViewManager {
 
     private GridPane playerInfo;
 
+    private ListView activeLandsList;
+    private Label activeLandText;
+    private Button activeLandsMortgageButton;
+    private Button activeLandsUnMortgageButton;
+    private HBox bunuKoyucam;
+
+    private ListView mortgagedLandsList;
+
     private ArrayList<Label> playerNames;
     private ArrayList<Label> playerMoneys;
 
@@ -42,6 +49,7 @@ public class GameViewManager {
     private int lastOp = -1;
 
     private SquareVisual[] rectArr;
+    StackPane midBoard = new StackPane();
 
     public GameViewManager(ClientSideConnection csc, ArrayList<String> classes) {
         this.csc = csc;
@@ -270,6 +278,11 @@ public class GameViewManager {
             playerInfo.add( playerMoneys.get(i), 1, i);
         }
 
+        // your areas listview
+        activeLandsList = new ListView();
+
+
+
 
         gamePane = new AnchorPane();
         createBackground();
@@ -301,6 +314,9 @@ public class GameViewManager {
         playerInfo.setLayoutX(1300);
         playerInfo.setLayoutY(50);
 
+        activeLandsList.setLayoutX( 1650);
+        activeLandsList.setLayoutY( 600);
+
         rollDice.disable(!csc.isHost);
         build.disable(true);
         useScroll.disable(true);
@@ -310,7 +326,7 @@ public class GameViewManager {
         declineTrade.disable(true);
         endTurn.disable(true);
 
-        gamePane.getChildren().addAll(rollDice, build, purchaseLand, useScroll, endTurn, playerInfo);
+        gamePane.getChildren().addAll(rollDice, build, purchaseLand, useScroll, endTurn, playerInfo, activeLandsList);
         gameScene = new Scene(gamePane, GAME_WIDTH, GAME_HEIGHT);
         gameStage = new Stage();
         gameStage.setScene(gameScene);
@@ -339,6 +355,7 @@ public class GameViewManager {
                     Platform.runLater(new Runnable() {
                         @Override public void run() {
                             updateMoneys();
+                            updateActiveLandsDisplay();
                         }
                     });
                     for(int i = 0; i < currentGameState.tokens.size(); i++) {
@@ -368,6 +385,8 @@ public class GameViewManager {
                                 Platform.runLater(new Runnable() {
                                     @Override public void run() {
                                         updateMoneys();
+                                        resetActiveLandsDisplay();
+                                        updateActiveLandsDisplay();
                                     }
                                 });
 
@@ -409,6 +428,8 @@ public class GameViewManager {
                                 Platform.runLater(new Runnable() {
                                     @Override public void run() {
                                         updateMoneys();
+                                        resetActiveLandsDisplay();
+                                        updateActiveLandsDisplay();
                                     }
                                 });
 
@@ -540,7 +561,12 @@ public class GameViewManager {
 
         gridPane.setLayoutX(20);
 
+        // boardun ortasinda stackpane var
+        gridPane.add( midBoard, 1,1, 9, 9);
+
+
         gamePane.getChildren().add(gridPane);
+
     }
 
     public void redrawBoard() {
@@ -555,4 +581,39 @@ public class GameViewManager {
             playerMoneys.get(i).setText(String.valueOf(currentGameState.tokens.get(i).money));
         }
     }
+
+    public void updateActiveLandsDisplay()
+    {
+        for( int i = 0; i < currentGameState.tokens.get( csc.playerID - 1).activeLands.size(); i++)
+        {
+            final int squareID = currentGameState.tokens.get( csc.playerID - 1).activeLands.get(i);
+            activeLandText = new Label( currentGameState.board.map[ squareID].name);
+            //activeLandsMortgageButton = new Button( "Mortgage (" + currentGameState.board.map[ squareID].mortgagePrice);
+            activeLandsMortgageButton.setOnAction( e ->{
+
+                if( activeLandsMortgageButton.getText().equals("Mortgage"))
+                {
+                    System.out.println( "Square ID is : " + squareID);
+
+                }
+            });
+            bunuKoyucam = new HBox();
+            bunuKoyucam.getChildren().addAll( activeLandText, activeLandsMortgageButton);
+            bunuKoyucam.setSpacing( 20);
+
+            activeLandsList.getItems().add( bunuKoyucam);
+
+
+
+        }
+    }
+    public void resetActiveLandsDisplay()
+    {
+       activeLandsList.getItems().clear();
+
+    }
+
+
+
 }
+
