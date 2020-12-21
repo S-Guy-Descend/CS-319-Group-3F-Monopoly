@@ -48,6 +48,9 @@ public class ViewManager {
     private Subscene hostGameSubScene;
     private Subscene lobbySubScene;
 
+    private Subscene sceneToHideLeft;
+    private Subscene sceneToHideRight;
+
     // Connection properties
     private ClientSideConnection csc;
     volatile ArrayList<String> classes;
@@ -87,6 +90,32 @@ public class ViewManager {
         createLogo();
         createSubScenes();
     }
+    public void showLeftSubScene(Subscene subscene){
+        if(sceneToHideLeft != null && sceneToHideLeft != subscene) {
+            sceneToHideLeft.leftFloatSubScene();
+        }
+        subscene.leftFloatSubScene();
+        if(sceneToHideLeft == subscene){
+            sceneToHideLeft = null;
+        }
+        else {
+            sceneToHideLeft = subscene;
+        }
+    }
+
+    public void showRightSubScene(Subscene subscene){
+        if(sceneToHideRight != null && sceneToHideRight != subscene) {
+            sceneToHideRight.rightFloatSubScene();
+        }
+        subscene.rightFloatSubScene();
+        if(sceneToHideRight == subscene){
+            sceneToHideRight = null;
+        }
+        else {
+            sceneToHideRight = subscene;
+        }
+    }
+
     public void createSubScenes(){
 
         creditsSubScene = new Subscene(250,500,-550,485);
@@ -585,7 +614,7 @@ public class ViewManager {
         hostGameButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                hostGameSubScene.rightFloatSubScene();
+                showRightSubScene(hostGameSubScene);
             }
         });
 
@@ -600,7 +629,7 @@ public class ViewManager {
         joinGameButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                joinGameSubScene.rightFloatSubScene();
+                showRightSubScene(joinGameSubScene);
             }
         });
 
@@ -615,7 +644,7 @@ public class ViewManager {
         tutorialButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                tutorialSubScene.leftFloatSubScene();
+                showLeftSubScene(tutorialSubScene);
             }
         });
 
@@ -630,7 +659,7 @@ public class ViewManager {
         settingsButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                settingsSubScene.leftFloatSubScene();
+                showLeftSubScene(settingsSubScene);
             }
         });
 
@@ -645,7 +674,7 @@ public class ViewManager {
         creditsButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                creditsSubScene.leftFloatSubScene();
+                showLeftSubScene(creditsSubScene);
             }
         });
 
