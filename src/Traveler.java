@@ -3,6 +3,7 @@ public class Traveler extends Token
     TravelStrategy strategy;
     int feastCounter;
     int readyToTravel;
+    boolean forcedToMove;
 
     public Traveler( String name, TravelStrategy strategy )
     {
@@ -10,6 +11,7 @@ public class Traveler extends Token
         this.strategy = strategy;
         feastCounter = 0;
         readyToTravel = 0;
+        forcedToMove = false;
     }
 
     public void move()

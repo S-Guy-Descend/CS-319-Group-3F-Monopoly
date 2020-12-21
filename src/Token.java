@@ -36,7 +36,7 @@ public class Token implements Serializable
     }
 
     public void rollDice()
-    { /*
+    {
         int diceTotal = 0;
         int die1 = 0;
         int die2 = 0;
@@ -45,17 +45,22 @@ public class Token implements Serializable
         die2 = (int)(Math.random()*6 + 1);
         diceTotal = die1 + die2;
 
-        diceRollOutcome = diceTotal; */
-        diceRollOutcome = 9;
+        diceRollOutcome = diceTotal;
     }
 
     public void move()
     {
+        if ( Game.instance.board.map[currentLocation].tokensOnTop.contains(ID))
+        {
+            Game.instance.board.map[currentLocation].removeTokenFromSquare(ID);
+        }
+        
         if(currentLocation + diceRollOutcome >= 40) {
             money += 20000;
         }
 
         currentLocation = (currentLocation + diceRollOutcome) % 40;
+        Game.instance.board.map[currentLocation].addTokenOnSquare(ID);
 
         activateSquare();
     }
@@ -101,12 +106,18 @@ public class Token implements Serializable
 
     public void forceMove(int newPlace, boolean passGO)
     {
-        if(newPlace < currentLocation && passGO) {
+        if(newPlace < currentLocation && passGO)
+        {
             ((StartingSquare) Game.instance.board.map[0]).giveLeapMoney(this);
         }
 
+        Game.instance.board.map[currentLocation].removeTokenFromSquare(ID);
         currentLocation = newPlace;
         diceRollOutcome = 0;
+        if ( this instanceof Traveler  )
+        {
+            ((Traveler) this).forcedToMove = true;
+        }
         this.move();
     }
 
