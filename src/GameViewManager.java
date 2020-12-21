@@ -341,7 +341,7 @@ public class GameViewManager {
         // squareleri bağdaştırmak için
         for(int i = 0; i < 40; i++)
         {
-            rectArr[i] = new SquareVisual(Game.instance.board.map[i].name + "\nPrice:", i);
+            rectArr[i] = new SquareVisual(Game.instance.board.map[i].name, i);
 
 
         }
