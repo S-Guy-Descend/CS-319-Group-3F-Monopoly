@@ -3,6 +3,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
@@ -30,14 +31,14 @@ public class SquareVisual extends Rectangle
     Color player7Color = Color.ORANGE;
     Color player8Color = Color.PURPLE;
 
-    Rectangle player1Avatar;
-    Rectangle player2Avatar;
-    Rectangle player3Avatar;
-    Rectangle player4Avatar;
-    Rectangle player5Avatar;
-    Rectangle player6Avatar;
-    Rectangle player7Avatar;
-    Rectangle player8Avatar;
+    Circle player1Avatar;
+    Circle player2Avatar;
+    Circle player3Avatar;
+    Circle player4Avatar;
+    Circle player5Avatar;
+    Circle player6Avatar;
+    Circle player7Avatar;
+    Circle player8Avatar;
 
     //bu centerda olacak, square özellikleri
     StackPane sp;
@@ -51,61 +52,69 @@ public class SquareVisual extends Rectangle
     {
         //hazır player tokenleri şimdilik rectangle daha sonra image ile değiştirilecek
 
-        player1Avatar = new Rectangle();
+        player1Avatar = new Circle();
         player1Avatar.setStroke( Color.BLACK);
+        player1Avatar.setStrokeType(StrokeType.INSIDE);
+        player1Avatar.setStrokeWidth(2);
         player1Avatar.setFill( player1Color);
-        player1Avatar.setWidth(25);
-        player1Avatar.setHeight(25);
+        player1Avatar.setRadius(12.5);
         player1Avatar.setVisible( false);
 
 
-        player2Avatar = new Rectangle();
+        player2Avatar = new Circle();
         player2Avatar.setStroke( Color.BLACK);
+        player2Avatar.setStrokeType(StrokeType.INSIDE);
+        player2Avatar.setStrokeWidth(2);
         player2Avatar.setFill( player2Color);
-        player2Avatar.setWidth(25);
-        player2Avatar.setHeight(25);
+        player2Avatar.setRadius(12.5);
         player2Avatar.setVisible( false);
 
-        player3Avatar = new Rectangle();
+        player3Avatar = new Circle();
         player3Avatar.setStroke( Color.BLACK);
+        player3Avatar.setStrokeType(StrokeType.INSIDE);
+        player3Avatar.setStrokeWidth(2);
         player3Avatar.setFill( player3Color);
-        player3Avatar.setWidth(25);
-        player3Avatar.setHeight(25);
+        player3Avatar.setRadius(12.5);
         player3Avatar.setVisible( false);
 
-        player4Avatar = new Rectangle();
+        player4Avatar = new Circle();
         player4Avatar.setStroke( Color.BLACK);
+        player4Avatar.setStrokeType(StrokeType.INSIDE);
+        player4Avatar.setStrokeWidth(2);
         player4Avatar.setFill( player4Color);
-        player4Avatar.setWidth(25);
-        player4Avatar.setHeight(25);
+        player4Avatar.setRadius(12.5);
         player4Avatar.setVisible( false);
 
-        player5Avatar = new Rectangle();
+        player5Avatar = new Circle();
         player5Avatar.setStroke( Color.BLACK);
+        player5Avatar.setStrokeType(StrokeType.INSIDE);
+        player5Avatar.setStrokeWidth(2);
         player5Avatar.setFill( player5Color);
-        player5Avatar.setWidth(25);
-        player5Avatar.setHeight(25);
+        player5Avatar.setRadius(12.5);
         player5Avatar.setVisible( false);
 
-        player6Avatar = new Rectangle();
+        player6Avatar = new Circle();
         player6Avatar.setStroke( Color.BLACK);
+        player6Avatar.setStrokeType(StrokeType.INSIDE);
+        player6Avatar.setStrokeWidth(2);
         player6Avatar.setFill( player6Color);
-        player6Avatar.setWidth(25);
-        player6Avatar.setHeight(25);
+        player6Avatar.setRadius(12.5);
         player6Avatar.setVisible( false);
 
-        player7Avatar = new Rectangle();
+        player7Avatar = new Circle();
         player7Avatar.setStroke( Color.BLACK);
+        player7Avatar.setStrokeType(StrokeType.INSIDE);
+        player7Avatar.setStrokeWidth(2);
         player7Avatar.setFill( player7Color);
-        player7Avatar.setWidth(25);
-        player7Avatar.setHeight(25);
+        player7Avatar.setRadius(12.5);
         player7Avatar.setVisible( false);
 
-        player8Avatar = new Rectangle();
+        player8Avatar = new Circle();
         player8Avatar.setStroke( Color.BLACK);
+        player8Avatar.setStrokeType(StrokeType.INSIDE);
+        player8Avatar.setStrokeWidth(2);
         player8Avatar.setFill( player8Color);
-        player8Avatar.setWidth(25);
-        player8Avatar.setHeight(25);
+        player8Avatar.setRadius(12.5);
         player8Avatar.setVisible( false);
 
         // player1-2 top hboxunda stackpanein en üst ortasında player 3-4 sağda right içinde, player 5-6 en altta bottom içinde
