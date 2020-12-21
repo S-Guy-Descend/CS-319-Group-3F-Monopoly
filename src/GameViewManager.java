@@ -33,7 +33,18 @@ public class GameViewManager {
     private Label currentPlayer;
 
     private GridPane playerInfo;
+<<<<<<< Updated upstream
     private GridPane wizardInfo;
+=======
+
+    private ListView activeLandsList;
+    private Label activeLandText;
+    private HBox activeLandsCell;
+    private ArrayList<Button> mortgageButtons;
+    private ArrayList<Integer> mortgagePrices;
+
+    private ListView mortgagedLandsList;
+>>>>>>> Stashed changes
 
     private ArrayList<Label> playerNames;
     private ArrayList<Label> playerMoneys;
@@ -206,6 +217,9 @@ public class GameViewManager {
                 acceptTrade.disable(true);
                 declineTrade.disable(true);
                 endTurn.disable(true);
+                for ( int i = 0; i < mortgageButtons.size(); i++) {
+                    mortgageButtons.get(i).setDisable(true);
+                }
                 try {
                     System.out.println("Player " + csc.playerID + " ended Turn");
                     csc.dataOut.writeInt(7);
@@ -498,6 +512,45 @@ public class GameViewManager {
                                     acceptTrade.disable(true);
                                     declineTrade.disable(true);
                                     endTurn.disable(false);
+                                    for ( int i = 0; i < mortgageButtons.size(); i++) {
+                                        if (currentGameState.tokens.get(csc.playerID - 1).money >= mortgagePrices.get(i) ) {
+                                            mortgageButtons.get(i).setDisable(false);
+                                        } else {
+                                            mortgageButtons.get(i).setDisable(true);
+                                        }
+                                    }
+                                } else {
+                                    // CHECK MONEY FOR BUILD PURCHASE AND MORTGAGE HERE
+                                    for ( int i = 0; i < mortgageButtons.size(); i++) {
+                                        if (currentGameState.tokens.get(csc.playerID - 1).money >= mortgagePrices.get(i) ) {
+                                            mortgageButtons.get(i).setDisable(false);
+                                        } else {
+                                            mortgageButtons.get(i).setDisable(true);
+                                        }
+                                    }
+                                    purchaseLand.disable(!currentGameState.tokens.get(csc.playerID - 1).isLandPurchasable());
+                                    Square currentSquare = currentGameState.board.map[currentGameState.tokens.get(csc.playerID - 1).currentLocation];
+                                    if (currentSquare instanceof Town) {
+                                        if ( ((Town) currentSquare).isPurchased) {
+                                            purchaseLand.setDisable(true);
+                                        } else {
+                                            purchaseLand.setDisable(false);
+                                        }
+                                    } else if (currentSquare instanceof Transport) {
+                                        if ( ((Transport) currentSquare).isPurchased) {
+                                            purchaseLand.setDisable(true);
+                                        } else {
+                                            purchaseLand.setDisable(false);
+                                        }
+                                    } else if (currentSquare instanceof Smith) {
+                                        if ( ((Smith) currentSquare).isPurchased) {
+                                            purchaseLand.setDisable(true);
+                                        } else {
+                                            purchaseLand.setDisable(false);
+                                        }
+                                    }
+                                    build.disable(!currentGameState.tokens.get(csc.playerID - 1).isBuildAvailable());
+
                                 }
                                 for(int i = 0; i < currentGameState.tokens.size(); i++) {
                                     System.out.println("Player: " + (i + 1) + "Location: " +  currentGameState.tokens.get(i).currentLocation + "Money: " + currentGameState.tokens.get(i).money);
@@ -659,9 +712,178 @@ public class GameViewManager {
         }
     }
 
+<<<<<<< Updated upstream
     public void updateWizardInfo() {
         wizardInfoNums.get(0).setText( String.valueOf( ( (Wizard) currentGameState.tokens.get(csc.playerID - 1)).maxMana) );
         wizardInfoNums.get(1).setText( String.valueOf( ( (Wizard) currentGameState.tokens.get(csc.playerID - 1)).currentMana) );
         wizardInfoNums.get(2).setText( String.valueOf( ( (Wizard) currentGameState.tokens.get(csc.playerID - 1)).manaGainMultiplier) );
+=======
+    public void updateActiveLandsDisplay()
+    {
+        for( int i = 0; i < currentGameState.tokens.get( csc.playerID - 1).activeLands.size(); i++)
+        {
+            final int squareID = currentGameState.tokens.get( csc.playerID - 1).activeLands.get(i);
+            Square squareToMortgage = currentGameState.board.map[squareID];
+            mortgageButtons = new ArrayList<Button>();
+            if (squareToMortgage instanceof Town) {
+                if ( !((Town) squareToMortgage).isMortgaged) {
+                    activeLandText = new Label( currentGameState.board.map[ squareID].name);
+                    Button activeLandsMortgageButton;
+                    activeLandsMortgageButton = new Button( "Mortgage (" + ((Town) (currentGameState.board.map[ squareID])).mortgagePrice + ")");
+                    mortgagePrices.add( 0);
+                    mortgageButtons.add(activeLandsMortgageButton);
+                    activeLandsMortgageButton.setOnAction( e ->{
+                        if( activeLandsMortgageButton.getText().equals("Mortgage"))
+                        {
+                            System.out.println( "Square ID to mortgage is : " + squareID);
+                            // SEND REQUEST TO MORTGAGE TOWN HERE
+                            try {
+                                csc.dataOut.writeInt(8);
+                                csc.dataOut.writeInt(squareID);
+                            } catch (IOException exception) {
+                                exception.printStackTrace();
+                            }
+                        }
+                    });
+                    activeLandsCell = new HBox();
+                    activeLandsCell.getChildren().addAll( activeLandText, activeLandsMortgageButton);
+                    activeLandsCell.setSpacing( 20);
+                    activeLandsList.getItems().add( activeLandsCell);
+
+                } else {
+                    activeLandText = new Label( currentGameState.board.map[ squareID].name);
+                    Button activeLandsMortgageButton;
+                    activeLandsMortgageButton = new Button( "Unmortgage (" + ((Town) (currentGameState.board.map[ squareID])).mortgagePrice * ((Town) (currentGameState.board.map[ squareID])).MORTGAGE_REDEMPTION_MULTIPLIER + ")");
+                    mortgagePrices.add( new Integer((int) (((Town) (currentGameState.board.map[ squareID])).mortgagePrice * ((Town) (currentGameState.board.map[ squareID])).MORTGAGE_REDEMPTION_MULTIPLIER) ));
+                    mortgageButtons.add(activeLandsMortgageButton);
+                    activeLandsMortgageButton.setOnAction( e ->{
+                        if( activeLandsMortgageButton.getText().equals("Mortgage"))
+                        {
+                            System.out.println( "Square ID to mortgage is : " + squareID);
+                            // SEND REQUEST TO UNMORTGAGE TOWN HERE
+                            try {
+                                csc.dataOut.writeInt(9);
+                                csc.dataOut.writeInt(squareID);
+                            } catch (IOException exception) {
+                                exception.printStackTrace();
+                            }
+                        }
+                    });
+                    activeLandsCell = new HBox();
+                    activeLandsCell.getChildren().addAll( activeLandText, activeLandsMortgageButton);
+                    activeLandsCell.setSpacing( 20);
+                    activeLandsList.getItems().add( activeLandsCell);
+                }
+            } else if ( squareToMortgage instanceof Transport) {
+                if ( !((Transport) squareToMortgage).isMortgaged) {
+                    activeLandText = new Label( currentGameState.board.map[ squareID].name);
+                    Button activeLandsMortgageButton;
+                    activeLandsMortgageButton = new Button( "Mortgage (" + ((Transport) (currentGameState.board.map[ squareID])).mortgagePrice + ")");
+                    mortgagePrices.add( 0);
+                    mortgageButtons.add(activeLandsMortgageButton);
+                    activeLandsMortgageButton.setOnAction( e ->{
+                        if( activeLandsMortgageButton.getText().equals("Mortgage"))
+                        {
+                            System.out.println( "Square ID to mortgage is : " + squareID);
+                            // SEND REQUEST TO MORTGAGE TRANSPORT HERE
+                            try {
+                                csc.dataOut.writeInt(10);
+                                csc.dataOut.writeInt(squareID);
+                            } catch (IOException exception) {
+                                exception.printStackTrace();
+                            }
+                        }
+                    });
+                    activeLandsCell = new HBox();
+                    activeLandsCell.getChildren().addAll( activeLandText, activeLandsMortgageButton);
+                    activeLandsCell.setSpacing( 20);
+                    activeLandsList.getItems().add( activeLandsCell);
+
+                } else {
+                    activeLandText = new Label( currentGameState.board.map[ squareID].name);
+                    Button activeLandsMortgageButton;
+                    activeLandsMortgageButton = new Button( "Unmortgage (" + ((Transport) (currentGameState.board.map[ squareID])).mortgagePrice * ((Transport) (currentGameState.board.map[ squareID])).MORTGAGE_REDEMPTION_MULTIPLIER + ")");
+                    mortgagePrices.add( new Integer((int) (((Transport) (currentGameState.board.map[ squareID])).mortgagePrice * ((Transport) (currentGameState.board.map[ squareID])).MORTGAGE_REDEMPTION_MULTIPLIER) ));
+                    mortgageButtons.add(activeLandsMortgageButton);
+                    activeLandsMortgageButton.setOnAction( e ->{
+                        if( activeLandsMortgageButton.getText().equals("Mortgage"))
+                        {
+                            System.out.println( "Square ID to mortgage is : " + squareID);
+                            // SEND REQUEST TO UNMORTGAGE TRANSPORT HERE
+                            try {
+                                csc.dataOut.writeInt(11);
+                                csc.dataOut.writeInt(squareID);
+                            } catch (IOException exception) {
+                                exception.printStackTrace();
+                            }
+                        }
+                    });
+                    activeLandsCell = new HBox();
+                    activeLandsCell.getChildren().addAll( activeLandText, activeLandsMortgageButton);
+                    activeLandsCell.setSpacing( 20);
+                    activeLandsList.getItems().add( activeLandsCell);
+                }
+            } else if ( squareToMortgage instanceof Smith) {
+                if ( !((Smith) squareToMortgage).isMortgaged) {
+                    activeLandText = new Label( currentGameState.board.map[ squareID].name);
+                    Button activeLandsMortgageButton;
+                    activeLandsMortgageButton = new Button( "Mortgage (" + ((Smith) (currentGameState.board.map[ squareID])).mortgagePrice + ")");
+                    mortgagePrices.add( 0);
+                    mortgageButtons.add(activeLandsMortgageButton);
+                    activeLandsMortgageButton.setOnAction( e ->{
+                        if( activeLandsMortgageButton.getText().equals("Mortgage"))
+                        {
+                            System.out.println( "Square ID to mortgage is : " + squareID);
+                            // SEND REQUEST TO MORTGAGE SMITH HERE
+                            try {
+                                csc.dataOut.writeInt(12);
+                                csc.dataOut.writeInt(squareID);
+                            } catch (IOException exception) {
+                                exception.printStackTrace();
+                            }
+                        }
+                    });
+                    activeLandsCell = new HBox();
+                    activeLandsCell.getChildren().addAll( activeLandText, activeLandsMortgageButton);
+                    activeLandsCell.setSpacing( 20);
+                    activeLandsList.getItems().add( activeLandsCell);
+
+                } else {
+                    activeLandText = new Label( currentGameState.board.map[ squareID].name);
+                    Button activeLandsMortgageButton;
+                    activeLandsMortgageButton = new Button( "Unmortgage (" + ((Smith) (currentGameState.board.map[ squareID])).mortgagePrice * ((Smith) (currentGameState.board.map[ squareID])).MORTGAGE_REDEMPTION_MULTIPLIER + ")");
+                    mortgagePrices.add( new Integer((int) (((Smith) (currentGameState.board.map[ squareID])).mortgagePrice * ((Smith) (currentGameState.board.map[ squareID])).MORTGAGE_REDEMPTION_MULTIPLIER) ));
+                    mortgageButtons.add(activeLandsMortgageButton);
+                    activeLandsMortgageButton.setOnAction( e ->{
+                        if( activeLandsMortgageButton.getText().equals("Mortgage"))
+                        {
+                            System.out.println( "Square ID to mortgage is : " + squareID);
+                            // SEND REQUEST TO UNMORTGAGE SMITH HERE
+                            try {
+                                csc.dataOut.writeInt(13);
+                                csc.dataOut.writeInt(squareID);
+                            } catch (IOException exception) {
+                                exception.printStackTrace();
+                            }
+                        }
+                    });
+                    activeLandsCell = new HBox();
+                    activeLandsCell.getChildren().addAll( activeLandText, activeLandsMortgageButton);
+                    activeLandsCell.setSpacing( 20);
+                    activeLandsList.getItems().add( activeLandsCell);
+                }
+            }
+
+
+
+
+
+        }
+    }
+    public void resetActiveLandsDisplay()
+    {
+       activeLandsList.getItems().clear();
+
+>>>>>>> Stashed changes
     }
 }

@@ -17,6 +17,7 @@ public class Server {
     volatile boolean gameStarted;
     volatile ArrayList<String> classes = new ArrayList<String>();
     volatile int nextPlayer;
+    volatile int locationToMortgage;
 
     public Server(int maxPlayers) {
         this.maxPlayers = maxPlayers;
@@ -440,6 +441,36 @@ public class Server {
                                 System.out.println("NEXT PLAYER IS: " + nextPlayer);
 
                                 // SEND CURRENT GAME INFO TO ALL PLAYERS
+                                break;
+                            case 8:
+                                System.out.println("Player " + playerID + " mortgaged town");
+                                locationToMortgage = dataIn.readInt();
+                                Game.instance.tokens.get(playerID - 1).mortgageLand(locationToMortgage);
+                                break;
+                            case 9:
+                                System.out.println("Player " + playerID + " unmortgaged town");
+                                locationToMortgage = dataIn.readInt();
+                                Game.instance.tokens.get(playerID - 1).redeemMortgage(locationToMortgage);
+                                break;
+                            case 10:
+                                System.out.println("Player " + playerID + " mortgaged transport");
+                                locationToMortgage = dataIn.readInt();
+                                Game.instance.tokens.get(playerID - 1).mortgageLand(locationToMortgage);
+                                break;
+                            case 11:
+                                System.out.println("Player " + playerID + " unmortgaged transport");
+                                locationToMortgage = dataIn.readInt();
+                                Game.instance.tokens.get(playerID - 1).redeemMortgage(locationToMortgage);
+                                break;
+                            case 12:
+                                System.out.println("Player " + playerID + " mortgaged smith");
+                                locationToMortgage = dataIn.readInt();
+                                Game.instance.tokens.get(playerID - 1).mortgageLand(locationToMortgage);
+                                break;
+                            case 13:
+                                System.out.println("Player " + playerID + " unmortgaged smith");
+                                locationToMortgage = dataIn.readInt();
+                                Game.instance.tokens.get(playerID - 1).redeemMortgage(locationToMortgage);
                                 break;
                         }
                         if (operation != 7) {
