@@ -1,54 +1,34 @@
+import java.util.Arrays;
+
 public class FortuneTeller extends Token
 {
-    ScrollCard firstScroll;
-    ScrollCard secondScroll;
 
-    FortuneCard firstCard;
-    FortuneCard secondCard;
+    int fortuneCardPriority[];
 
     public FortuneTeller( String name )
     {
         super( name );
-        firstScroll = null;
-        secondScroll = null;
-        firstCard = null;
-        secondCard = null;
+        fortuneCardPriority = new int[]{4, 2, 3, 0, 1};
     }
 
-    public void drawScroll()
+    public void drawFortuneCard()
     {
-        int firstEffectID = (int) (Math.random() * Game.instance.board.fortuneDeck.length);
-        int secondEffectID = (int) (Math.random() * Game.instance.board.fortuneDeck.length);
-
-        firstScroll = Game.instance.board.scrollDeck[firstEffectID];
-        secondScroll = Game.instance.board.scrollDeck[secondEffectID];
-        //pickScroll(JButton firstScroll);
-    }
-
-    public void pickScroll(boolean selectFirstCard){
-        if(selectFirstCard) {
-            scrollCards.add( firstScroll );
+        int firstOption = (int) (Math.random() * Game.instance.board.fortuneDeck.length);
+        int secondOption = (int) (Math.random() * Game.instance.board.fortuneDeck.length);
+        while ( firstOption == secondOption )
+        {
+            secondOption = (int) (Math.random() * Game.instance.board.fortuneDeck.length);
         }
-        else {
-            scrollCards.add( secondScroll );
+        int effectID;
+        if ( fortuneCardPriority[firstOption] > fortuneCardPriority[secondOption] )
+        {
+            effectID = firstOption;
         }
-    }
-
-    public void drawFortuneCard(boolean selectFirstCard)
-    {
-        int firstEffectID = (int) (Math.random() * Game.instance.board.fortuneDeck.length);
-        int secondEffectID = (int) (Math.random() * Game.instance.board.fortuneDeck.length);
-
-        firstCard = Game.instance.board.fortuneDeck[firstEffectID];
-        secondCard = Game.instance.board.fortuneDeck[secondEffectID];
-
-        if(selectFirstCard) {
-            firstCard.performEffect( this );
-            System.out.println("FortuneCard " + firstCard.cardName + " is drawn");
+        else
+        {
+            effectID = secondOption;
         }
-        else {
-            secondCard.performEffect( this );
-            System.out.println("FortuneCard " + secondCard.cardName + " is drawn");
-        }
+        System.out.println("FortuneCard " + Game.instance.board.fortuneDeck[effectID].cardName + " is drawn");
+        Game.instance.board.fortuneDeck[effectID].performEffect( this );
     }
 }
