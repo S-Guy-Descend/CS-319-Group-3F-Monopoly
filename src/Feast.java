@@ -25,7 +25,7 @@ public class Feast extends Square{
         else if (player instanceof FortuneTeller) {
             ArrayList<Token> scrollOwners = new ArrayList<Token>();
             for (int i = 0; i < Game.instance.tokens.size(); i++) {
-                if ( Game.instance.tokens.get(i) == player )
+                if ( Game.instance.tokens.get(i) == player || Game.instance.tokens.get(i).isBankrupt )
                 {
                     continue;
                 }
@@ -53,7 +53,7 @@ public class Feast extends Square{
         else if (player instanceof Thief) {
             for (int i = 0; i < Game.instance.tokens.size(); i++)
             {
-                if (Game.instance.tokens.get(i) == player)
+                if (Game.instance.tokens.get(i) == player || Game.instance.tokens.get(i).isBankrupt)
                 {
                     continue;
                 }
