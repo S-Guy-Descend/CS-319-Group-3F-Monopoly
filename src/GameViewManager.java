@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class GameViewManager {
     private final static int GAME_WIDTH = 1024;
     private final static int GAME_HEIGHT = 1024;
-    private final Color CUSTOM_GREY = new Color(178, 178, 178, 255);
+    private final Color CUSTOM_GREY = new Color(0.7, 0.7, 0.7, 1);
     private final String PLAYER_INFO_BACKGROUND = "-fx-background-color: #B2B2B2;";
 
     private AnchorPane gamePane;
@@ -311,34 +311,34 @@ public class GameViewManager {
         createBackground();
 
         rollDice.setLayoutX(1050);
-        rollDice.setLayoutY(150);
+        rollDice.setLayoutY(100);
 
         build.setLayoutX(1050);
-        build.setLayoutY(200);
+        build.setLayoutY(150);
 
         purchaseLand.setLayoutX(1050);
-        purchaseLand.setLayoutY(250);
+        purchaseLand.setLayoutY(200);
 
         useScroll.setLayoutX(1050);
-        useScroll.setLayoutY(300);
+        useScroll.setLayoutY(250);
 
         sendTrade.setLayoutX(1050);
-        sendTrade.setLayoutY(450);
+        sendTrade.setLayoutY(400);
 
         acceptTrade.setLayoutX(1050);
-        acceptTrade.setLayoutY(500);
+        acceptTrade.setLayoutY(450);
 
         declineTrade.setLayoutX(1050);
-        declineTrade.setLayoutY(550);
+        declineTrade.setLayoutY(500);
 
         endTurn.setLayoutX(1050);
-        endTurn.setLayoutY(350);
+        endTurn.setLayoutY(300);
 
         playerInfo.setLayoutX(1300);
-        playerInfo.setLayoutY(150);
+        playerInfo.setLayoutY(100);
 
         currentPlayer.setLayoutX(1150);
-        playerInfo.setLayoutY(40);
+        currentPlayer.setLayoutY(40);
 
         rollDice.disable(!csc.isHost);
         build.disable(true);
