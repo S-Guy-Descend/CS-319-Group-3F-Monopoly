@@ -67,7 +67,7 @@ public class FortuneCard implements Serializable
                 effectOwner.forceMove( 0 , true);
                 break;
             case 1:
-                effectOwner.forceMove( (effectOwner.currentLocation - 3), false);
+                effectOwner.forceMove( (effectOwner.currentLocation + 37) % 40, false);
                 break;
             case 2:
                 effectOwner.money = effectOwner.money + 300;

@@ -71,19 +71,31 @@ public class Game implements Serializable {
     }
 
     public int advanceTurn() {
+        System.out.println("START OF ADVANCE TURN");
+        System.out.println("TURNCOUNTER = " + turnCounter);
+        System.out.println("PLAYERCOUNT = " + playerCount);
         int playerIdToPlay = turnCounter % playerCount;
+        System.out.println("MIDDLE OF ADVANCE TURN");
+        System.out.println("PLAYERID TO PLAY = " + playerIdToPlay);
+        System.out.println("TURNCOUNTER = " + turnCounter);
+        System.out.println("PLAYERCOUNT = " + playerCount);
         turnCounter++;
+        System.out.println("END OF ADVANCE TURN");
+        System.out.println("PLAYERID TO PLAY = " + playerIdToPlay);
+        System.out.println("TURNCOUNTER = " + turnCounter);
+        System.out.println("PLAYERCOUNT = " + playerCount);
         if(tokens.get(playerIdToPlay).dungeonCountdown > 0) {
             tokens.get(playerIdToPlay).dungeonCountdown -= 1;
             tokens.get(playerIdToPlay).diceRollOutcome = 0;
             System.out.println("This player is in dungeon, Remaining turns in dungeon: " + tokens.get(playerIdToPlay).dungeonCountdown);
-            advanceTurn();
+            return advanceTurn();
         }
         // ID SIKINTISI OLABİLİR
         // ID SIKINTISI OLABİLİR
         // ID SIKINTISI OLABİLİR
         // ID SIKINTISI OLABİLİR
         // ID SIKINTISI OLABİLİR
+        /*
         if ( tokens.get(playerIdToPlay).money < 0 ) {
             for (int i = 0; i < board.map.length; i++) {
                 boolean ownedTown = board.map[i] instanceof Town
@@ -130,7 +142,7 @@ public class Game implements Serializable {
             }
             tokens.remove(playerIdToPlay);
             advanceTurn();
-        }
+        } */
         return playerIdToPlay;
     }
 
