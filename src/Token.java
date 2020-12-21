@@ -118,6 +118,10 @@ public class Token implements Serializable
         {
             ((Traveler) this).forcedToMove = true;
         }
+        if ( this instanceof TreasureHunter )
+        {
+            ((TreasureHunter) this).forcedToMove = true;
+        }
         this.move();
     }
 
@@ -198,15 +202,12 @@ public class Token implements Serializable
             Town currentTown = (Town) Game.instance.board.map[this.currentLocation];
             if( currentTown.numberOfInns >= currentTown.MAX_NUMBER_OF_HOUSES )
             {
-                System.out.println( "There are already max number of buildings" );
                 return false;
             }
             if(money < currentTown.innPrice) {
-                System.out.println("You don't have enough money to build");
                 return false;
             }
             if(!this.isColorGroupOwner(currentTown)){
-                System.out.println("You don't own all of the color group. Can't Build");
                 return false;
             }
             return true;
@@ -237,7 +238,6 @@ public class Token implements Serializable
         if(Game.instance.board.map[locationToMortgage] instanceof Town) {
             Town currentTown = (Town) Game.instance.board.map[locationToMortgage];
             if(currentTown.ownerId != this.ID || currentTown.isMortgaged()) {
-                System.out.println("You cant mortgage this land");
                 return false;
             }
             return true;
@@ -245,7 +245,6 @@ public class Token implements Serializable
         else if(Game.instance.board.map[locationToMortgage] instanceof Smith) {
             Smith currentSmith = (Smith) Game.instance.board.map[locationToMortgage];
             if(currentSmith.ownerId != this.ID || currentSmith.isMortgaged()) {
-                System.out.println("You cant mortgage this land");
                 return false;
             }
             return true;
@@ -253,7 +252,6 @@ public class Token implements Serializable
         else if(Game.instance.board.map[locationToMortgage] instanceof Transport) {
             Transport currentTransport = (Transport) Game.instance.board.map[locationToMortgage];
             if(currentTransport.ownerId != this.ID || currentTransport.isMortgaged()) {
-                System.out.println("You cant mortgage this land");
                 return false;
             }
             return true;
@@ -306,7 +304,6 @@ public class Token implements Serializable
         if(Game.instance.board.map[locationToUnmortgage] instanceof Town) {
             Town currentTown = (Town) Game.instance.board.map[locationToUnmortgage];
             if(currentTown.ownerId != this.ID || !currentTown.isMortgaged()) {
-                System.out.println("You cant UNMORTGAGE this land");
                 return false;
             }
             return true;
@@ -314,7 +311,6 @@ public class Token implements Serializable
         else if(Game.instance.board.map[locationToUnmortgage] instanceof Smith) {
             Smith currentSmith = (Smith) Game.instance.board.map[locationToUnmortgage];
             if(currentSmith.ownerId != this.ID || !currentSmith.isMortgaged()) {
-                System.out.println("You cant UNMORTGAGE this land");
                 return false;
             }
             return true;
@@ -322,7 +318,6 @@ public class Token implements Serializable
         else if(Game.instance.board.map[locationToUnmortgage] instanceof Transport) {
             Transport currentTransport = (Transport) Game.instance.board.map[locationToUnmortgage];
             if(currentTransport.ownerId != this.ID || !currentTransport.isMortgaged()) {
-                System.out.println("You cant UNMORTGAGE this land");
                 return false;
             }
             return true;
@@ -419,8 +414,8 @@ public class Token implements Serializable
     public void drawFortuneCard()
     {
         int effectID = (int) (Math.random() * Game.instance.board.fortuneDeck.length);
-        Game.instance.board.fortuneDeck[effectID].performEffect( this );
         System.out.println("FortuneCard " + Game.instance.board.fortuneDeck[effectID].cardName + " is drawn");
+        Game.instance.board.fortuneDeck[effectID].performEffect( this );
     }
 
     public void payMoney( Token receiver, int amount )

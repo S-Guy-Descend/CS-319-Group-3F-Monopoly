@@ -14,12 +14,7 @@ class OneInTwo implements TravelStrategy, Serializable
             Game.instance.board.map[traveler.currentLocation].removeTokenFromSquare(traveler.ID);
         }
 
-        if(traveler.currentLocation + traveler.diceRollOutcome >= 40)
-        {
-            traveler.money += 20000;
-        }
-
-        if ( traveler.forcedToMove == true )
+        if ( traveler.forcedToMove )
         {
             traveler.forcedToMove = false;
             traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome) % 40;
@@ -30,20 +25,23 @@ class OneInTwo implements TravelStrategy, Serializable
 
         traveler.readyToTravel ++;
 
+        if(traveler.currentLocation + traveler.diceRollOutcome >= 40)
+        {
+            traveler.money += 20000;
+        }
+
+        traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome) % 40;
+
         if ( traveler.feastCounter != 0 )
         {
-            traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome + 1) % 40;
+            traveler.currentLocation = (traveler.currentLocation + 1) % 40;
             traveler.feastCounter = traveler.feastCounter - 1;
         }
 
         if ( traveler.readyToTravel == 2 )
         {
-            traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome + 1) % 40;
+            traveler.currentLocation = (traveler.currentLocation + 1) % 40;
             traveler.readyToTravel = 0;
-        }
-        else
-        {
-            traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome) % 40;
         }
 
         Game.instance.board.map[traveler.currentLocation].addTokenOnSquare(traveler.ID);
@@ -60,12 +58,7 @@ class ThreeInFive implements TravelStrategy, Serializable
             Game.instance.board.map[traveler.currentLocation].removeTokenFromSquare(traveler.ID);
         }
 
-        if(traveler.currentLocation + traveler.diceRollOutcome >= 40)
-        {
-            traveler.money += 20000;
-        }
-
-        if ( traveler.forcedToMove == true )
+        if ( traveler.forcedToMove )
         {
             traveler.forcedToMove = false;
             traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome) % 40;
@@ -76,20 +69,23 @@ class ThreeInFive implements TravelStrategy, Serializable
 
         traveler.readyToTravel ++;
 
+        if(traveler.currentLocation + traveler.diceRollOutcome >= 40)
+        {
+            traveler.money += 20000;
+        }
+
+        traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome) % 40;
+
         if ( traveler.feastCounter != 0 )
         {
-            traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome + 1) % 40;
+            traveler.currentLocation = (traveler.currentLocation + 1) % 40;
             traveler.feastCounter = traveler.feastCounter - 1;
         }
 
         if ( traveler.readyToTravel == 5 )
         {
-            traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome + 3) % 40;
+            traveler.currentLocation = (traveler.currentLocation + 3) % 40;
             traveler.readyToTravel = 0;
-        }
-        else
-        {
-            traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome) % 40;
         }
 
         Game.instance.board.map[traveler.currentLocation].addTokenOnSquare(traveler.ID);
