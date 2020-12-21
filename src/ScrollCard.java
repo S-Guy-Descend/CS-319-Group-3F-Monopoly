@@ -64,12 +64,12 @@ public class ScrollCard implements Serializable
         switch (effectID)
         {
             case 0:
-                if ( !(effectVictim.dungeonCountdown > 0) ) {
+                if ( !(effectVictim.dungeonCountdown > 0) && effectOwner.activeLands.size() > 0) {
                     int randomPropertyID = (int) (Math.random() * effectOwner.activeLands.size());
                     effectVictim.forceMove(effectOwner.activeLands.get(randomPropertyID), false);
                 }
                 else {
-                    System.out.println("Can't teleport player; player is in the dungeon.");
+                    System.out.println("Can't teleport player. Either no active lands or victim's in jail");
                 }
                 break;
             case 1:

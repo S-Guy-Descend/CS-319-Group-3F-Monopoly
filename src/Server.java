@@ -371,11 +371,11 @@ public class Server {
                         int operation = dataIn.readInt();
                         switch (operation) {
                             case 0:
-                                System.out.println("Player " + playerID + " rolled dice");
+                                System.out.println(classes.get(playerID - 1) + " rolled dice");
                                 Game.instance.tokens.get(playerID - 1).rollDice();
-                                System.out.println("Player " + playerID + " rolled " + Game.instance.tokens.get(playerID - 1).diceRollOutcome );
+                                System.out.println(classes.get(playerID - 1) + " rolled " + Game.instance.tokens.get(playerID - 1).diceRollOutcome );
                                 Game.instance.tokens.get(playerID - 1).move();
-                                System.out.println("Player " + playerID + " moved to " + Game.instance.tokens.get(playerID - 1).currentLocation );
+                                System.out.println(classes.get(playerID - 1) + " moved to " + Game.instance.tokens.get(playerID - 1).currentLocation );
 
                                 // SEND CURRENT GAME INFO TO ALL PLAYERS
                                 break;

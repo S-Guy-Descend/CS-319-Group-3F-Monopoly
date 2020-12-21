@@ -261,7 +261,7 @@ public class GameViewManager {
                     currentGameState = (Game) (csc.dataIn.readObject());
                     redrawBoard();
                     for(int i = 0; i < currentGameState.tokens.size(); i++) {
-                        System.out.println("Player: " + (i + 1) + "Location: " +  currentGameState.tokens.get(i).currentLocation + "Money: " + currentGameState.tokens.get(i).money);
+                        System.out.println("Player: " + (i + 1) + " Location: " +  currentGameState.tokens.get(i).currentLocation + " Money: " + currentGameState.tokens.get(i).money);
                     }
                 } catch (IOException exception) {
                     exception.printStackTrace();

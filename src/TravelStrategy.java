@@ -24,6 +24,7 @@ class OneInTwo implements TravelStrategy, Serializable
             traveler.forcedToMove = false;
             traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome) % 40;
             traveler.activateSquare();
+            Game.instance.board.map[traveler.currentLocation].addTokenOnSquare(traveler.ID);
             return;
         }
 
@@ -69,6 +70,7 @@ class ThreeInFive implements TravelStrategy, Serializable
             traveler.forcedToMove = false;
             traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome) % 40;
             traveler.activateSquare();
+            Game.instance.board.map[traveler.currentLocation].addTokenOnSquare(traveler.ID);
             return;
         }
 
