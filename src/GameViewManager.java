@@ -3,6 +3,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -28,6 +29,10 @@ public class GameViewManager {
     private ClientSideConnection csc;
     private Game currentGameState;
 
+    private int lastOp = -1;
+
+    private SquareVisual[] rectArr;
+
     public GameViewManager(ClientSideConnection csc) {
         this.csc = csc;
         initializeGame();
@@ -40,26 +45,12 @@ public class GameViewManager {
             if (csc.isTurn) {
                 rollDice.disable(true);
                 // CHECK EACH BUTTON HERE
-                /*
-                build.disable(!currentGameState.tokens.get(csc.playerID - 1).isBuildAvailable());
-                useScroll.disable(!currentGameState.tokens.get(csc.playerID - 1).isScrollAvailable());
-                purchaseLand.disable(currentGameState.tokens.get(csc.playerID - 1).isLandPurchasable());
-                sendTrade.disable(true);
-                acceptTrade.disable(true);
-                declineTrade.disable(true);
-                endTurn.disable(false);
 
-                 */
-                build.disable(false);
-                useScroll.disable(false);
-                purchaseLand.disable(false);
-                sendTrade.disable(false);
-                acceptTrade.disable(false);
-                declineTrade.disable(false);
-                endTurn.disable(false);
+
                 try {
                     System.out.println("Player " + csc.playerID + " rolled dice");
                     csc.dataOut.writeInt(0);
+                    lastOp = 0;
                     csc.dataOut.flush();
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -74,6 +65,7 @@ public class GameViewManager {
                 try {
                     System.out.println("Player " + csc.playerID + " built");
                     csc.dataOut.writeInt(1);
+                    lastOp = 1;
                     csc.dataOut.flush();
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -88,6 +80,7 @@ public class GameViewManager {
                 try {
                     System.out.println("Player " + csc.playerID + " used scroll");
                     csc.dataOut.writeInt(2);
+                    lastOp = 2;
                     csc.dataOut.flush();
 
                     // GET PLAYER TO CHOOSE A SCROLL AND VICTIM
@@ -112,6 +105,7 @@ public class GameViewManager {
                 try {
                     System.out.println("Player " + csc.playerID + " bought property");
                     csc.dataOut.writeInt(3);
+                    lastOp = 3;
                     csc.dataOut.flush();
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -128,6 +122,7 @@ public class GameViewManager {
 
                     // TO-DO CONSTRUCT THE TRADE REQUEST PROPERLY
                     csc.dataOut.writeInt(4);
+                    lastOp = 4;
                     csc.dataOut.flush();
 
                     //Construct the trade request
@@ -156,6 +151,7 @@ public class GameViewManager {
                 try {
                     System.out.println("Player " + csc.playerID + " accepted trade");
                     csc.dataOut.writeInt(5);
+                    lastOp = 5;
                     csc.dataOut.flush();
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -171,6 +167,7 @@ public class GameViewManager {
                 try {
                     System.out.println("Player " + csc.playerID + " declined trade");
                     csc.dataOut.writeInt(6);
+                    lastOp = 6;
                     csc.dataOut.flush();
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -192,6 +189,7 @@ public class GameViewManager {
                 try {
                     System.out.println("Player " + csc.playerID + " ended Turn");
                     csc.dataOut.writeInt(7);
+                    lastOp = 7;
                     csc.dataOut.flush();
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -242,12 +240,13 @@ public class GameViewManager {
         gameStage.setScene(gameScene);
         gameStage.setMaximized(true);
 
-        createBackground();
+        initializeBoard();
     }
 
     public void enterGame(){
         gameStage.show();
     }
+
 
     public void createBackground() {
         Image image = new Image("/model/board.png", 1024, 1024, false, true);
@@ -260,6 +259,7 @@ public class GameViewManager {
             public void run() {
                 try {
                     currentGameState = (Game) (csc.dataIn.readObject());
+                    redrawBoard();
                     for(int i = 0; i < currentGameState.tokens.size(); i++) {
                         System.out.println("Player: " + (i + 1) + "Location: " +  currentGameState.tokens.get(i).currentLocation + "Money: " + currentGameState.tokens.get(i).money);
                     }
@@ -271,28 +271,26 @@ public class GameViewManager {
                 while (true) {
                     try {
                         csc.isTurn = csc.dataIn.readBoolean();
-                        System.out.println("Player " + csc.playerID + " started Turn");
+
                         if (!csc.isTurn) {
                             boolean isMyTurn = false;
                             while (!isMyTurn) {
                                 // Getting game data during someone else's turn
                                 currentGameState = (Game) (csc.dataIn.readObject());
+
                                 for(int i = 0; i < currentGameState.tokens.size(); i++) {
                                     System.out.println("Player: " + (i + 1) + " Location: " +  currentGameState.tokens.get(i).currentLocation + " Money: " + currentGameState.tokens.get(i).money + "ScrollCards: " + currentGameState.tokens.get(i).scrollCards.size() );
                                 }
 
                                 //UPDATE BOARD HERE
+                                redrawBoard();
 
                                 isMyTurn = csc.dataIn.readBoolean();
                             }
                         }
-                        if ( currentGameState.tokens.get(csc.playerID - 1).dungeonCountdown > 0 || currentGameState.tokens.get(csc.playerID - 1).money <= 0) {
-                            rollDice.disable(true);
-                            csc.dataOut.writeInt(8);
-                            csc.dataOut.flush();
-                        } else {
-                            rollDice.disable(false);
-                        }
+                        System.out.println("Player " + csc.playerID + " started Turn");
+
+                        rollDice.disable(false);
 
                         build.disable(true);
                         useScroll.disable(true);
@@ -306,11 +304,21 @@ public class GameViewManager {
                             while (!endedTurn) {
                                 // Getting game data during your turn
                                 currentGameState = (Game) (csc.dataIn.readObject());
+                                if (lastOp == 0) {
+                                    build.disable(!currentGameState.tokens.get(csc.playerID - 1).isBuildAvailable());
+                                    useScroll.disable(!currentGameState.tokens.get(csc.playerID - 1).isScrollAvailable());
+                                    purchaseLand.disable(!currentGameState.tokens.get(csc.playerID - 1).isLandPurchasable());
+                                    sendTrade.disable(true);
+                                    acceptTrade.disable(true);
+                                    declineTrade.disable(true);
+                                    endTurn.disable(false);
+                                }
                                 for(int i = 0; i < currentGameState.tokens.size(); i++) {
                                     System.out.println("Player: " + (i + 1) + "Location: " +  currentGameState.tokens.get(i).currentLocation + "Money: " + currentGameState.tokens.get(i).money);
                                 }
 
                                 // UPDATE BOARD HERE
+                                redrawBoard();
 
                                 endedTurn = csc.dataIn.readBoolean();
                             }
@@ -322,5 +330,128 @@ public class GameViewManager {
             }
         });
         t.start();
+    }
+
+    public void initializeBoard() {
+        // board
+        // board arrayi
+        rectArr = new SquareVisual[40];
+
+        //square objelerini teker teker arraya ekle. Constructor isim ve squareID alıyor. squareID maptaki sayılarla
+        // squareleri bağdaştırmak için
+        for(int i = 0; i < 40; i++)
+        {
+            rectArr[i] = new SquareVisual(Game.instance.board.map[i].name + "\nPrice:", i);
+
+
+        }
+
+        GridPane gridPane = new GridPane();
+
+        for( int i = 0; i < 11; i++)
+        {
+            gridPane.add( rectArr[20 + i].sp, i, 0, 1,1);
+        }
+        // en sol satır
+        for( int i = 0; i < 9; i++)
+        {
+            gridPane.add( rectArr[19 - i].sp, 0, i + 1 , 1,1);
+        }
+        //en sağ
+        for( int i = 0; i < 9; i++)
+        {
+            gridPane.add( rectArr[i + 31].sp,  10, i + 1, 1,1);
+        }
+
+        // en alt satır
+        for( int i = 0; i < 11; i++)
+        {
+            gridPane.add( rectArr[10 - i].sp, i,  10, 1,1);
+        }
+
+        // teker teker renk gruplarını girdim
+        rectArr[1].squareColor.setFill( Color.PURPLE);
+        rectArr[1].colorContainer.setVisible( true);
+
+        rectArr[3].squareColor.setFill( Color.PURPLE);
+        rectArr[3].colorContainer.setVisible( true);
+
+        rectArr[6].squareColor.setFill( Color.LIGHTBLUE);
+        rectArr[6].colorContainer.setVisible( true);
+
+        rectArr[8].squareColor.setFill( Color.LIGHTBLUE);
+        rectArr[8].colorContainer.setVisible( true);
+
+        rectArr[9].squareColor.setFill( Color.LIGHTBLUE);
+        rectArr[9].colorContainer.setVisible( true);
+
+        //dungeon burda yapılacak
+
+        //
+        rectArr[11].squareColor.setFill( Color.DEEPPINK);
+        rectArr[11].colorContainer.setVisible( true);
+
+
+
+        rectArr[13].squareColor.setFill( Color.DEEPPINK);
+        rectArr[13].colorContainer.setVisible( true);
+
+        rectArr[14].squareColor.setFill( Color.DEEPPINK);
+        rectArr[14].colorContainer.setVisible( true);
+
+        rectArr[16].squareColor.setFill( Color.ORANGE);
+        rectArr[16].colorContainer.setVisible( true);
+
+        rectArr[18].squareColor.setFill( Color.ORANGE);
+        rectArr[18].colorContainer.setVisible( true);
+
+        rectArr[19].squareColor.setFill( Color.ORANGE);
+        rectArr[19].colorContainer.setVisible( true);
+
+        // feast
+        //
+        rectArr[21].squareColor.setFill( Color.RED);
+        rectArr[21].colorContainer.setVisible( true);
+
+        rectArr[23].squareColor.setFill( Color.RED);
+        rectArr[23].colorContainer.setVisible( true);
+
+        rectArr[24].squareColor.setFill( Color.RED);
+        rectArr[24].colorContainer.setVisible( true);
+
+        rectArr[26].squareColor.setFill( Color.GOLD);
+        rectArr[26].colorContainer.setVisible( true);
+
+        rectArr[27].squareColor.setFill( Color.GOLD);
+        rectArr[27].colorContainer.setVisible( true);
+
+        rectArr[29].squareColor.setFill( Color.GOLD);
+        rectArr[29].colorContainer.setVisible( true);
+
+        //go to dungeon
+        //
+        rectArr[31].squareColor.setFill( Color.GREEN);
+        rectArr[31].colorContainer.setVisible( true);
+
+        rectArr[32].squareColor.setFill( Color.GREEN);
+        rectArr[32].colorContainer.setVisible( true);
+
+        rectArr[34].squareColor.setFill( Color.GREEN);
+        rectArr[34].colorContainer.setVisible( true);
+
+        rectArr[37].squareColor.setFill( Color.DARKBLUE);
+        rectArr[37].colorContainer.setVisible( true);
+
+        rectArr[39].squareColor.setFill( Color.DARKBLUE);
+        rectArr[39].colorContainer.setVisible( true);
+
+        gamePane.getChildren().add(gridPane);
+    }
+
+    public void redrawBoard() {
+        for( int i = 0; i < rectArr.length; i++)
+        {
+            rectArr[i].reDrawSquare(currentGameState);
+        }
     }
 }

@@ -16,6 +16,7 @@ public class Server {
     volatile int serverGameID;
     volatile boolean gameStarted;
     volatile ArrayList<String> classes = new ArrayList<String>();
+    volatile int nextPlayer;
 
     public Server(int maxPlayers) {
         this.maxPlayers = maxPlayers;
@@ -333,6 +334,9 @@ public class Server {
                         String playerClass = classes.get(j).substring(11);
                         Game.instance.addPlayer(j, playerClass);
                     }
+                    for (int i = 0; i < classes.size(); i++) {
+                        Game.instance.board.map[0].addTokenOnSquare(i);
+                    }
                     for (int j = 0; j < connections.size(); j++) {
                         System.out.println("SENDING GAME DATA TO PLAYER " + (j + 1));
                         connections.get(j).dataOut.writeObject(Game.instance);
@@ -353,10 +357,14 @@ public class Server {
                             System.out.println("AFTER WRITING FALSE TO PLAYER " + (j + 1));
                         }
                     }
+                    dataOut.flush();
+                    int avdtrn = Game.instance.advanceTurn();
+                    System.out.println("PLAYER COUNT IS: " + Game.instance.playerCount);
+                    System.out.println("ADVANCE TURN RETURNED THIS: " + avdtrn);
+
                 }
 
-                dataOut.flush();
-                Game.instance.turnCounter = Game.instance.advanceTurn();
+
 
                 while (true) {
                     if (isTurn) {
@@ -428,11 +436,10 @@ public class Server {
 
 
 
-                                Game.instance.advanceTurn();
+                                nextPlayer = Game.instance.advanceTurn();
+                                System.out.println("NEXT PLAYER IS: " + nextPlayer);
 
                                 // SEND CURRENT GAME INFO TO ALL PLAYERS
-                                break;
-                            case 8:
                                 break;
                         }
                         if (operation != 7) {
@@ -457,29 +464,23 @@ public class Server {
                             }
 
                             // WRITE TRUE TO CURRENT AND NEXT PLAYER
-                            int nextPlayer;
-                            if (playerID < maxPlayers) {
-                                nextPlayer = playerID + 1;
-                            } else {
-                                nextPlayer = 1;
-                            }
-                            connections.get(nextPlayer - 1).isTurn = true;
+                            connections.get(nextPlayer).isTurn = true;
                             connections.get(playerID - 1).dataOut.writeBoolean(true);
                             connections.get(playerID - 1).dataOut.flush();
-                            connections.get(nextPlayer - 1).dataOut.writeBoolean(true);
-                            connections.get(nextPlayer - 1).dataOut.flush();
+                            connections.get(nextPlayer).dataOut.writeBoolean(true);
+                            connections.get(nextPlayer).dataOut.flush();
 
                             // WRITE FALSE TO CURRENT PLAYER AND OTHER PLAYERS
                             for(int i = 0; i < connections.size(); i++) {
-                                if ( i != nextPlayer - 1) {
+                                if ( i != nextPlayer) {
                                     connections.get(i).dataOut.writeBoolean(false);
                                     connections.get(i).dataOut.flush();
                                 }
                             }
 
                             // WRITE TRUE TO NEXT PLAYER
-                            connections.get(nextPlayer - 1).dataOut.writeBoolean(true);
-                            connections.get(nextPlayer - 1).dataOut.flush();
+                            connections.get(nextPlayer).dataOut.writeBoolean(true);
+                            connections.get(nextPlayer).dataOut.flush();
                         }
                     }
                 }
