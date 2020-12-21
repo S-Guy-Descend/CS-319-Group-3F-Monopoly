@@ -21,7 +21,7 @@ public class FortuneCard implements Serializable
                 cardName = "Advance to Go";
                 break;
             case 1:
-                cardName = "Go Back";
+                cardName = "Go Back 3 Squares";
                 break;
             case 2:
                 cardName = "Painting Sold";
@@ -30,7 +30,7 @@ public class FortuneCard implements Serializable
                 cardName = "Go to Dungeon";
                 break;
             case 4:
-                cardName = "Thief!";
+                cardName = "Robbery";
                 break;
             default:
         }
@@ -53,7 +53,7 @@ public class FortuneCard implements Serializable
                 cardText = "Go to Dungeon. Do not pass go. Do not collect 200$.";
                 break;
             case 4:
-                cardText = "A thief stole your money. You lost 100$.";
+                cardText = "A robber stole your money. You lost 100$.";
                 break;
             default:
         }

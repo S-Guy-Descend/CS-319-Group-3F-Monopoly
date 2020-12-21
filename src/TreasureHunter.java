@@ -1,29 +1,43 @@
 public class TreasureHunter extends Token
 {
     int treasureCounter;
+    boolean forcedToMove;
+    boolean treasureHunter;
 
     public TreasureHunter( String name )
     {
         super( name );
         treasureCounter = 0;
+        forcedToMove = false;
+        treasureHunter = true;
     }
 
     public void move()
     {
-        if(currentLocation + diceRollOutcome >= 40)
+        if ( !forcedToMove )
         {
-            money += 20000;
+            treasureCounter ++;
+            if ( treasureCounter == 3 )
+            {
+                this.drawFortuneCard( treasureHunter );
+                treasureCounter = 0;
+            }
         }
-
-        currentLocation = (currentLocation + diceRollOutcome) % 40;
-
-        treasureCounter ++;
-        if ( treasureCounter == 3 )
+        else
         {
-            this.drawFortuneCard();
-            treasureCounter = 0;
+            forcedToMove = false;
         }
+        super.move();
+    }
 
-        activateSquare();
+    public void drawFortuneCard( boolean treasureHunter )
+    {
+        int effectID = (int) (Math.random() * Game.instance.board.fortuneDeck.length);
+        while ( effectID == 3 )
+        {
+            effectID = (int) (Math.random() * Game.instance.board.fortuneDeck.length);
+        }
+        System.out.println("FortuneCard " + Game.instance.board.fortuneDeck[effectID].cardName + " is drawn");
+        Game.instance.board.fortuneDeck[effectID].performEffect( this );
     }
 }
