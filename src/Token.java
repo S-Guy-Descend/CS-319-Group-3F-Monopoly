@@ -6,13 +6,15 @@ public class Token implements Serializable
     String name;
     int ID;
     int money;
-    int color;
     int diceRollOutcome;
     int dungeonCountdown;
     int turnsPlayed;
     int currentLocation;
     int ownedSmithCount;
     int ownedTransportCount;
+
+    boolean isBankrupt;
+
     ArrayList<ScrollCard> scrollCards;
 
     TradeRequest currentPendingTradeRequest;
@@ -33,10 +35,12 @@ public class Token implements Serializable
         ownedTransportCount = 0;
         currentLocation = 0;
         dungeonCountdown = 0;
+        isBankrupt = false;
     }
 
     public void rollDice()
     {
+
         int diceTotal = 0;
         int die1 = 0;
         int die2 = 0;
@@ -84,6 +88,7 @@ public class Token implements Serializable
         else if(Game.instance.board.map[this.currentLocation] instanceof Smith) {
             Smith currentSquare = (Smith) Game.instance.board.map[this.currentLocation];
             if(currentSquare.isPurchased && currentSquare.ownerId != ID && !currentSquare.isMortgaged()) {
+                currentSquare.calculateRent(diceRollOutcome);
                 payMoney(Game.instance.tokens.get(currentSquare.ownerId), currentSquare.rent);
             }
         }
@@ -176,6 +181,7 @@ public class Token implements Serializable
                 money -= currentSmith.price;
                 currentSmith.changeOwner(ID);
                 ownedSmithCount++;
+                currentSmith.calculateRent(diceRollOutcome);
                 return true;
             }
             else if(Game.instance.board.map[this.currentLocation] instanceof Transport) {

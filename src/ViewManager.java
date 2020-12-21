@@ -48,12 +48,16 @@ public class ViewManager {
     private Subscene hostGameSubScene;
     private Subscene lobbySubScene;
 
+    private Subscene sceneToHideLeft;
+    private Subscene sceneToHideRight;
+
     // Connection properties
     private ClientSideConnection csc;
     volatile ArrayList<String> classes;
     volatile boolean gameStarted;
     private int playerCount = 0;
     volatile boolean done = false;
+    volatile boolean isWizard;
 
     // LobbySubScene components
     ListView playerList;
@@ -87,6 +91,32 @@ public class ViewManager {
         createLogo();
         createSubScenes();
     }
+    public void showLeftSubScene(Subscene subscene){
+        if(sceneToHideLeft != null && sceneToHideLeft != subscene) {
+            sceneToHideLeft.leftFloatSubScene();
+        }
+        subscene.leftFloatSubScene();
+        if(sceneToHideLeft == subscene){
+            sceneToHideLeft = null;
+        }
+        else {
+            sceneToHideLeft = subscene;
+        }
+    }
+
+    public void showRightSubScene(Subscene subscene){
+        if(sceneToHideRight != null && sceneToHideRight != subscene) {
+            sceneToHideRight.rightFloatSubScene();
+        }
+        subscene.rightFloatSubScene();
+        if(sceneToHideRight == subscene){
+            sceneToHideRight = null;
+        }
+        else {
+            sceneToHideRight = subscene;
+        }
+    }
+
     public void createSubScenes(){
 
         creditsSubScene = new Subscene(250,500,-550,485);
@@ -153,6 +183,7 @@ public class ViewManager {
             switch (classDropdown.getValue().toString() ) {
                 case "Traveler (One-in-Two)":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(2);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -161,6 +192,7 @@ public class ViewManager {
                     break;
                 case "Traveler (Three-in-Five)":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(3);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -169,6 +201,7 @@ public class ViewManager {
                     break;
                 case "Noble":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(4);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -177,6 +210,7 @@ public class ViewManager {
                     break;
                 case "Knight":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(5);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -185,6 +219,7 @@ public class ViewManager {
                     break;
                 case "Treasure Hunter":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(6);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -193,6 +228,7 @@ public class ViewManager {
                     break;
                 case "Wizard":
                     try {
+                        isWizard = true;
                         csc.dataOut.writeInt(7);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -201,6 +237,7 @@ public class ViewManager {
                     break;
                 case "Fortune Teller":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(8);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -209,6 +246,7 @@ public class ViewManager {
                     break;
                 case "Thief":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(9);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -217,6 +255,7 @@ public class ViewManager {
                     break;
                 case "Builder":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(10);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -225,6 +264,7 @@ public class ViewManager {
                     break;
                 case "Cardinal":
                     try {
+                        isWizard = false;
                         csc.dataOut.writeInt(11);
                         csc.dataOut.flush();
                     } catch (IOException ex) {
@@ -248,7 +288,7 @@ public class ViewManager {
                 gameStarted = true;
 
                 // CREATE GAMEVIEWMANAGER HERE
-                GameViewManager game = new GameViewManager(csc);
+                GameViewManager game = new GameViewManager(csc, classes, isWizard);
                 game.startReceivingTurns();
                 mainStage.hide();
                 game.enterGame();
@@ -512,7 +552,7 @@ public class ViewManager {
                                         public void run() {
                                             gameStarted = true;
                                             // CREATE GAMEVIEWMANAGER HERE
-                                            GameViewManager game = new GameViewManager(csc);
+                                            GameViewManager game = new GameViewManager(csc, classes, isWizard);
                                             game.startReceivingTurns();
                                             mainStage.hide();
                                             game.enterGame();
@@ -585,7 +625,7 @@ public class ViewManager {
         hostGameButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                hostGameSubScene.rightFloatSubScene();
+                showRightSubScene(hostGameSubScene);
             }
         });
 
@@ -600,7 +640,7 @@ public class ViewManager {
         joinGameButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                joinGameSubScene.rightFloatSubScene();
+                showRightSubScene(joinGameSubScene);
             }
         });
 
@@ -615,7 +655,7 @@ public class ViewManager {
         tutorialButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                tutorialSubScene.leftFloatSubScene();
+                showLeftSubScene(tutorialSubScene);
             }
         });
 
@@ -630,7 +670,7 @@ public class ViewManager {
         settingsButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                settingsSubScene.leftFloatSubScene();
+                showLeftSubScene(settingsSubScene);
             }
         });
 
@@ -645,7 +685,7 @@ public class ViewManager {
         creditsButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                creditsSubScene.leftFloatSubScene();
+                showLeftSubScene(creditsSubScene);
             }
         });
 
