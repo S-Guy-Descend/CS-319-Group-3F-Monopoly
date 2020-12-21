@@ -248,7 +248,7 @@ public class ViewManager {
                 gameStarted = true;
 
                 // CREATE GAMEVIEWMANAGER HERE
-                GameViewManager game = new GameViewManager(csc);
+                GameViewManager game = new GameViewManager(csc, classes);
                 game.startReceivingTurns();
                 mainStage.hide();
                 game.enterGame();
@@ -512,7 +512,7 @@ public class ViewManager {
                                         public void run() {
                                             gameStarted = true;
                                             // CREATE GAMEVIEWMANAGER HERE
-                                            GameViewManager game = new GameViewManager(csc);
+                                            GameViewManager game = new GameViewManager(csc, classes);
                                             game.startReceivingTurns();
                                             mainStage.hide();
                                             game.enterGame();
