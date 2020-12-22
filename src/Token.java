@@ -184,6 +184,7 @@ public class Token implements Serializable
                 currentSmith.changeOwner(ID);
                 ownedSmithCount++;
                 currentSmith.calculateRent(diceRollOutcome);
+                activeLands.add( currentLocation );
                 return true;
             }
             else if(Game.instance.board.map[this.currentLocation] instanceof Transport) {
@@ -288,6 +289,7 @@ public class Token implements Serializable
                 money += currentSmith.mortgagePrice;
                 currentSmith.setAsMortgaged();
                 System.out.println("Land is mortgaged");
+                activeLands.remove( new Integer(locationToMortgage) );
                 mortgagedLands.add( locationToMortgage);
                 return true;
             }
@@ -358,6 +360,7 @@ public class Token implements Serializable
                 money -= (int) (currentSmith.mortgagePrice * currentSmith.MORTGAGE_REDEMPTION_MULTIPLIER);
                 currentSmith.removeMortgage();
                 System.out.println("Land is UNMORTGAGED");
+                activeLands.add( locationToUnmortgage );
                 mortgagedLands.remove( new Integer( locationToUnmortgage));
                 return true;
             }

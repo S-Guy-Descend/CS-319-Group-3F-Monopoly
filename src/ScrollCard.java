@@ -41,7 +41,7 @@ public class ScrollCard implements Serializable
         switch (effectID)
         {
             case 0:
-                cardText = "Teleport a player to one of your random properties.";
+                cardText = "Teleport a player to one of your random Town or Transportation Square.";
                 break;
             case 1:
                 cardText = "Gain your character's Feast effect!";
@@ -65,11 +65,28 @@ public class ScrollCard implements Serializable
         {
             case 0:
                 if ( !(effectVictim.dungeonCountdown > 0) && effectOwner.activeLands.size() > 0) {
+                    int ownedSmiths = 0;
+                    for ( int i = 0; i < effectOwner.activeLands.size(); i ++ )
+                    {
+                        if (  Game.instance.board.map[effectOwner.activeLands.get(i)] instanceof Smith )
+                        {
+                            ownedSmiths ++;
+                        }
+                    }
+                    if ( ownedSmiths == effectOwner.activeLands.size() )
+                    {
+                        System.out.println( "Can't teleport player." );
+                        break;
+                    }
                     int randomPropertyID = (int) (Math.random() * effectOwner.activeLands.size());
+                    while ( Game.instance.board.map[randomPropertyID] instanceof Smith )
+                    {
+                        randomPropertyID = (int) (Math.random() * effectOwner.activeLands.size());
+                    }
                     effectVictim.forceMove(effectOwner.activeLands.get(randomPropertyID), false);
                 }
                 else {
-                    System.out.println("Can't teleport player. Either no active lands or victim's in jail");
+                    System.out.println( "Can't teleport player." );
                 }
                 break;
             case 1:
