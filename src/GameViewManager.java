@@ -469,10 +469,14 @@ public class GameViewManager {
                             acceptTrade.disable(true);
                             declineTrade.disable(true);
                             endTurn.disable(true);
+                            for (int i = 0; i < mortgageButtons.size(); i++) {
+                                mortgageButtons.get(i).setDisable(true);
+                            }
 
                             Platform.runLater(new Runnable() {
                                 @Override
                                 public void run() {
+
                                     winner.setText("Player " + (currentGameState.gameWinnerID + 1) + " won the game!");
                                     switch (currentGameState.gameWinnerID) {
                                         case 0:
@@ -517,6 +521,9 @@ public class GameViewManager {
                             acceptTrade.disable(true);
                             declineTrade.disable(true);
                             endTurn.disable(true);
+                            for (int i = 0; i < mortgageButtons.size(); i++) {
+                                mortgageButtons.get(i).setDisable(true);
+                            }
 
                             Platform.runLater(new Runnable() {
                                 @Override
@@ -590,6 +597,9 @@ public class GameViewManager {
                                     acceptTrade.disable(true);
                                     declineTrade.disable(true);
                                     endTurn.disable(true);
+                                    for (int i = 0; i < mortgageButtons.size(); i++) {
+                                        mortgageButtons.get(i).setDisable(true);
+                                    }
 
                                     Platform.runLater(new Runnable() {
                                         @Override
@@ -641,6 +651,9 @@ public class GameViewManager {
                             acceptTrade.disable(true);
                             declineTrade.disable(true);
                             endTurn.disable(true);
+                            for (int i = 0; i < mortgageButtons.size(); i++) {
+                                mortgageButtons.get(i).setDisable(true);
+                            }
 
                             Platform.runLater(new Runnable() {
                                 @Override
@@ -715,30 +728,30 @@ public class GameViewManager {
                                     Square currentSquare = currentGameState.board.map[currentGameState.tokens.get(csc.playerID - 1).currentLocation];
                                     if (currentSquare instanceof Town) {
                                         if (((Town) currentSquare).isPurchased) {
-                                            purchaseLand.setDisable(true);
+                                            purchaseLand.disable(true);
                                         } else {
                                             if (currentGameState.tokens.get(csc.playerID - 1).money >= ((Town) currentSquare).price) {
-                                                purchaseLand.setDisable(true);
+                                                purchaseLand.disable(true);
                                             }
-                                            purchaseLand.setDisable(false);
+                                            purchaseLand.disable(false);
                                         }
                                     } else if (currentSquare instanceof Transport) {
                                         if (((Transport) currentSquare).isPurchased) {
-                                            purchaseLand.setDisable(true);
+                                            purchaseLand.disable(true);
                                         } else {
                                             if (currentGameState.tokens.get(csc.playerID - 1).money >= ((Transport) currentSquare).price) {
-                                                purchaseLand.setDisable(true);
+                                                purchaseLand.disable(true);
                                             }
-                                            purchaseLand.setDisable(false);
+                                            purchaseLand.disable(false);
                                         }
                                     } else if (currentSquare instanceof Smith) {
                                         if (((Smith) currentSquare).isPurchased) {
-                                            purchaseLand.setDisable(true);
+                                            purchaseLand.disable(true);
                                         } else {
                                             if (currentGameState.tokens.get(csc.playerID - 1).money >= ((Smith) currentSquare).price) {
-                                                purchaseLand.setDisable(true);
+                                                purchaseLand.disable(true);
                                             }
-                                            purchaseLand.setDisable(false);
+                                            purchaseLand.disable(false);
                                         }
                                     }
                                     sendTrade.disable(true);
@@ -765,30 +778,30 @@ public class GameViewManager {
                                     Square currentSquare = currentGameState.board.map[currentGameState.tokens.get(csc.playerID - 1).currentLocation];
                                     if (currentSquare instanceof Town) {
                                         if (((Town) currentSquare).isPurchased) {
-                                            purchaseLand.setDisable(true);
+                                            purchaseLand.disable(true);
                                         } else {
                                             if (currentGameState.tokens.get(csc.playerID - 1).money >= ((Town) currentSquare).price) {
-                                                purchaseLand.setDisable(true);
+                                                purchaseLand.disable(true);
                                             }
-                                            purchaseLand.setDisable(false);
+                                            purchaseLand.disable(false);
                                         }
                                     } else if (currentSquare instanceof Transport) {
                                         if (((Transport) currentSquare).isPurchased) {
-                                            purchaseLand.setDisable(true);
+                                            purchaseLand.disable(true);
                                         } else {
                                             if (currentGameState.tokens.get(csc.playerID - 1).money >= ((Transport) currentSquare).price) {
-                                                purchaseLand.setDisable(true);
+                                                purchaseLand.disable(true);
                                             }
-                                            purchaseLand.setDisable(false);
+                                            purchaseLand.disable(false);
                                         }
                                     } else if (currentSquare instanceof Smith) {
                                         if (((Smith) currentSquare).isPurchased) {
-                                            purchaseLand.setDisable(true);
+                                            purchaseLand.disable(true);
                                         } else {
                                             if (currentGameState.tokens.get(csc.playerID - 1).money >= ((Smith) currentSquare).price) {
-                                                purchaseLand.setDisable(true);
+                                                purchaseLand.disable(true);
                                             }
-                                            purchaseLand.setDisable(false);
+                                            purchaseLand.disable(false);
                                         }
                                     }
                                     build.disable(!currentGameState.tokens.get(csc.playerID - 1).isBuildAvailable());
@@ -811,6 +824,9 @@ public class GameViewManager {
                                 acceptTrade.disable(true);
                                 declineTrade.disable(true);
                                 endTurn.disable(true);
+                                for (int i = 0; i < mortgageButtons.size(); i++) {
+                                    mortgageButtons.get(i).setDisable(true);
+                                }
 
                                 Platform.runLater(new Runnable() {
                                     @Override
@@ -1008,7 +1024,6 @@ public class GameViewManager {
         for (int i = 0; i < currentGameState.tokens.get(csc.playerID - 1).activeLands.size(); i++) {
             final int squareID = currentGameState.tokens.get(csc.playerID - 1).activeLands.get(i);
             Square squareToMortgage = currentGameState.board.map[squareID];
-            mortgageButtons = new ArrayList<Button>();
             if (squareToMortgage instanceof Town) {
                 if (!((Town) squareToMortgage).isMortgaged) {
                     activeLandText = new Label(currentGameState.board.map[squareID].name);
@@ -1156,7 +1171,6 @@ public class GameViewManager {
         for (int i = 0; i < currentGameState.tokens.get(csc.playerID - 1).mortgagedLands.size(); i++) {
             final int squareID = currentGameState.tokens.get(csc.playerID - 1).mortgagedLands.get(i);
             Square squareToMortgage = currentGameState.board.map[squareID];
-            mortgageButtons = new ArrayList<Button>();
             if (squareToMortgage instanceof Town) {
                 if (!((Town) squareToMortgage).isMortgaged) {
                     activeLandText = new Label(currentGameState.board.map[squareID].name);
@@ -1298,6 +1312,19 @@ public class GameViewManager {
                     activeLandsCell.getChildren().addAll(activeLandText, activeLandsMortgageButton);
                     activeLandsCell.setSpacing(20);
                     activeLandsList.getItems().add(activeLandsCell);
+                }
+            }
+        }
+        if (lastOp == 7) {
+            for (int i = 0; i < mortgageButtons.size(); i++) {
+                mortgageButtons.get(i).setDisable(true);
+            }
+        } else {
+            for (int i = 0; i < mortgageButtons.size(); i++) {
+                if (currentGameState.tokens.get(csc.playerID - 1).money >= mortgagePrices.get(i)) {
+                    mortgageButtons.get(i).setDisable(false);
+                } else {
+                    mortgageButtons.get(i).setDisable(true);
                 }
             }
         }
