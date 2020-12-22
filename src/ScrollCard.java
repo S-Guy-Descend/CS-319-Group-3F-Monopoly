@@ -97,8 +97,9 @@ public class ScrollCard implements Serializable
                 if ( effectVictim.residenceIDs.size() > 0 )
                 {
                     int squareWithBuildingID = (int)(Math.random() * effectVictim.residenceIDs.size() );
-                    ((Town)Game.instance.board.map[squareWithBuildingID]).numberOfInns --;
-                    if ( ((Town)Game.instance.board.map[squareWithBuildingID]).numberOfInns == 0 )
+                    ((Town)Game.instance.board.map[effectVictim.residenceIDs.get(squareWithBuildingID)]).numberOfInns --;
+                    ((Town)Game.instance.board.map[effectVictim.residenceIDs.get(squareWithBuildingID)]).calculateRent();
+                    if (  ((Town)Game.instance.board.map[effectVictim.residenceIDs.get(squareWithBuildingID)]).numberOfInns == 0 )
                     {
                         effectVictim.residenceIDs.remove( new Integer(squareWithBuildingID) );
                     }
