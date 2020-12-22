@@ -51,7 +51,8 @@ public class Token implements Serializable
         diceTotal = die1 + die2;
 
         diceRollOutcome = diceTotal;
-        diceRollOutcome = 7;
+        Game.instance.infoPanel = "Player " + (ID + 1) + "rolled " + diceRollOutcome;
+
     }
 
     public void move()
@@ -69,6 +70,7 @@ public class Token implements Serializable
         Game.instance.board.map[currentLocation].addTokenOnSquare(ID);
 
         activateSquare();
+        Game.instance.infoPanel = Game.instance.infoPanel + "\nPlayer " + (ID + 1) + " moved to " + currentLocation;
     }
 
     public void activateSquare()

@@ -9,6 +9,7 @@ public class Game implements Serializable {
     int playerCount = 0;
     int turnCounter = 0;
     int gameWinnerID = -1;
+    String infoPanel;
 
     private Game() {
         tokens = new ArrayList<Token>();

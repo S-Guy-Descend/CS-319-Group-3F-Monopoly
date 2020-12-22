@@ -56,6 +56,7 @@ public class GameViewManager {
     private ArrayList<Button> mortgageButtons;
     private ArrayList<Integer> mortgagePrices;
 
+    private Label infoPanel;
 
     private ArrayList<Label> playerNames;
     private ArrayList<Label> playerMoneys;
@@ -77,6 +78,10 @@ public class GameViewManager {
         this.isWizard = isWizard;
         this.csc = csc;
         this.classes = classes;
+        infoPanel = new Label("");
+        infoPanel.setFont( new Font(21));
+        infoPanel.setStyle(PLAYER_INFO_BACKGROUND);
+        // infopanel yerini ayarla
         sub0 = new Subscene(0,0,0,0);
         sub3 = new Subscene(0,0,0,0);
         sub4 = new Subscene(0,0,0,0);
@@ -477,6 +482,7 @@ public class GameViewManager {
                             }
                             updateActiveLandsDisplay();
                             updateScrollsList();
+                            updateInfoPanel();
                         }
                     });
                     for (int i = 0; i < currentGameState.tokens.size(); i++) {
@@ -611,6 +617,7 @@ public class GameViewManager {
                                         updateActiveLandsDisplay();
                                         resetScrollsList();
                                         updateScrollsList();
+                                        updateInfoPanel();
                                     }
                                 });
 
@@ -753,6 +760,7 @@ public class GameViewManager {
                                         updateActiveLandsDisplay();
                                         resetScrollsList();
                                         updateScrollsList();
+                                        updateInfoPanel();
                                     }
                                 });
                                 if (lastOp == 0) {
@@ -1736,5 +1744,9 @@ public class GameViewManager {
             return true;
         }
         return false;
+    }
+
+    public void updateInfoPanel() {
+        infoPanel.setText(currentGameState.infoPanel);
     }
 }
