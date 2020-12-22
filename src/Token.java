@@ -393,9 +393,16 @@ public class Token implements Serializable
 
     public void drawScroll()
     {
-        int effectID = (int) (Math.random() * Game.instance.board.scrollDeck.length);
-        scrollCards.add( Game.instance.board.scrollDeck[effectID] );
-        System.out.println("Scroll " + Game.instance.board.scrollDeck[effectID].cardName + " is drawn");
+        if ( scrollCards.size() < 5 )
+        {
+            int effectID = (int) (Math.random() * Game.instance.board.scrollDeck.length);
+            scrollCards.add( Game.instance.board.scrollDeck[effectID] );
+            System.out.println("Scroll " + Game.instance.board.scrollDeck[effectID].cardName + " is drawn");
+        }
+        else
+        {
+            System.out.println( "You are already carrying max number of scrolls" );
+        }
     }
 
     public boolean isScrollAvailable()
