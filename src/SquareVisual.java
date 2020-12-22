@@ -247,7 +247,7 @@ public class SquareVisual extends Rectangle
                 }
             }
             else {
-                squareName.setText(currentGame.board.map[ squareID].name + "\n" + "Unmortgage for " + (((Town) (currentGame.board.map[squareID])).mortgagePrice *  (((Town) (currentGame.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER)));
+                squareName.setText(currentGame.board.map[ squareID].name + "\n" + "UM: " + (int) (((Town) (currentGame.board.map[squareID])).mortgagePrice *  (((Town) (currentGame.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER)));
             }
         }
         else if( currentGame.board.map[ squareID] instanceof  Transport) {
@@ -259,7 +259,7 @@ public class SquareVisual extends Rectangle
                 }
             }
             else {
-                squareName.setText(currentGame.board.map[ squareID].name + "\n" + "Unmortgage for " + (((Transport) (currentGame.board.map[squareID])).mortgagePrice *  (((Transport) (currentGame.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER)));
+                squareName.setText(currentGame.board.map[ squareID].name + "\n" + "UM: " + (int) (((Transport) (currentGame.board.map[squareID])).mortgagePrice *  (((Transport) (currentGame.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER)));
             }
         }
         else if( currentGame.board.map[ squareID] instanceof  Smith) {
@@ -281,7 +281,7 @@ public class SquareVisual extends Rectangle
                 }
             }
             else {
-                squareName.setText(currentGame.board.map[ squareID].name + "\n" + "Unmortgage for " + (((Smith) (currentGame.board.map[squareID])).mortgagePrice *  (((Smith) (currentGame.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER)));
+                squareName.setText(currentGame.board.map[ squareID].name + "\n" + "UM: " + (int) (((Smith) (currentGame.board.map[squareID])).mortgagePrice *  (((Smith) (currentGame.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER)));
             }
         }
     }
