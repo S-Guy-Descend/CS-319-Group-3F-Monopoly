@@ -12,14 +12,14 @@ public class Token implements Serializable
     int currentLocation;
     int ownedSmithCount;
     int ownedTransportCount;
+    ArrayList<ScrollCard> scrollCards;
 
     boolean isBankrupt;
-
-    ArrayList<ScrollCard> scrollCards;
 
     TradeRequest currentPendingTradeRequest;
 
     ArrayList<Integer> activeLands;
+    ArrayList<Integer> mortgagedLands;
     ArrayList<Integer> residenceIDs;
 
 
@@ -28,6 +28,7 @@ public class Token implements Serializable
         this.name = name;
         scrollCards = new ArrayList<ScrollCard>();
         activeLands = new ArrayList<Integer>();
+        mortgagedLands = new ArrayList<Integer>();
         residenceIDs = new ArrayList<Integer>();
         money = 150000;
         turnsPlayed = 0;
@@ -50,6 +51,7 @@ public class Token implements Serializable
         diceTotal = die1 + die2;
 
         diceRollOutcome = diceTotal;
+        diceRollOutcome = 20;
     }
 
     public void move()
@@ -58,7 +60,7 @@ public class Token implements Serializable
         {
             Game.instance.board.map[currentLocation].removeTokenFromSquare(ID);
         }
-        
+
         if(currentLocation + diceRollOutcome >= 40) {
             money += 20000;
         }
@@ -278,6 +280,7 @@ public class Token implements Serializable
                 {
                     residenceIDs.remove( new Integer(locationToMortgage) );
                 }
+                mortgagedLands.add( locationToMortgage);
                 return true;
             }
             else if(Game.instance.board.map[locationToMortgage] instanceof Smith) {
@@ -285,6 +288,7 @@ public class Token implements Serializable
                 money += currentSmith.mortgagePrice;
                 currentSmith.setAsMortgaged();
                 System.out.println("Land is mortgaged");
+                mortgagedLands.add( locationToMortgage);
                 return true;
             }
             else if(Game.instance.board.map[locationToMortgage] instanceof Transport) {
@@ -298,6 +302,7 @@ public class Token implements Serializable
                 ((Transport)Game.instance.board.map[35]).calculateRent();
                 System.out.println("Land is mortgaged");
                 activeLands.remove( new Integer(locationToMortgage) );
+                mortgagedLands.add( locationToMortgage);
                 return true;
             }
             return false;
@@ -345,6 +350,7 @@ public class Token implements Serializable
                 {
                     residenceIDs.add(locationToUnmortgage);
                 }
+                mortgagedLands.remove( new Integer( locationToUnmortgage));
                 return true;
             }
             else if(Game.instance.board.map[locationToUnmortgage] instanceof Smith) {
@@ -352,6 +358,7 @@ public class Token implements Serializable
                 money -= (int) (currentSmith.mortgagePrice * currentSmith.MORTGAGE_REDEMPTION_MULTIPLIER);
                 currentSmith.removeMortgage();
                 System.out.println("Land is UNMORTGAGED");
+                mortgagedLands.remove( new Integer( locationToUnmortgage));
                 return true;
             }
 
@@ -366,6 +373,7 @@ public class Token implements Serializable
                 ((Transport)Game.instance.board.map[35]).calculateRent();
                 System.out.println("Land is UNMORTGAGED");
                 activeLands.add( locationToUnmortgage );
+                mortgagedLands.remove( new Integer( locationToUnmortgage));
                 return true;
             }
             return false;
