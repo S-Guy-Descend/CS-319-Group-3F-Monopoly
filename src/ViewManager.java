@@ -466,7 +466,7 @@ public class ViewManager {
                     return;
                 }
                 for(int i = 0; i < gameIDTxtField.getLength(); i++) {
-                    if(gameIDTxtField.getText().charAt(i) > 89 || gameIDTxtField.getText().charAt(i) < 80) {
+                    if(gameIDTxtField.getText().charAt(i) > 57 || gameIDTxtField.getText().charAt(i) < 48) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("EMPTY GAME ID!");
                         alert.setHeaderText(null);
