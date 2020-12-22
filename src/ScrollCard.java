@@ -47,7 +47,7 @@ public class ScrollCard implements Serializable
                 cardText = "Gain your character's Feast effect!";
                 break;
             case 2:
-                cardText = "Summon a powerful earthquake to destroy one of the buildings of a player.";
+                cardText = "Summon a powerful earthquake to destroy one of the buildings on a random square.";
                 break;
             case 3:
                 cardText = "Send a player to dungeon, or if he is already in dungeon, release him and send him to GO.";
