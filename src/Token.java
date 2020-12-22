@@ -51,7 +51,6 @@ public class Token implements Serializable
         diceTotal = die1 + die2;
 
         diceRollOutcome = diceTotal;
-        diceRollOutcome = 20;
     }
 
     public void move()

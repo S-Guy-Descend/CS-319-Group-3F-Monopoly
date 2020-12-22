@@ -35,6 +35,7 @@ public class GameViewManager {
     private StyledButton declineTrade;
     private StyledButton endTurn;
     private Label currentPlayer;
+    private Label winner;
 
     private GridPane playerInfo;
     private GridPane wizardInfo;
@@ -238,7 +239,6 @@ public class GameViewManager {
         activeLandsList.setLayoutX(1558);
         activeLandsList.setLayoutY(600);
 
-
         playerInfo = new GridPane();
         playerInfo.setGridLinesVisible(true);
         playerInfo.setStyle(PLAYER_INFO_BACKGROUND);
@@ -312,6 +312,13 @@ public class GameViewManager {
                     break;
             }
         }
+
+        winner = new Label("");
+        winner.setStyle(PLAYER_INFO_BACKGROUND);
+        winner.setFont( new Font(64));
+        winner.setVisible(false);
+        winner.setLayoutX(189);
+        winner.setLayoutY(200);
 
         currentPlayer = new Label("You are " + playerNames.get(csc.playerID - 1).getText());
         currentPlayer.setFont(new Font(24));
@@ -401,9 +408,9 @@ public class GameViewManager {
         endTurn.disable(true);
 
         if (isWizard) {
-            gamePane.getChildren().addAll(currentPlayer, rollDice, build, purchaseLand, useScroll, endTurn, playerInfo, wizardInfo, activeLandsList);
+            gamePane.getChildren().addAll(currentPlayer, rollDice, build, purchaseLand, useScroll, endTurn, playerInfo, wizardInfo, activeLandsList, winner);
         } else {
-            gamePane.getChildren().addAll(currentPlayer, rollDice, build, purchaseLand, useScroll, endTurn, playerInfo, activeLandsList);
+            gamePane.getChildren().addAll(currentPlayer, rollDice, build, purchaseLand, useScroll, endTurn, playerInfo, activeLandsList, winner);
         }
 
         gameScene = new Scene(gamePane, GAME_WIDTH, GAME_HEIGHT);
@@ -430,6 +437,7 @@ public class GameViewManager {
             public void run() {
                 try {
                     currentGameState = (Game) (csc.dataIn.readObject());
+
                     redrawBoard();
                     Platform.runLater(new Runnable() {
                         @Override
@@ -451,13 +459,108 @@ public class GameViewManager {
                 }
                 while (true) {
                     try {
+                        //CHECK GAME END
+                        if (currentGameState.gameWinnerID != -1) {
+                            rollDice.disable(true);
+                            build.disable(true);
+                            useScroll.disable(true);
+                            purchaseLand.disable(true);
+                            sendTrade.disable(true);
+                            acceptTrade.disable(true);
+                            declineTrade.disable(true);
+                            endTurn.disable(true);
+
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    winner.setText("Player " + (currentGameState.gameWinnerID + 1) + " won the game!");
+                                    switch (currentGameState.gameWinnerID) {
+                                        case 0:
+                                            winner.setTextFill(Color.RED);
+                                            break;
+                                        case 1:
+                                            winner.setTextFill(Color.GREEN);
+                                            break;
+                                        case 2:
+                                            winner.setTextFill(Color.BLUE);
+                                            break;
+                                        case 3:
+                                            winner.setTextFill(Color.YELLOW);
+                                            break;
+                                        case 4:
+                                            winner.setTextFill(Color.CYAN);
+                                            break;
+                                        case 5:
+                                            winner.setTextFill(Color.HOTPINK);
+                                            break;
+                                        case 6:
+                                            winner.setTextFill(Color.DARKORANGE);
+                                            break;
+                                        case 7:
+                                            winner.setTextFill(Color.PURPLE);
+                                            break;
+                                    }
+                                    System.out.println("GAME ENDED");
+                                    winner.setVisible(true);
+                                }
+                            });
+                            break;
+                        }
                         csc.isTurn = csc.dataIn.readBoolean();
+                        //CHECK GAME END
+                        if (currentGameState.gameWinnerID != -1) {
+                            rollDice.disable(true);
+                            build.disable(true);
+                            useScroll.disable(true);
+                            purchaseLand.disable(true);
+                            sendTrade.disable(true);
+                            acceptTrade.disable(true);
+                            declineTrade.disable(true);
+                            endTurn.disable(true);
+
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    winner.setText("Player " + (currentGameState.gameWinnerID + 1) + " won the game!");
+                                    switch (currentGameState.gameWinnerID) {
+                                        case 0:
+                                            winner.setTextFill(Color.RED);
+                                            break;
+                                        case 1:
+                                            winner.setTextFill(Color.GREEN);
+                                            break;
+                                        case 2:
+                                            winner.setTextFill(Color.BLUE);
+                                            break;
+                                        case 3:
+                                            winner.setTextFill(Color.YELLOW);
+                                            break;
+                                        case 4:
+                                            winner.setTextFill(Color.CYAN);
+                                            break;
+                                        case 5:
+                                            winner.setTextFill(Color.HOTPINK);
+                                            break;
+                                        case 6:
+                                            winner.setTextFill(Color.DARKORANGE);
+                                            break;
+                                        case 7:
+                                            winner.setTextFill(Color.PURPLE);
+                                            break;
+                                    }
+                                    System.out.println("GAME ENDED");
+                                    winner.setVisible(true);
+                                }
+                            });
+                            break;
+                        }
 
                         if (!csc.isTurn) {
                             boolean isMyTurn = false;
                             while (!isMyTurn) {
                                 // Getting game data during someone else's turn
                                 currentGameState = (Game) (csc.dataIn.readObject());
+
                                 //UPDATE BOARD HERE
                                 redrawBoard();
                                 Platform.runLater(new Runnable() {
@@ -477,9 +580,103 @@ public class GameViewManager {
                                 for (int i = 0; i < currentGameState.tokens.size(); i++) {
                                     System.out.println("Player: " + (i + 1) + " Location: " + currentGameState.tokens.get(i).currentLocation + " Money: " + currentGameState.tokens.get(i).money + "ScrollCards: " + currentGameState.tokens.get(i).scrollCards.size());
                                 }
+                                //CHECK GAME END
+                                if (currentGameState.gameWinnerID != -1) {
+                                    rollDice.disable(true);
+                                    build.disable(true);
+                                    useScroll.disable(true);
+                                    purchaseLand.disable(true);
+                                    sendTrade.disable(true);
+                                    acceptTrade.disable(true);
+                                    declineTrade.disable(true);
+                                    endTurn.disable(true);
+
+                                    Platform.runLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            winner.setText("Player " + (currentGameState.gameWinnerID + 1) + " won the game!");
+                                            switch (currentGameState.gameWinnerID) {
+                                                case 0:
+                                                    winner.setTextFill(Color.RED);
+                                                    break;
+                                                case 1:
+                                                    winner.setTextFill(Color.GREEN);
+                                                    break;
+                                                case 2:
+                                                    winner.setTextFill(Color.BLUE);
+                                                    break;
+                                                case 3:
+                                                    winner.setTextFill(Color.YELLOW);
+                                                    break;
+                                                case 4:
+                                                    winner.setTextFill(Color.CYAN);
+                                                    break;
+                                                case 5:
+                                                    winner.setTextFill(Color.HOTPINK);
+                                                    break;
+                                                case 6:
+                                                    winner.setTextFill(Color.DARKORANGE);
+                                                    break;
+                                                case 7:
+                                                    winner.setTextFill(Color.PURPLE);
+                                                    break;
+                                            }
+                                            System.out.println("GAME ENDED");
+                                            winner.setVisible(true);
+                                        }
+                                    });
+                                    break;
+                                }
 
 
                             }
+                        }
+                        //CHECK GAME END
+                        if (currentGameState.gameWinnerID != -1) {
+                            rollDice.disable(true);
+                            build.disable(true);
+                            useScroll.disable(true);
+                            purchaseLand.disable(true);
+                            sendTrade.disable(true);
+                            acceptTrade.disable(true);
+                            declineTrade.disable(true);
+                            endTurn.disable(true);
+
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    winner.setText("Player " + (currentGameState.gameWinnerID + 1) + " won the game!");
+                                    switch (currentGameState.gameWinnerID) {
+                                        case 0:
+                                            winner.setTextFill(Color.RED);
+                                            break;
+                                        case 1:
+                                            winner.setTextFill(Color.GREEN);
+                                            break;
+                                        case 2:
+                                            winner.setTextFill(Color.BLUE);
+                                            break;
+                                        case 3:
+                                            winner.setTextFill(Color.YELLOW);
+                                            break;
+                                        case 4:
+                                            winner.setTextFill(Color.CYAN);
+                                            break;
+                                        case 5:
+                                            winner.setTextFill(Color.HOTPINK);
+                                            break;
+                                        case 6:
+                                            winner.setTextFill(Color.DARKORANGE);
+                                            break;
+                                        case 7:
+                                            winner.setTextFill(Color.PURPLE);
+                                            break;
+                                    }
+                                    System.out.println("GAME ENDED");
+                                    winner.setVisible(true);
+                                }
+                            });
+                            break;
                         }
                         System.out.println("Player " + csc.playerID + " started Turn");
 
@@ -603,6 +800,53 @@ public class GameViewManager {
 
 
                                 endedTurn = csc.dataIn.readBoolean();
+                            }
+                            //CHECK GAME END
+                            if (currentGameState.gameWinnerID != -1) {
+                                rollDice.disable(true);
+                                build.disable(true);
+                                useScroll.disable(true);
+                                purchaseLand.disable(true);
+                                sendTrade.disable(true);
+                                acceptTrade.disable(true);
+                                declineTrade.disable(true);
+                                endTurn.disable(true);
+
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        winner.setText("Player " + (currentGameState.gameWinnerID + 1) + " won the game!");
+                                        switch (currentGameState.gameWinnerID) {
+                                            case 0:
+                                                winner.setTextFill(Color.RED);
+                                                break;
+                                            case 1:
+                                                winner.setTextFill(Color.GREEN);
+                                                break;
+                                            case 2:
+                                                winner.setTextFill(Color.BLUE);
+                                                break;
+                                            case 3:
+                                                winner.setTextFill(Color.YELLOW);
+                                                break;
+                                            case 4:
+                                                winner.setTextFill(Color.CYAN);
+                                                break;
+                                            case 5:
+                                                winner.setTextFill(Color.HOTPINK);
+                                                break;
+                                            case 6:
+                                                winner.setTextFill(Color.DARKORANGE);
+                                                break;
+                                            case 7:
+                                                winner.setTextFill(Color.PURPLE);
+                                                break;
+                                        }
+                                        System.out.println("GAME ENDED");
+                                        winner.setVisible(true);
+                                    }
+                                });
+                                break;
                             }
                         }
                     } catch (IOException | ClassNotFoundException e) {
@@ -734,7 +978,11 @@ public class GameViewManager {
 
     public void updateMoneys() {
         for (int i = 0; i < classes.size(); i++) {
-            playerMoneys.get(i).setText(String.valueOf(currentGameState.tokens.get(i).money));
+            if (!currentGameState.tokens.get(i).isBankrupt) {
+                playerMoneys.get(i).setText(String.valueOf(currentGameState.tokens.get(i).money));
+            } else {
+                playerMoneys.get(i).setText("BANKRUPT!");
+            }
         }
     }
 
@@ -788,7 +1036,7 @@ public class GameViewManager {
                 } else {
                     activeLandText = new Label(currentGameState.board.map[squareID].name);
                     Button activeLandsMortgageButton;
-                    activeLandsMortgageButton = new Button("Unmortgage (" + ((Town) (currentGameState.board.map[squareID])).mortgagePrice * ((Town) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER + ")");
+                    activeLandsMortgageButton = new Button("Unmortgage (" +(int) (((Town) (currentGameState.board.map[squareID])).mortgagePrice * ((Town) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER) + ")");
                     mortgagePrices.add(new Integer((int) (((Town) (currentGameState.board.map[squareID])).mortgagePrice * ((Town) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER)));
                     mortgageButtons.add(activeLandsMortgageButton);
                     activeLandsMortgageButton.setOnAction(e -> {
@@ -836,7 +1084,7 @@ public class GameViewManager {
                 } else {
                     activeLandText = new Label(currentGameState.board.map[squareID].name);
                     Button activeLandsMortgageButton;
-                    activeLandsMortgageButton = new Button("Unmortgage (" + ((Transport) (currentGameState.board.map[squareID])).mortgagePrice * ((Transport) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER + ")");
+                    activeLandsMortgageButton = new Button("Unmortgage (" +(int) (((Transport) (currentGameState.board.map[squareID])).mortgagePrice * ((Transport) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER) + ")");
                     mortgagePrices.add(new Integer((int) (((Transport) (currentGameState.board.map[squareID])).mortgagePrice * ((Transport) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER)));
                     mortgageButtons.add(activeLandsMortgageButton);
                     activeLandsMortgageButton.setOnAction(e -> {
@@ -883,7 +1131,7 @@ public class GameViewManager {
                 } else {
                     activeLandText = new Label(currentGameState.board.map[squareID].name);
                     Button activeLandsMortgageButton;
-                    activeLandsMortgageButton = new Button("Unmortgage (" + ((Smith) (currentGameState.board.map[squareID])).mortgagePrice * ((Smith) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER + ")");
+                    activeLandsMortgageButton = new Button("Unmortgage (" +(int) (((Smith) (currentGameState.board.map[squareID])).mortgagePrice * ((Smith) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER) + ")");
                     mortgagePrices.add(new Integer((int) (((Smith) (currentGameState.board.map[squareID])).mortgagePrice * ((Smith) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER)));
                     mortgageButtons.add(activeLandsMortgageButton);
                     activeLandsMortgageButton.setOnAction(e -> {
@@ -936,7 +1184,7 @@ public class GameViewManager {
                 } else {
                     activeLandText = new Label(currentGameState.board.map[squareID].name);
                     Button activeLandsMortgageButton;
-                    activeLandsMortgageButton = new Button("Unmortgage (" + ((Town) (currentGameState.board.map[squareID])).mortgagePrice * ((Town) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER + ")");
+                    activeLandsMortgageButton = new Button("Unmortgage (" + (int) (((Town) (currentGameState.board.map[squareID])).mortgagePrice * ((Town) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER) + ")");
                     mortgagePrices.add(new Integer((int) (((Town) (currentGameState.board.map[squareID])).mortgagePrice * ((Town) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER)));
                     mortgageButtons.add(activeLandsMortgageButton);
                     activeLandsMortgageButton.setOnAction(e -> {
@@ -984,7 +1232,7 @@ public class GameViewManager {
                 } else {
                     activeLandText = new Label(currentGameState.board.map[squareID].name);
                     Button activeLandsMortgageButton;
-                    activeLandsMortgageButton = new Button("Unmortgage (" + ((Transport) (currentGameState.board.map[squareID])).mortgagePrice * ((Transport) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER + ")");
+                    activeLandsMortgageButton = new Button("Unmortgage (" + (int) (((Transport) (currentGameState.board.map[squareID])).mortgagePrice * ((Transport) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER) + ")");
                     mortgagePrices.add(new Integer((int) (((Transport) (currentGameState.board.map[squareID])).mortgagePrice * ((Transport) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER)));
                     mortgageButtons.add(activeLandsMortgageButton);
                     activeLandsMortgageButton.setOnAction(e -> {
@@ -1031,7 +1279,7 @@ public class GameViewManager {
                 } else {
                     activeLandText = new Label(currentGameState.board.map[squareID].name);
                     Button activeLandsMortgageButton;
-                    activeLandsMortgageButton = new Button("Unmortgage (" + ((Smith) (currentGameState.board.map[squareID])).mortgagePrice * ((Smith) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER + ")");
+                    activeLandsMortgageButton = new Button("Unmortgage (" + (int) (((Smith) (currentGameState.board.map[squareID])).mortgagePrice * ((Smith) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER) + ")");
                     mortgagePrices.add(new Integer((int) (((Smith) (currentGameState.board.map[squareID])).mortgagePrice * ((Smith) (currentGameState.board.map[squareID])).MORTGAGE_REDEMPTION_MULTIPLIER)));
                     mortgageButtons.add(activeLandsMortgageButton);
                     activeLandsMortgageButton.setOnAction(e -> {
