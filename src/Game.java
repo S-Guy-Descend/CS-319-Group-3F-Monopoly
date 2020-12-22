@@ -147,12 +147,11 @@ public class Game implements Serializable {
             }
              */
 
-            //tokens.remove(playerIdToPlay);
-
             tokens.get(playerIdToPlay).activeLands.clear();
-            //tokens.get(playerIdToPlay).mortgagedLands.clear(); //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            tokens.get(playerIdToPlay).mortgagedLands.clear();
             tokens.get(playerIdToPlay).scrollCards.clear();
             tokens.get(playerIdToPlay).isBankrupt = true;
+            board.map[tokens.get(playerIdToPlay).currentLocation].removeTokenFromSquare(playerIdToPlay);
             tokens.get(playerIdToPlay).currentLocation = 0;
             board.map[0].removeTokenFromSquare(playerIdToPlay);
 

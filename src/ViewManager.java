@@ -457,6 +457,24 @@ public class ViewManager {
         AtomicBoolean joinSuccessful = new AtomicBoolean(false);
         joinGameButton.setOnAction( e -> {
             try {
+                if(gameIDTxtField.getLength() <= 0){
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("WRONG GAME ID INPUT!");
+                    alert.setHeaderText(null);
+                    alert.setContentText("You must enter a valid game Id!");
+                    alert.showAndWait();
+                    return;
+                }
+                for(int i = 0; i < gameIDTxtField.getLength(); i++) {
+                    if(gameIDTxtField.getText().charAt(i) > 89 || gameIDTxtField.getText().charAt(i) < 80) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("EMPTY GAME ID!");
+                        alert.setHeaderText(null);
+                        alert.setContentText("You must enter a game Id!");
+                        alert.showAndWait();
+                        return;
+                    }
+                }
                 connectToServer(false, gameIDTxtField.getText());
                 int checkResponse = csc.dataIn.readInt();
                 switch (checkResponse) {
