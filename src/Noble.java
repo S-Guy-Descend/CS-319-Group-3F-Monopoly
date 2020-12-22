@@ -9,6 +9,7 @@ public class Noble extends Token
     public void payTax( int amount )
     {
         int newAmount = (int)( amount * 0.5 );
-        money = money - newAmount;
+
+        super.payTax(newAmount);
     }
 }

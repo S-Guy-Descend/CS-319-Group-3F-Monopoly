@@ -38,6 +38,7 @@ public class TreasureHunter extends Token
             effectID = (int) (Math.random() * Game.instance.board.fortuneDeck.length);
         }
         System.out.println("FortuneCard " + Game.instance.board.fortuneDeck[effectID].cardName + " is drawn");
+        Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " draw " + Game.instance.board.fortuneDeck[effectID].cardName + " Scroll";
         Game.instance.board.fortuneDeck[effectID].performEffect( this );
     }
 }
