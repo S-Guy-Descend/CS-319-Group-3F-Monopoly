@@ -452,8 +452,8 @@ public class GameViewManager {
 
         infoPane.getChildren().add(infoPanel);
 
-        infoPane.setLayoutX(1049);
-        infoPane.setLayoutY(325);
+        infoPane.setLayoutX(264);
+        infoPane.setLayoutY(559);
 
         if (isWizard) {
             gamePane.getChildren().addAll(currentPlayer, rollDice, build, purchaseLand, endTurn, playerInfo, wizardInfo, activeLandsList, winner, scrollsList,infoPane);
