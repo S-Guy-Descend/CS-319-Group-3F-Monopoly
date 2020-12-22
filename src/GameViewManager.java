@@ -41,7 +41,6 @@ public class GameViewManager {
     private GridPane wizardInfo;
 
     private Subscene sub0;
-    private Subscene sub2;
     private Subscene sub3;
     private Subscene sub4;
 
@@ -109,6 +108,9 @@ public class GameViewManager {
                 build.disable(true);
                 try {
                     System.out.println("Player " + csc.playerID + " built");
+                    sub0.setVisible(false);
+                    sub3.setVisible(false);
+                    sub4.setVisible(false);
                     csc.dataOut.writeInt(1);
                     lastOp = 1;
                     csc.dataOut.flush();
@@ -147,6 +149,9 @@ public class GameViewManager {
         purchaseLand.setOnAction(e -> {
             if (csc.isTurn) {
                 purchaseLand.disable(true);
+                sub0.setVisible(false);
+                sub3.setVisible(false);
+                sub4.setVisible(false);
                 try {
                     System.out.println("Player " + csc.playerID + " bought property");
                     csc.dataOut.writeInt(3);
@@ -231,6 +236,9 @@ public class GameViewManager {
                 acceptTrade.disable(true);
                 declineTrade.disable(true);
                 endTurn.disable(true);
+                sub0.setVisible(false);
+                sub3.setVisible(false);
+                sub4.setVisible(false);
                 for (int i = 0; i < mortgageButtons.size(); i++) {
                     mortgageButtons.get(i).setDisable(true);
                 }
@@ -1388,7 +1396,7 @@ public class GameViewManager {
                         ComboBox victimDropdown0 = new ComboBox(victims0);
                         AtomicInteger selectedVictim0 = new AtomicInteger(-1);
                         victimDropdown0.getSelectionModel().selectFirst();
-                        selectedVictim0.set(Integer.parseInt(victimDropdown0.getItems().get(0).toString()));
+                        selectedVictim0.set(Integer.parseInt(victimDropdown0.getItems().get(0).toString()) - 1);
                         victimDropdown0.setOnAction( event -> {
                             switch (victimDropdown0.getValue().toString() ) {
                                 case "1":
@@ -1496,7 +1504,7 @@ public class GameViewManager {
                         ComboBox victimDropdown3 = new ComboBox(victims3);
                         AtomicInteger selectedVictim3 = new AtomicInteger(-1);
                         victimDropdown3.getSelectionModel().selectFirst();
-                        selectedVictim3.set(Integer.parseInt(victimDropdown3.getItems().get(0).toString()));
+                        selectedVictim3.set(Integer.parseInt(victimDropdown3.getItems().get(0).toString()) - 1);
                         victimDropdown3.setOnAction( event -> {
                             switch (victimDropdown3.getValue().toString() ) {
                                 case "1":
@@ -1568,7 +1576,7 @@ public class GameViewManager {
                         ComboBox victimDropdown4 = new ComboBox(victims4);
                         AtomicInteger selectedVictim4 = new AtomicInteger(-1);
                         victimDropdown4.getSelectionModel().selectFirst();
-                        selectedVictim4.set(Integer.parseInt(victimDropdown4.getItems().get(0).toString()));
+                        selectedVictim4.set(Integer.parseInt(victimDropdown4.getItems().get(0).toString()) - 1);
                         victimDropdown4.setOnAction( event -> {
                             switch (victimDropdown4.getValue().toString() ) {
                                 case "1":
