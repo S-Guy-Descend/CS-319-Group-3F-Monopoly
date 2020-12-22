@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import sun.audio.AudioData;
@@ -120,7 +121,17 @@ public class ViewManager {
     public void createSubScenes(){
 
         creditsSubScene = new Subscene(250,500,-550,485);
+        Label creditsLabel = new Label("Atakan Sağlam\nSarp Ulaş Kaya\nFurkan Başkaya\nBerk Kerem Berçin\nOğulcan Çetinkaya");
+        creditsLabel.setFont( new Font(25));
+        creditsLabel.setLayoutX(134);
+        creditsLabel.setLayoutY(26);
+        creditsSubScene.getPane().getChildren().add(creditsLabel);
+
         tutorialSubScene = new Subscene(500,500,-550,230);
+        Label tutorialLabel = new Label("Welcome to Scrolls of Estatia!\nChoose a class and play with up to 7 other players.\nRoll your dice and let your destiny guide you.\nBuy ancient lands, build inns and taverns to increase your income.\nUse powerful scrolls to gain the upper hand\nAvoid getting bankrupt at all costs.\nLast one standing wins!\nMay Fortune be on your side.\n\nRefer to the User's Manual for more information.");
+        tutorialLabel.setLayoutX(30);
+        tutorialLabel.setLayoutY(32);
+        tutorialSubScene.getPane().getChildren().add(tutorialLabel);
 
         mainPane.getChildren().add(creditsSubScene);
         mainPane.getChildren().add(tutorialSubScene);

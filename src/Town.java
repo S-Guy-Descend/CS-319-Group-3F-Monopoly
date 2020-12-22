@@ -3,7 +3,7 @@ import java.math.*;
 
 public class Town extends Square implements Serializable {
     //variables
-    final double RENT_MULTIPLIER_PER_INN = 1.1;
+    final double RENT_MULTIPLIER_PER_INN = 1.7;
     final double RENT_MULTIPLIER_PER_MANSION = 1.7;
     final double RENT_MULTIPLIER_BY_CARDINAL = 1.2;
     final double MORTGAGE_REDEMPTION_MULTIPLIER = 1.5;
@@ -16,6 +16,8 @@ public class Town extends Square implements Serializable {
     boolean isMortgaged;
     int numberOfInns;
 
+    int baseRent;
+
     int ownerId;
     int price;
     int rent;
@@ -27,6 +29,7 @@ public class Town extends Square implements Serializable {
         this.colorGroup = colorGroup;
         this.mortgagePrice = mortgagePrice;
         this.price = price;
+        baseRent  = rent;
         this.rent = rent;
         this.ownerId = -1;
         this.innPrice = innPrice;
@@ -36,7 +39,7 @@ public class Town extends Square implements Serializable {
 
     //methods
     public void calculateRent() {
-        rent = (int) ((Math.pow(RENT_MULTIPLIER_PER_INN, numberOfInns)) * rent);
+        rent = (int) ((Math.pow(RENT_MULTIPLIER_PER_INN, numberOfInns)) * baseRent);
         if(belongsToCardinal)
             rent *= RENT_MULTIPLIER_BY_CARDINAL;
     }
