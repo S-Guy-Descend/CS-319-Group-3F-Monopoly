@@ -51,7 +51,7 @@ public class Token implements Serializable
         diceTotal = die1 + die2;
 
         diceRollOutcome = diceTotal;
-        Game.instance.infoPanel = "Player " + (ID + 1) + "rolled " + diceRollOutcome;
+        Game.instance.infoPanel = "Player " + (ID + 1) + " rolled " + diceRollOutcome;
 
     }
 
@@ -63,14 +63,13 @@ public class Token implements Serializable
         }
 
         if(currentLocation + diceRollOutcome >= 40) {
-            money += 20000;
+            ((StartingSquare) Game.instance.board.map[0]).giveLeapMoney(this);
         }
 
         currentLocation = (currentLocation + diceRollOutcome) % 40;
         Game.instance.board.map[currentLocation].addTokenOnSquare(ID);
-
+        Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " moved to " + Game.instance.board.map[currentLocation].name;
         activateSquare();
-        Game.instance.infoPanel = Game.instance.infoPanel + "\nPlayer " + (ID + 1) + " moved to " + currentLocation;
     }
 
     public void activateSquare()
@@ -178,6 +177,7 @@ public class Token implements Serializable
                 money -= currentTown.price;
                 currentTown.changeOwner(ID);
                 activeLands.add( currentLocation );
+                Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " purchased " + Game.instance.board.map[this.currentLocation].name;
                 return true;
             }
             else if(Game.instance.board.map[this.currentLocation] instanceof Smith) {
@@ -187,6 +187,7 @@ public class Token implements Serializable
                 ownedSmithCount++;
                 currentSmith.calculateRent(diceRollOutcome);
                 activeLands.add( currentLocation );
+                Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " purchased " + Game.instance.board.map[this.currentLocation].name;
                 return true;
             }
             else if(Game.instance.board.map[this.currentLocation] instanceof Transport) {
@@ -199,6 +200,7 @@ public class Token implements Serializable
                 ((Transport)Game.instance.board.map[25]).calculateRent();
                 ((Transport)Game.instance.board.map[35]).calculateRent();
                 activeLands.add( currentLocation );
+                Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " purchased " + Game.instance.board.map[this.currentLocation].name;
                 return true;
             }
             return false;
@@ -239,6 +241,11 @@ public class Token implements Serializable
                 residenceIDs.add(this.currentLocation);
             }
             System.out.println( "Build successful" );
+            String buildingType = currentTownToBuild.numberOfInns <= 4 ? "Inn" : "Mansion";
+            if (currentTownToBuild.belongsToCardinal) {
+                buildingType = currentTownToBuild.numberOfInns <= 4 ? "Church" : "Cathedral";
+            }
+            Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " build " + buildingType + " on " + Game.instance.board.map[currentLocation].name;
             return true;
         }
         return false;
@@ -284,6 +291,7 @@ public class Token implements Serializable
                     residenceIDs.remove( new Integer(locationToMortgage) );
                 }
                 mortgagedLands.add( locationToMortgage);
+                Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " mortgaged " + Game.instance.board.map[locationToMortgage].name;
                 return true;
             }
             else if(Game.instance.board.map[locationToMortgage] instanceof Smith) {
@@ -293,6 +301,7 @@ public class Token implements Serializable
                 System.out.println("Land is mortgaged");
                 activeLands.remove( new Integer(locationToMortgage) );
                 mortgagedLands.add( locationToMortgage);
+                Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " mortgaged " + Game.instance.board.map[locationToMortgage].name;
                 return true;
             }
             else if(Game.instance.board.map[locationToMortgage] instanceof Transport) {
@@ -307,6 +316,7 @@ public class Token implements Serializable
                 System.out.println("Land is mortgaged");
                 activeLands.remove( new Integer(locationToMortgage) );
                 mortgagedLands.add( locationToMortgage);
+                Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " mortgaged " + Game.instance.board.map[locationToMortgage].name;
                 return true;
             }
             return false;
@@ -355,6 +365,7 @@ public class Token implements Serializable
                     residenceIDs.add(locationToUnmortgage);
                 }
                 mortgagedLands.remove( new Integer( locationToUnmortgage));
+                Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " redeemed mortgage from " + Game.instance.board.map[locationToUnmortgage].name;
                 return true;
             }
             else if(Game.instance.board.map[locationToUnmortgage] instanceof Smith) {
@@ -364,6 +375,7 @@ public class Token implements Serializable
                 System.out.println("Land is UNMORTGAGED");
                 activeLands.add( locationToUnmortgage );
                 mortgagedLands.remove( new Integer( locationToUnmortgage));
+                Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " redeemed mortgage from " + Game.instance.board.map[locationToUnmortgage].name;
                 return true;
             }
 
@@ -379,6 +391,7 @@ public class Token implements Serializable
                 System.out.println("Land is UNMORTGAGED");
                 activeLands.add( locationToUnmortgage );
                 mortgagedLands.remove( new Integer( locationToUnmortgage));
+                Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " redeemed mortgage from " + Game.instance.board.map[locationToUnmortgage].name;
                 return true;
             }
             return false;
@@ -411,6 +424,7 @@ public class Token implements Serializable
             int effectID = (int) (Math.random() * Game.instance.board.scrollDeck.length);
             scrollCards.add( Game.instance.board.scrollDeck[effectID] );
             System.out.println("Scroll " + Game.instance.board.scrollDeck[effectID].cardName + " is drawn");
+            Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " draw " + Game.instance.board.scrollDeck[effectID].cardName + " Scroll";
         }
         else
         {
@@ -441,6 +455,7 @@ public class Token implements Serializable
     {
         int effectID = (int) (Math.random() * Game.instance.board.fortuneDeck.length);
         System.out.println("FortuneCard " + Game.instance.board.fortuneDeck[effectID].cardName + " is drawn");
+        Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " draw " + Game.instance.board.fortuneDeck[effectID].cardName + " Fortune Card";
         Game.instance.board.fortuneDeck[effectID].performEffect( this );
     }
 
@@ -448,11 +463,13 @@ public class Token implements Serializable
     {
         money = money - amount;
         receiver.receiveMoney( amount );
+        Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " paid " + amount + " to " + "Player " + (receiver.ID+1);
     }
 
     public void payTax( int amount )
     {
         money = money - amount;
+        Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " paid " + amount + " " + Game.instance.board.map[currentLocation].name;
     }
 
     public void receiveMoney( int amount )
