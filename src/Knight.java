@@ -17,7 +17,7 @@ public class Knight extends Token
             newAmount = 0;
             feastEvasion = false;
         }
-        money = money - newAmount;
-        receiver.receiveMoney( newAmount );
+
+        super.payMoney(receiver, newAmount);
     }
 }

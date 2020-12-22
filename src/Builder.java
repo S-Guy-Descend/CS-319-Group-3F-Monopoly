@@ -23,6 +23,10 @@ public class Builder extends Token
             currentTown.numberOfInns += 1;
             currentTown.calculateRent();
             residenceIDs.add(this.currentLocation);
+
+            String buildingType = currentTown.numberOfInns <= 4 ? "Inn" : "Mansion";
+            Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " build " + buildingType + " on " + Game.instance.board.map[currentLocation].name;
+
             return true;
         }
         return false;

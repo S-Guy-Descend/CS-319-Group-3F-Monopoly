@@ -29,6 +29,7 @@ public class FortuneTeller extends Token
             effectID = secondOption;
         }
         System.out.println("FortuneCard " + Game.instance.board.fortuneDeck[effectID].cardName + " is drawn");
+        Game.instance.infoPanel += "\nPlayer " + (ID + 1) + " draw " + Game.instance.board.fortuneDeck[effectID].cardName + " Fortune Card";
         Game.instance.board.fortuneDeck[effectID].performEffect( this );
     }
 }
