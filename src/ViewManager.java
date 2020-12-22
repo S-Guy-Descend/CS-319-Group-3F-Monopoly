@@ -459,18 +459,18 @@ public class ViewManager {
             try {
                 if(gameIDTxtField.getLength() <= 0){
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("WRONG GAME ID INPUT!");
+                    alert.setTitle("Unable to join game!");
                     alert.setHeaderText(null);
-                    alert.setContentText("You must enter a valid game Id!");
+                    alert.setContentText("You must enter a game Id!");
                     alert.showAndWait();
                     return;
                 }
                 for(int i = 0; i < gameIDTxtField.getLength(); i++) {
                     if(gameIDTxtField.getText().charAt(i) > 57 || gameIDTxtField.getText().charAt(i) < 48) {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("EMPTY GAME ID!");
+                        alert.setTitle("Unable to join game!");
                         alert.setHeaderText(null);
-                        alert.setContentText("You must enter a game Id!");
+                        alert.setContentText("You must enter a valid game Id!");
                         alert.showAndWait();
                         return;
                     }
