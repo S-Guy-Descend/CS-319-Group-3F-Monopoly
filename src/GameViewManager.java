@@ -9,6 +9,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import sun.security.x509.SubjectAlternativeNameExtension;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -76,6 +77,9 @@ public class GameViewManager {
         this.isWizard = isWizard;
         this.csc = csc;
         this.classes = classes;
+        sub0 = new Subscene(0,0,0,0);
+        sub3 = new Subscene(0,0,0,0);
+        sub4 = new Subscene(0,0,0,0);
         scrollButtons = new ArrayList<>();
         mortgageButtons = new ArrayList<>();
         mortgagePrices = new ArrayList<>();
@@ -752,7 +756,7 @@ public class GameViewManager {
                                     }
                                 });
                                 if (lastOp == 0) {
-                                    build.disable(!currentGameState.tokens.get(csc.playerID - 1).isBuildAvailable());
+                                    build.disable(!isBuildAvailable(csc.playerID - 1));
                                     useScroll.disable(!currentGameState.tokens.get(csc.playerID - 1).isScrollAvailable());
                                     purchaseLand.disable(!currentGameState.tokens.get(csc.playerID - 1).isLandPurchasable());
                                     Square currentSquare = currentGameState.board.map[currentGameState.tokens.get(csc.playerID - 1).currentLocation];
@@ -834,7 +838,7 @@ public class GameViewManager {
                                             purchaseLand.disable(false);
                                         }
                                     }
-                                    build.disable(!currentGameState.tokens.get(csc.playerID - 1).isBuildAvailable());
+                                    build.disable(!isBuildAvailable(csc.playerID - 1));
 
                                 }
                                 for (int i = 0; i < currentGameState.tokens.size(); i++) {
@@ -1641,8 +1645,9 @@ public class GameViewManager {
                 case 0:
                     boolean playerHasNonSmith = false;
                     for ( int j = 0; j < currentGameState.tokens.get(csc.playerID - 1).activeLands.size(); j++) {
-                        if (currentGameState.board.map[j] instanceof Town || currentGameState.board.map[j] instanceof Transport ) {
+                        if (currentGameState.board.map[currentGameState.tokens.get(csc.playerID - 1).activeLands.get(j)] instanceof Town || currentGameState.board.map[currentGameState.tokens.get(csc.playerID - 1).activeLands.get(j)] instanceof Transport ) {
                             playerHasNonSmith = true;
+                            System.out.println("PLAYER HAS NON SMITH");
                             break;
                         }
                     }
@@ -1650,6 +1655,7 @@ public class GameViewManager {
                     for ( int j = 0; j < currentGameState.tokens.size(); j++) {
                         if ( !currentGameState.tokens.get(j).isBankrupt && !(currentGameState.tokens.get(j).dungeonCountdown > 0) ) {
                             if ( currentGameState.tokens.get(j).ID != csc.playerID - 1) {
+                                System.out.println("PLAYER HAS VICTIM TO FORCEFULLY ACCOMODATE");
                                 victimExists0 = true;
                                 break;
                             }
@@ -1711,5 +1717,24 @@ public class GameViewManager {
     public void resetScrollsList() {
         scrollsList.getItems().clear();
         scrollButtons.clear();
+    }
+
+    public boolean isBuildAvailable(int playerID)
+    {
+        if(currentGameState.board.map[currentGameState.tokens.get(playerID).currentLocation] instanceof Town) {
+            Town currentTown = (Town) currentGameState.board.map[currentGameState.tokens.get(playerID).currentLocation];
+            if( currentTown.numberOfInns >= currentTown.MAX_NUMBER_OF_HOUSES )
+            {
+                return false;
+            }
+            if(currentGameState.tokens.get(playerID).money < currentTown.innPrice) {
+                return false;
+            }
+            if(!currentGameState.tokens.get(playerID).isColorGroupOwner(currentTown)){
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 }
