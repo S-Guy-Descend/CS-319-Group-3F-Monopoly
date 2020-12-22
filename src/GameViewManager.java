@@ -56,6 +56,7 @@ public class GameViewManager {
     private ArrayList<Button> mortgageButtons;
     private ArrayList<Integer> mortgagePrices;
 
+    private Pane infoPane;
     private Label infoPanel;
 
     private ArrayList<Label> playerNames;
@@ -78,10 +79,7 @@ public class GameViewManager {
         this.isWizard = isWizard;
         this.csc = csc;
         this.classes = classes;
-        infoPanel = new Label("");
-        infoPanel.setFont( new Font(21));
-        infoPanel.setStyle(PLAYER_INFO_BACKGROUND);
-        // infopanel yerini ayarla
+
         sub0 = new Subscene(0,0,0,0);
         sub3 = new Subscene(0,0,0,0);
         sub4 = new Subscene(0,0,0,0);
@@ -92,7 +90,6 @@ public class GameViewManager {
     }
 
     private void initializeGame() {
-
         rollDice = new StyledButton("Roll Dice");
         rollDice.setOnAction(e -> {
             if (csc.isTurn) {
@@ -440,10 +437,28 @@ public class GameViewManager {
         declineTrade.disable(true);
         endTurn.disable(true);
 
+        //Create info panel
+        infoPane = new Pane();
+        infoPane.setStyle(PLAYER_INFO_BACKGROUND);
+        infoPane.setMinWidth(500);
+        infoPane.setMinHeight(250);
+        infoPane.setMaxWidth(500);
+        infoPane.setMaxHeight(250);
+
+        infoPanel = new Label();
+        infoPanel.setFont(new Font(18));
+        infoPanel.setMaxWidth(500);
+        infoPanel.setMaxHeight(250);
+
+        infoPane.getChildren().add(infoPanel);
+
+        infoPane.setLayoutX(1049);
+        infoPane.setLayoutY(325);
+
         if (isWizard) {
-            gamePane.getChildren().addAll(currentPlayer, rollDice, build, purchaseLand, endTurn, playerInfo, wizardInfo, activeLandsList, winner, scrollsList);
+            gamePane.getChildren().addAll(currentPlayer, rollDice, build, purchaseLand, endTurn, playerInfo, wizardInfo, activeLandsList, winner, scrollsList,infoPane);
         } else {
-            gamePane.getChildren().addAll(currentPlayer, rollDice, build, purchaseLand, endTurn, playerInfo, activeLandsList, winner, scrollsList);
+            gamePane.getChildren().addAll(currentPlayer, rollDice, build, purchaseLand, endTurn, playerInfo, activeLandsList, winner, scrollsList,infoPane);
         }
 
         gameScene = new Scene(gamePane, GAME_WIDTH, GAME_HEIGHT);

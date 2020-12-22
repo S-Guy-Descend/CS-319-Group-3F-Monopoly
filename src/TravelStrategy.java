@@ -18,6 +18,7 @@ class OneInTwo implements TravelStrategy, Serializable
         {
             traveler.forcedToMove = false;
             traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome) % 40;
+            Game.instance.infoPanel += "\nPlayer " + (traveler.ID + 1) + " moved to " + Game.instance.board.map[traveler.currentLocation].name;
             traveler.activateSquare();
             Game.instance.board.map[traveler.currentLocation].addTokenOnSquare(traveler.ID);
             return;
@@ -27,7 +28,7 @@ class OneInTwo implements TravelStrategy, Serializable
 
         if(traveler.currentLocation + traveler.diceRollOutcome >= 40)
         {
-            traveler.money += 20000;
+            ((StartingSquare) Game.instance.board.map[0]).giveLeapMoney(traveler);
         }
 
         traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome) % 40;
@@ -45,6 +46,7 @@ class OneInTwo implements TravelStrategy, Serializable
         }
 
         Game.instance.board.map[traveler.currentLocation].addTokenOnSquare(traveler.ID);
+        Game.instance.infoPanel += "\nPlayer " + (traveler.ID + 1) + " moved to " + Game.instance.board.map[traveler.currentLocation].name;
         traveler.activateSquare();
     }
 }
@@ -62,6 +64,7 @@ class ThreeInFive implements TravelStrategy, Serializable
         {
             traveler.forcedToMove = false;
             traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome) % 40;
+            Game.instance.infoPanel += "\nPlayer " + (traveler.ID + 1) + " moved to " + Game.instance.board.map[traveler.currentLocation].name;
             traveler.activateSquare();
             Game.instance.board.map[traveler.currentLocation].addTokenOnSquare(traveler.ID);
             return;
@@ -71,7 +74,7 @@ class ThreeInFive implements TravelStrategy, Serializable
 
         if(traveler.currentLocation + traveler.diceRollOutcome >= 40)
         {
-            traveler.money += 20000;
+            ((StartingSquare) Game.instance.board.map[0]).giveLeapMoney(traveler);
         }
 
         traveler.currentLocation = (traveler.currentLocation + traveler.diceRollOutcome) % 40;
@@ -89,6 +92,7 @@ class ThreeInFive implements TravelStrategy, Serializable
         }
 
         Game.instance.board.map[traveler.currentLocation].addTokenOnSquare(traveler.ID);
+        Game.instance.infoPanel += "\nPlayer " + (traveler.ID + 1) + " moved to " + Game.instance.board.map[traveler.currentLocation].name;
         traveler.activateSquare();
     }
 }

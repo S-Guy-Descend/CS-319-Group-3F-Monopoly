@@ -7,5 +7,6 @@ public class StartingSquare extends Square{
 
     void giveLeapMoney(Token player){
         player.money += MONEY_PER_LEAP;
+        Game.instance.infoPanel += "\nPlayer " + (player.ID + 1) + " get " + MONEY_PER_LEAP + " leap money";
     }
 }
