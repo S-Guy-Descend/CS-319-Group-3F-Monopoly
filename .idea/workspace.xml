@@ -3,9 +3,47 @@
   <component name="ChangeListManager">
     <list default="true" id="03c25cf0-65d8-4206-a584-fcc934e9a856" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GameViewManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GameViewManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Token.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Token.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Builder.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Builder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Cardinal.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Cardinal.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Feast.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Feast.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/FortuneCard.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/FortuneCard.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/FortuneTeller.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/FortuneTeller.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Game.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Game.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/GameViewManager$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/GameViewManager$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/GameViewManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/GameViewManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Knight.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Knight.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Main.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Noble.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Noble.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/OneInTwo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/OneInTwo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Player.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ScrollCard.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ScrollCard.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Server$ServerSideConnection.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Server$ServerSideConnection.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Server.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/StartingSquare.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/StartingSquare.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Thief.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Thief.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ThreeInFive.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ThreeInFive.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Token.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Token.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Town.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Town.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Transport.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Transport.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/TravelStrategy.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/TravelStrategy.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Traveler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Traveler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/TreasureHunter.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/TreasureHunter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$1$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$2$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$2$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$2$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$2$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$2$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$2$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$6.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$7.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager$8.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/ViewManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Wizard.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/Wizard.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/guiTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/CS-319-Group-3F-Monopoly/guiTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Player.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,6 +120,15 @@
       <workItem from="1608483002708" duration="607000" />
       <workItem from="1608486311514" duration="102000" />
       <workItem from="1608621224445" duration="317000" />
+      <workItem from="1608656927522" duration="3101000" />
+      <workItem from="1608679775732" duration="129000" />
+      <workItem from="1608978180824" duration="21000" />
+      <workItem from="1610127402660" duration="775000" />
+      <workItem from="1611770598693" duration="826000" />
+      <workItem from="1615571932866" duration="44000" />
+      <workItem from="1620497296181" duration="2891000" />
+      <workItem from="1620500564532" duration="680000" />
+      <workItem from="1622208671473" duration="5000" />
     </task>
     <servers />
   </component>
